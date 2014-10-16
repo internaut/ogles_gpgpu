@@ -1,5 +1,6 @@
 #include "shader.h"
 
+using namespace std;
 using namespace ogles_gpgpu;
 
 Shader::Shader() {
@@ -28,7 +29,7 @@ GLint Shader::getParam(ShaderParamType type, const char *name) {
     glGetUniformLocation(programId, name);
     
 	if (id < 0) {
-        std::cerr << "ogles_gpgpu::Shader - Could not get parameter id for param " << name << std::endl;
+        cerr << "ogles_gpgpu::Shader - Could not get parameter id for param " << name << endl;
 	}
     
 	return id;
@@ -41,7 +42,7 @@ GLuint Shader::create(char *vshSrc, char *fshSrc, GLuint *vshId, GLuint *fshId) 
 	GLuint programId = glCreateProgram();
     
 	if (programId == 0) {
-		std::cerr << "ogles_gpgpu::Shader - Could not create shader program" << std::endl;
+		cerr << "ogles_gpgpu::Shader - Could not create shader program" << endl;
 		return -1;
 	}
     
@@ -53,11 +54,11 @@ GLuint Shader::create(char *vshSrc, char *fshSrc, GLuint *vshId, GLuint *fshId) 
 	GLint linkStatus;
 	glGetProgramiv(programId, GL_LINK_STATUS, &linkStatus);
 	if (linkStatus != GL_TRUE) {
-		std::cerr << "ogles_gpgpu::Shader - Could not link shader program:" << std::endl;
+		cerr << "ogles_gpgpu::Shader - Could not link shader program:" << endl;
 		GLchar infoLogBuf[1024];
 		GLsizei infoLogLen;
 		glGetProgramInfoLog(programId, 1024, &infoLogLen, infoLogBuf);
-        std::cerr << infoLogBuf << std::endl;
+        cerr << infoLogBuf << endl;
         
 		glDeleteProgram(programId);
         
@@ -71,7 +72,7 @@ GLuint Shader::compile(GLenum type, char *src) {
 	GLuint shId = glCreateShader(type);
     
 	if (shId == 0) {
-        std::cerr << "ogles_gpgpu::Shader -  Could not create shader." << std::endl;
+        cerr << "ogles_gpgpu::Shader -  Could not create shader." << endl;
 		return -1;
 	}
     
@@ -83,11 +84,11 @@ GLuint Shader::compile(GLenum type, char *src) {
     glGetShaderiv(shId, GL_COMPILE_STATUS, &compileStatus);
     
 	if (compileStatus != GL_TRUE) {
-		std::cerr << "ogles_gpgpu::Shader - Could not compile shader:" << std::endl;
+		cerr << "ogles_gpgpu::Shader - Could not compile shader:" << endl;
 		GLchar infoLogBuf[1024];
 		GLsizei infoLogLen;
 		glGetShaderInfoLog(shId, 1024, &infoLogLen, infoLogBuf);
-        std::cerr << infoLogBuf << std::endl;
+        cerr << infoLogBuf << endl;
         
 		glDeleteShader(shId);
         

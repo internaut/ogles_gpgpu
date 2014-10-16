@@ -16,6 +16,8 @@
 		28DA90A319EFEDA00030CC98 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28DA90A219EFEDA00030CC98 /* Images.xcassets */; };
 		28DA90D119EFF02B0030CC98 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28DA90D019EFF02B0030CC98 /* shader.cpp */; };
 		28DA90D519EFF2160030CC98 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA90D419EFF2160030CC98 /* OpenGLES.framework */; };
+		28DA90D919EFFD070030CC98 /* fbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28DA90D819EFFD070030CC98 /* fbo.cpp */; };
+		28DA90DB19F0013D0030CC98 /* tools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28DA90DA19F0013D0030CC98 /* tools.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +45,8 @@
 		28DA90D419EFF2160030CC98 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		28DA90D619EFF2DE0030CC98 /* gl_includes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gl_includes.h; sourceTree = "<group>"; };
 		28DA90D719EFF42D0030CC98 /* common_includes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = common_includes.h; sourceTree = "<group>"; };
+		28DA90D819EFFD070030CC98 /* fbo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fbo.cpp; sourceTree = "<group>"; };
+		28DA90DA19F0013D0030CC98 /* tools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tools.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +144,7 @@
 				28DA90C519EFEE950030CC98 /* gl */,
 				28DA90C819EFEE950030CC98 /* proc */,
 				28DA90CB19EFEE950030CC98 /* tools.h */,
+				28DA90DA19F0013D0030CC98 /* tools.cpp */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -148,6 +153,7 @@
 			isa = PBXGroup;
 			children = (
 				28DA90C619EFEE950030CC98 /* fbo.h */,
+				28DA90D819EFFD070030CC98 /* fbo.cpp */,
 				28DA90C719EFEE950030CC98 /* shader.h */,
 				28DA90D019EFF02B0030CC98 /* shader.cpp */,
 			);
@@ -253,6 +259,8 @@
 				28DA90D119EFF02B0030CC98 /* shader.cpp in Sources */,
 				28DA90A119EFEDA00030CC98 /* AppDelegate.mm in Sources */,
 				28DA909D19EFEDA00030CC98 /* main.m in Sources */,
+				28DA90D919EFFD070030CC98 /* fbo.cpp in Sources */,
+				28DA90DB19F0013D0030CC98 /* tools.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

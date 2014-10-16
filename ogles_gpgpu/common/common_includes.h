@@ -1,11 +1,10 @@
-#ifdef __cplusplus
 #include <iostream>
-#endif
+#include <cassert>
 
 #ifdef __APPLE__
-
-#include "../platform/ios/gl_includes.h"
-
+    #include "../platform/ios/gl_includes.h"
 #else
-// TODO: android
+    // TODO: android
 #endif
+
+#include "tools.h"
