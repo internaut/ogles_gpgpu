@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
+#include "../../../../ogles_gpgpu/ogles_gpgpu.h"
+
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
