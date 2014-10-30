@@ -86,7 +86,7 @@ void FBO::readBuffer(unsigned char *buf) {
     
 	// old (and slow) way using glReadPixels:
     glReadPixels(0, 0, texW, texH, GL_RGBA, GL_UNSIGNED_BYTE, buf);
-    Tools::checkGLErr("ogles_gpgpu::FBO");
+    Tools::checkGLErr("ogles_gpgpu::FBO - readBuffer");
     
 	unbind();
     

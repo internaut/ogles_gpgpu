@@ -5,11 +5,16 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-void GrayscaleProc::init(int inW, int inH, int outW, int outH, float scaleFactor) {
+GrayscaleProc::GrayscaleProc() {
+    procParamOutW = procParamOutH = 0;
+    procParamOutScale = 1.0f;
+}
+
+void GrayscaleProc::init(int inW, int inH) {
     cout << "ogles_gpgpu::GrayscaleProc - init" << endl;
     
     // parent init - set defaults
-    ProcBase::init(inW, inH, outW, outH, scaleFactor);
+    ProcBase::baseInit(inW, inH, procParamOutW, procParamOutH, procParamOutScale);
     
     // create fbo
     ProcBase::createFBO();

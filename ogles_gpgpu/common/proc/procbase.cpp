@@ -38,7 +38,18 @@ ProcBase::~ProcBase() {
 	}
 }
 
-void ProcBase::init(int inW, int inH, int outW, int outH, float scaleFactor) {
+void ProcBase::getResultData(unsigned char *data) const {
+    assert(fbo != NULL);
+    fbo->readBuffer(data);
+}
+
+GLuint ProcBase::getOutputTexId() const {
+    assert(fbo != NULL);
+    
+    return fbo->getAttachedTexId();
+}
+
+void ProcBase::baseInit(int inW, int inH, int outW, int outH, float scaleFactor) {
     assert(inW > 0 && inH > 0);
     
     inFrameW = inW;
@@ -58,14 +69,9 @@ void ProcBase::init(int inW, int inH, int outW, int outH, float scaleFactor) {
     outFrameH = outH;
     
     cout << "ogles_gpgpu::ProcBase - init with input frame size "
-         << inFrameW << "x" << inFrameH
-         << ", output frame size " << inFrameW << "x" << inFrameH
-         << endl;
-}
-
-void ProcBase::getResultData(unsigned char *data) const {
-    assert(fbo != NULL);
-    fbo->readBuffer(data);
+    << inFrameW << "x" << inFrameH
+    << ", output frame size " << outFrameW << "x" << outFrameH
+    << endl;
 }
 
 void ProcBase::createFBO() {

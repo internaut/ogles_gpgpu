@@ -19,11 +19,20 @@ void main() { \
 namespace ogles_gpgpu {
 class GrayscaleProc : public ProcBase {
 public:
-    virtual void init(int inW, int inH, int outW = 0, int outH = 0, float scaleFactor = 1.0f);
+    GrayscaleProc();
+    
+    void setOutputSize(float scaleFactor)  { procParamOutScale = scaleFactor; }
+    void setOutputSize(int outW, int outH) { procParamOutW = outW; procParamOutH = outH; }
+    
+    virtual void init(int inW, int inH);
     
     virtual void render();
     
 private:
+    int procParamOutW;
+    int procParamOutH;
+    float procParamOutScale;
+    
 	GLint shParamAPos;
 	GLint shParamATexCoord;
 	GLfloat vertexBuf[OGLES_GPGPU_QUAD_VERTEX_BUFSIZE];

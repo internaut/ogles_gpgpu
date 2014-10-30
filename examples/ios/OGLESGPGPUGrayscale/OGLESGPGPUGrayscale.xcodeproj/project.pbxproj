@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		283EBFEC1A024279007102C3 /* grayscale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFEB1A024279007102C3 /* grayscale.cpp */; };
+		283EBFEE1A024FA9007102C3 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFED1A024FA9007102C3 /* core.cpp */; };
+		283EBFF11A026D34007102C3 /* RootViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFF01A026D34007102C3 /* RootViewController.mm */; };
 		28DA909119EFEDA00030CC98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA909019EFEDA00030CC98 /* Foundation.framework */; };
 		28DA909319EFEDA00030CC98 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA909219EFEDA00030CC98 /* CoreGraphics.framework */; };
 		28DA909519EFEDA00030CC98 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA909419EFEDA00030CC98 /* UIKit.framework */; };
@@ -25,6 +27,9 @@
 /* Begin PBXFileReference section */
 		283EBFEA1A0241A7007102C3 /* common_shaders.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common_shaders.h; sourceTree = "<group>"; };
 		283EBFEB1A024279007102C3 /* grayscale.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = grayscale.cpp; sourceTree = "<group>"; };
+		283EBFED1A024FA9007102C3 /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core.cpp; sourceTree = "<group>"; };
+		283EBFEF1A026D34007102C3 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		283EBFF01A026D34007102C3 /* RootViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RootViewController.mm; sourceTree = "<group>"; };
 		28DA908D19EFEDA00030CC98 /* OGLESGPGPUGrayscale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGLESGPGPUGrayscale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28DA909019EFEDA00030CC98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		28DA909219EFEDA00030CC98 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -106,6 +111,8 @@
 			children = (
 				28DA909F19EFEDA00030CC98 /* AppDelegate.h */,
 				28DA90A019EFEDA00030CC98 /* AppDelegate.mm */,
+				283EBFEF1A026D34007102C3 /* RootViewController.h */,
+				283EBFF01A026D34007102C3 /* RootViewController.mm */,
 				28DA90A219EFEDA00030CC98 /* Images.xcassets */,
 				28DA909719EFEDA00030CC98 /* Supporting Files */,
 			);
@@ -147,6 +154,7 @@
 			children = (
 				28DA90D719EFF42D0030CC98 /* common_includes.h */,
 				28DA90C419EFEE950030CC98 /* core.h */,
+				283EBFED1A024FA9007102C3 /* core.cpp */,
 				28DA90C519EFEE950030CC98 /* gl */,
 				28DA90C819EFEE950030CC98 /* proc */,
 				28DA90CB19EFEE950030CC98 /* tools.h */,
@@ -268,8 +276,10 @@
 			files = (
 				28DA90D119EFF02B0030CC98 /* shader.cpp in Sources */,
 				28DA90A119EFEDA00030CC98 /* AppDelegate.mm in Sources */,
+				283EBFEE1A024FA9007102C3 /* core.cpp in Sources */,
 				28DA90DE19F002D10030CC98 /* procbase.cpp in Sources */,
 				283EBFEC1A024279007102C3 /* grayscale.cpp in Sources */,
+				283EBFF11A026D34007102C3 /* RootViewController.mm in Sources */,
 				28DA909D19EFEDA00030CC98 /* main.m in Sources */,
 				28DA90D919EFFD070030CC98 /* fbo.cpp in Sources */,
 				28DA90DB19F0013D0030CC98 /* tools.cpp in Sources */,
@@ -367,6 +377,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OGLESGPGPUGrayscale/OGLESGPGPUGrayscale-Prefix.pch";
@@ -381,6 +392,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = NO;
 				GCC_INPUT_FILETYPE = sourcecode.cpp.objcpp;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OGLESGPGPUGrayscale/OGLESGPGPUGrayscale-Prefix.pch";
