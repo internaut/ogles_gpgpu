@@ -13,7 +13,7 @@ Shader::~Shader() {
 	}
 }
 
-bool Shader::buildFromSrc(char *vshSrc, char *fshSrc) {
+bool Shader::buildFromSrc(const char *vshSrc, const char *fshSrc) {
 	programId = create(vshSrc, fshSrc, &vshId, &fshId);
     
 	return (programId > 0);
@@ -23,7 +23,7 @@ void Shader::use() {
 	glUseProgram(programId);
 }
 
-GLint Shader::getParam(ShaderParamType type, const char *name) {
+GLint Shader::getParam(ShaderParamType type, const char *name) const {
 	GLint id = (type == ATTR) ?
     glGetAttribLocation(programId, name) :
     glGetUniformLocation(programId, name);
@@ -35,7 +35,7 @@ GLint Shader::getParam(ShaderParamType type, const char *name) {
 	return id;
 }
 
-GLuint Shader::create(char *vshSrc, char *fshSrc, GLuint *vshId, GLuint *fshId) {
+GLuint Shader::create(const char *vshSrc, const char *fshSrc, GLuint *vshId, GLuint *fshId) {
 	*vshId = compile(GL_VERTEX_SHADER, vshSrc);
 	*fshId = compile(GL_FRAGMENT_SHADER, fshSrc);
     
@@ -68,7 +68,7 @@ GLuint Shader::create(char *vshSrc, char *fshSrc, GLuint *vshId, GLuint *fshId) 
 	return programId;
 }
 
-GLuint Shader::compile(GLenum type, char *src) {
+GLuint Shader::compile(GLenum type, const char *src) {
 	GLuint shId = glCreateShader(type);
     
 	if (shId == 0) {

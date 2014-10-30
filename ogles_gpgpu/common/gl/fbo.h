@@ -10,11 +10,33 @@ public:
     FBO();
     virtual ~FBO();
     
+    /**
+     * Generate an FBO id and a texture id for the attached texture.
+     */
+    virtual void generateIds();
+    
+    /**
+     * Set the FBO id (if you did not call generateIds()).
+     */
+	void setId(GLuint fboId) { id = fboId; }
+    
+    /**
+     * Return the FBO id.
+     */
+	GLuint getId() const { return id; }
+    
+    /**
+     * Bind FBO.
+     */
     virtual void bind();
+    
+    /**
+     * Unbind FBO.
+     */
     virtual void unbind();
     
     /**
-     * Set output texture id to <texId>.
+     * Set output texture id to <texId> (if you did not call generateIds()).
      */
 	void setAttachedTexId(GLuint texId) { attachedTexId = texId; }
     
@@ -26,14 +48,12 @@ public:
     /**
      * Will create a framebuffer texture with texture id <attachedTexId> 
      * and will bind it to this FBO.
-     * Abstract method.
      */
     virtual void createAttachedTex(int w, int h, bool genMipmap = false, GLenum attachment = GL_COLOR_ATTACHMENT0);
     
     /**
      * Copy the framebuffer data which was written to the framebuffer texture back to
      * main memory at <buf>.
-     * Abstract method.
      */
 	virtual void readBuffer(unsigned char *buf);
     
@@ -41,9 +61,6 @@ public:
      * Free allocated FBO buffers.
      */
     virtual void freeFBOBuffers();
-    
-	void setId(GLuint fboId) { id = fboId; }
-	GLuint getId() const { return id; }
     
 	int getTexWidth() const { return texW; }
 	int getTexHeight() const { return texH; }

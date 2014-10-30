@@ -6,10 +6,16 @@ using namespace ogles_gpgpu;
 FBO::FBO() {
 	id = 0;
 	texW = texH = 0;
+    attachedTexId = 0;
 }
 
 FBO::~FBO() {
     freeFBOBuffers();
+}
+
+void FBO::generateIds() {
+    glGenFramebuffers(1, &id);
+	glGenTextures(1, &attachedTexId);
 }
 
 void FBO::bind() {
@@ -21,7 +27,8 @@ void FBO::unbind() {
 }
 
 void FBO::freeFBOBuffers() {
-    
+	glDeleteTextures(1, &attachedTexId);
+	glDeleteFramebuffers(1, &id);
 }
 
 void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
