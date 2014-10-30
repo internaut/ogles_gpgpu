@@ -54,6 +54,9 @@ public:
      */
     void getOutputData(unsigned char *buf);
     
+    int getOutputFrameW() const { return outputFrameW; }
+    int getOutputFrameH() const { return outputFrameH; }
+    
 private:
     list<ProcBase *> pipeline;  // contains weak refs to ProcBase objects
     
@@ -64,6 +67,8 @@ private:
     
     int inputFrameW;
     int inputFrameH;
+    int outputFrameW;
+    int outputFrameH;
 
     GLuint inputTexId;
     GLuint outputTexId;

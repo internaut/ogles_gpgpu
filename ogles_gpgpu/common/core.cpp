@@ -6,6 +6,7 @@ using namespace ogles_gpgpu;
 Core::Core() {
     initialized = false;
     inputFrameW = inputFrameH = 0;
+    outputFrameW = outputFrameH = 0;
     outputTexId = 0;
     firstProc = lastProc = NULL;
 }
@@ -67,8 +68,10 @@ void Core::init(int inW, int inH, bool genInputTexId) {
     
     lastProc = prevProc;
 
-    // set output texture id
+    // set output texture id and size
     outputTexId = lastProc->getOutputTexId();
+    outputFrameW = lastProc->getOutFrameW();
+    outputFrameH = lastProc->getOutFrameH();
     
     initialized = true;
 }
@@ -90,6 +93,8 @@ void Core::setInputData(const unsigned char *data) {
 
 	// generate mipmap
 	glGenerateMipmap(GL_TEXTURE_2D);
+    
+    glFinish();
 }
 
 void Core::process() {

@@ -69,6 +69,8 @@ void GrayscaleProc::render() {
 	// draw
 	glDrawArrays(GL_TRIANGLE_STRIP, 0, OGLES_GPGPU_QUAD_VERTICES);
     
+    Tools::checkGLErr("ogles_gpgpu::GrayscaleProc - render");
+    
 	// cleanup
 	glDisableVertexAttribArray(shParamAPos);
 	glDisableVertexAttribArray(shParamATexCoord);

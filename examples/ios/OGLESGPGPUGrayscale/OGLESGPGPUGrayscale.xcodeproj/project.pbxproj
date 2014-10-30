@@ -11,6 +11,8 @@
 		283EBFEE1A024FA9007102C3 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFED1A024FA9007102C3 /* core.cpp */; };
 		283EBFF11A026D34007102C3 /* RootViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFF01A026D34007102C3 /* RootViewController.mm */; };
 		283EBFF21A028086007102C3 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA90D219EFF1DA0030CC98 /* GLKit.framework */; };
+		283EBFF51A0287D9007102C3 /* moon_2048x2048.png in Resources */ = {isa = PBXBuildFile; fileRef = 283EBFF41A0287D9007102C3 /* moon_2048x2048.png */; };
+		283EBFF71A0289C2007102C3 /* moon_1024x1024.png in Resources */ = {isa = PBXBuildFile; fileRef = 283EBFF61A0289C2007102C3 /* moon_1024x1024.png */; };
 		28DA909119EFEDA00030CC98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA909019EFEDA00030CC98 /* Foundation.framework */; };
 		28DA909319EFEDA00030CC98 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA909219EFEDA00030CC98 /* CoreGraphics.framework */; };
 		28DA909519EFEDA00030CC98 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA909419EFEDA00030CC98 /* UIKit.framework */; };
@@ -31,6 +33,8 @@
 		283EBFED1A024FA9007102C3 /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core.cpp; sourceTree = "<group>"; };
 		283EBFEF1A026D34007102C3 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		283EBFF01A026D34007102C3 /* RootViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RootViewController.mm; sourceTree = "<group>"; };
+		283EBFF41A0287D9007102C3 /* moon_2048x2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moon_2048x2048.png; sourceTree = "<group>"; };
+		283EBFF61A0289C2007102C3 /* moon_1024x1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moon_1024x1024.png; sourceTree = "<group>"; };
 		28DA908D19EFEDA00030CC98 /* OGLESGPGPUGrayscale.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGLESGPGPUGrayscale.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28DA909019EFEDA00030CC98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		28DA909219EFEDA00030CC98 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -77,9 +81,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		283EBFF31A0287D9007102C3 /* assets */ = {
+			isa = PBXGroup;
+			children = (
+				283EBFF61A0289C2007102C3 /* moon_1024x1024.png */,
+				283EBFF41A0287D9007102C3 /* moon_2048x2048.png */,
+			);
+			name = assets;
+			path = OGLESGPGPUGrayscale/assets;
+			sourceTree = "<group>";
+		};
 		28DA908419EFEDA00030CC98 = {
 			isa = PBXGroup;
 			children = (
+				283EBFF31A0287D9007102C3 /* assets */,
 				28DA90BF19EFEE7A0030CC98 /* lib */,
 				28DA909619EFEDA00030CC98 /* OGLESGPGPUGrayscale */,
 				28DA908F19EFEDA00030CC98 /* Frameworks */,
@@ -266,6 +281,8 @@
 			files = (
 				28DA909B19EFEDA00030CC98 /* InfoPlist.strings in Resources */,
 				28DA90A319EFEDA00030CC98 /* Images.xcassets in Resources */,
+				283EBFF51A0287D9007102C3 /* moon_2048x2048.png in Resources */,
+				283EBFF71A0289C2007102C3 /* moon_1024x1024.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
