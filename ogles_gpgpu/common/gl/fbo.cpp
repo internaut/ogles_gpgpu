@@ -43,6 +43,9 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
     
 	GLenum format = GL_RGBA;
     
+    // bind FBO
+    bind();
+    
 	// create texture for FBO
 	glBindTexture(GL_TEXTURE_2D, attachedTexId);
 	glTexImage2D(GL_TEXTURE_2D, 0,
@@ -60,12 +63,10 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
 	}
     
 	// bind it to FBO
-	bind();
 	glFramebufferTexture2D(GL_FRAMEBUFFER,
 						   attachment,
 						   GL_TEXTURE_2D,
 						   attachedTexId, 0);
-	unbind();
     
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
@@ -73,6 +74,9 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
         cerr << "ogles_gpgpu::FBO - " << id
              << " - Framebuffer incomplete - error " << fboStatus << endl;
 	}
+    
+    // unbind FBO
+	unbind();
 }
 
 void FBO::readBuffer(unsigned char *buf) {

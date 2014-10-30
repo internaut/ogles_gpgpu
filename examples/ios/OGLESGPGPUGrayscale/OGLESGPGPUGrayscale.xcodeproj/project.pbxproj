@@ -10,6 +10,7 @@
 		283EBFEC1A024279007102C3 /* grayscale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFEB1A024279007102C3 /* grayscale.cpp */; };
 		283EBFEE1A024FA9007102C3 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFED1A024FA9007102C3 /* core.cpp */; };
 		283EBFF11A026D34007102C3 /* RootViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFF01A026D34007102C3 /* RootViewController.mm */; };
+		283EBFF21A028086007102C3 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA90D219EFF1DA0030CC98 /* GLKit.framework */; };
 		28DA909119EFEDA00030CC98 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA909019EFEDA00030CC98 /* Foundation.framework */; };
 		28DA909319EFEDA00030CC98 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA909219EFEDA00030CC98 /* CoreGraphics.framework */; };
 		28DA909519EFEDA00030CC98 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28DA909419EFEDA00030CC98 /* UIKit.framework */; };
@@ -65,6 +66,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				283EBFF21A028086007102C3 /* GLKit.framework in Frameworks */,
 				28DA90D519EFF2160030CC98 /* OpenGLES.framework in Frameworks */,
 				28DA909319EFEDA00030CC98 /* CoreGraphics.framework in Frameworks */,
 				28DA909519EFEDA00030CC98 /* UIKit.framework in Frameworks */,
