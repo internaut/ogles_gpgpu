@@ -28,8 +28,10 @@ void Core::init(int inW, int inH, bool genInputTexId) {
     
     // init opengl
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    
+    glDisable(GL_DEPTH_TEST);
     glActiveTexture(GL_TEXTURE1);
+    
+    Tools::checkGLErr("ogles_gpgpu::Core - init");
     
     // generate input texture id if necessary
     if (genInputTexId) {

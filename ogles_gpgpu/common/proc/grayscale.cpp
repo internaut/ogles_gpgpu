@@ -43,11 +43,11 @@ void GrayscaleProc::render() {
 	glClear(GL_COLOR_BUFFER_BIT);
     
 	// set texture
-    glActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE0 + texUnit);
 	glBindTexture(GL_TEXTURE_2D, texId);	// bind input texture
     
 	// set uniforms
-    glUniform1i(shParamUInputTex, 1);
+    glUniform1i(shParamUInputTex, texUnit);
     
 	// render to FBO
 	fbo->bind();

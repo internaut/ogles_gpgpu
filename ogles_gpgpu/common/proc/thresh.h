@@ -15,7 +15,7 @@ uniform sampler2D uInputTex;\
 void main() {\
     float gray = texture2D(uInputTex, vTexCoord).r;\
     float bin = step(uThresh, gray);\
-    gl_FragColor = vec4(gray, gray, gray, 1.0);\
+    gl_FragColor = vec4(bin, bin, bin, 1.0);\
 }\
 "
 
@@ -26,12 +26,12 @@ void main() {\
 precision mediump float;\
 varying vec2 vTexCoord;\
 uniform vec2 uPxD;\
-uniform sampler2D sTexture;\
+uniform sampler2D uInputTex;\
 void main() {\
     // get center pixel value\
-    float centerGray = texture2D(sTexture, vTexCoord).r;\
+    float centerGray = texture2D(uInputTex, vTexCoord).r;\
     // get the sum\
-    float sum = texture2D(sTexture, vTexCoord + vec2(uPxD.x * -2.0, 0.0)).r +\
+    float sum = texture2D(uInputTex, vTexCoord + vec2(uPxD.x * -2.0, 0.0)).r +\
     texture2D(sTexture, vTexCoord + vec2(uPxD.x * -1.0, 0.0)).r +\
     centerGray +\
     texture2D(sTexture, vTexCoord + vec2(uPxD.x *  1.0, 0.0)).r +\
@@ -50,12 +50,12 @@ void main() {\
 precision mediump float;\
 varying vec2 vTexCoord;\
 uniform vec2 uPxD;\
-uniform sampler2D sTexture;\
+uniform sampler2D uInputTex;\
 void main() {\
-    vec4 centerPx = texture2D(sTexture, vTexCoord); // stores: horizontal avg, orig. gray value, 0, 1\
+    vec4 centerPx = texture2D(uInputTex, vTexCoord); // stores: horizontal avg, orig. gray value, 0, 1\
     const float bigC = 9.5 / 255.0;\
     // get the sum\
-    float sum = texture2D(sTexture, vTexCoord + vec2(uPxD.y * -2.0, 0.0)).r +\
+    float sum = texture2D(uInputTex, vTexCoord + vec2(uPxD.y * -2.0, 0.0)).r +\
     texture2D(sTexture, vTexCoord + vec2(uPxD.y * -1.0, 0.0)).r +\
     centerPx.r +\
     texture2D(sTexture, vTexCoord + vec2(uPxD.y *  1.0, 0.0)).r +\

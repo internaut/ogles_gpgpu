@@ -30,6 +30,7 @@ const GLfloat ProcBase::quadVertices[] = {
 
 ProcBase::ProcBase() {
 	texId = 0;
+    texUnit = 1;
 	shader = NULL;
     fbo = NULL;
     

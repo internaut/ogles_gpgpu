@@ -74,11 +74,11 @@ void ThreshProc::render() {
 	shader->use();
     
 	// set texture
-    glActiveTexture(GL_TEXTURE1);
+    glActiveTexture(GL_TEXTURE0 + texUnit);
 	glBindTexture(GL_TEXTURE_2D, texId);	// bind input texture
     
 	// set uniforms
-    glUniform1i(shParamUInputTex, 1);
+    glUniform1i(shParamUInputTex, texUnit);
     
 	if (threshType == SIMPLE) {
 		glUniform1f(shParamUThresh, threshVal);	// thresholding value for simple thresholding

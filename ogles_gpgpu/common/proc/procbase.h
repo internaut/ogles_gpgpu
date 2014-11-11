@@ -32,9 +32,9 @@ public:
     virtual void render() = 0;
     
     /**
-     * Use texture id <id> as input texture.
+     * Use texture id <id> as input texture at texture <unit>.
      */
-    void useTexture(GLuint id) { texId = id; }
+    void useTexture(GLuint id, GLuint useTexUnit = 1) { texId = id; texUnit = useTexUnit; }
     
     void setOutputSize(float scaleFactor)  { procParamOutScale = scaleFactor; }
     void setOutputSize(int outW, int outH) { procParamOutW = outW; procParamOutH = outH; }
@@ -70,6 +70,7 @@ protected:
     unsigned int orderNum;
     
 	GLuint texId;
+    GLuint texUnit;
     
     int procParamOutW;
     int procParamOutH;
