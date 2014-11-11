@@ -10,6 +10,7 @@
     
     ogles_gpgpu::Core gpgpuMngr;
     ogles_gpgpu::GrayscaleProc grayscaleProc;
+    ogles_gpgpu::ThreshProc threshProc;
     
     UIImage *testImg;
     unsigned char *testImgData;

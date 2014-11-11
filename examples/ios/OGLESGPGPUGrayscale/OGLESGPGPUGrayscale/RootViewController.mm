@@ -37,6 +37,7 @@
     if (outputBuf) delete [] outputBuf;
     
     [testImg release];
+    [outputImg release];
     
     [baseView release];
     [eaglContext release];
@@ -106,6 +107,7 @@
     
     grayscaleProc.setOutputSize(0.5f);
     gpgpuMngr.addProcToPipeline(&grayscaleProc);
+    gpgpuMngr.addProcToPipeline(&threshProc);
 
     gpgpuMngr.init(testImgW, testImgH, true);
     
@@ -122,9 +124,9 @@
     NSLog(@"done.");
     
     [outputImg release];
-    outputImg = [self rgbaBytesToUIImage:outputBuf
-                                   width:gpgpuMngr.getOutputFrameW()
-                                  height:gpgpuMngr.getOutputFrameH()];
+    outputImg = [[self rgbaBytesToUIImage:outputBuf
+                                    width:gpgpuMngr.getOutputFrameW()
+                                   height:gpgpuMngr.getOutputFrameH()] retain];
     if (!outputImg) {
         NSLog(@"error converting output RGBA data to UIImage");
     } else {

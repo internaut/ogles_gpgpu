@@ -25,6 +25,7 @@
 		28DA90D919EFFD070030CC98 /* fbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28DA90D819EFFD070030CC98 /* fbo.cpp */; };
 		28DA90DB19F0013D0030CC98 /* tools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28DA90DA19F0013D0030CC98 /* tools.cpp */; };
 		28DA90DE19F002D10030CC98 /* procbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28DA90DC19F002D10030CC98 /* procbase.cpp */; };
+		28E101221A090A2100BEA3EF /* thresh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28E101211A090A2100BEA3EF /* thresh.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +64,7 @@
 		28DA90DA19F0013D0030CC98 /* tools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tools.cpp; sourceTree = "<group>"; };
 		28DA90DC19F002D10030CC98 /* procbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = procbase.cpp; sourceTree = "<group>"; };
 		28DA90DD19F002D10030CC98 /* procbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = procbase.h; sourceTree = "<group>"; };
+		28E101211A090A2100BEA3EF /* thresh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = thresh.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +202,7 @@
 				28DA90DD19F002D10030CC98 /* procbase.h */,
 				28DA90DC19F002D10030CC98 /* procbase.cpp */,
 				28DA90CA19EFEE950030CC98 /* thresh.h */,
+				28E101211A090A2100BEA3EF /* thresh.cpp */,
 			);
 			path = proc;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 				28DA909D19EFEDA00030CC98 /* main.m in Sources */,
 				28DA90D919EFFD070030CC98 /* fbo.cpp in Sources */,
 				28DA90DB19F0013D0030CC98 /* tools.cpp in Sources */,
+				28E101221A090A2100BEA3EF /* thresh.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

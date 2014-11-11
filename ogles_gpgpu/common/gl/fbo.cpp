@@ -7,6 +7,7 @@ FBO::FBO() {
 	id = 0;
 	texW = texH = 0;
     attachedTexId = 0;
+    glTexUnit = 0;
 }
 
 FBO::~FBO() {
@@ -15,7 +16,12 @@ FBO::~FBO() {
 
 void FBO::generateIds() {
     glGenFramebuffers(1, &id);
+    glActiveTexture(GL_TEXTURE0 + glTexUnit);
 	glGenTextures(1, &attachedTexId);
+    
+    cout << "ogles_gpgpu::FBO - " << id
+         << " generated ids - attached tex is " << attachedTexId
+         << " on tex unit " << glTexUnit << endl;
 }
 
 void FBO::bind() {
@@ -27,6 +33,8 @@ void FBO::unbind() {
 }
 
 void FBO::freeFBOBuffers() {
+    cout << "ogles_gpgpu::FBO - " << id << " freeing FBO buffers" << endl;
+    
 	glDeleteTextures(1, &attachedTexId);
 	glDeleteFramebuffers(1, &id);
 }
@@ -47,6 +55,7 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
     bind();
     
 	// create texture for FBO
+    glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, attachedTexId);
 	glTexImage2D(GL_TEXTURE_2D, 0,
 				 format,
@@ -87,6 +96,8 @@ void FBO::readBuffer(unsigned char *buf) {
 //#endif
     
 	bind();
+    
+	glBindTexture(GL_TEXTURE_2D, attachedTexId);
     
 	// old (and slow) way using glReadPixels:
     glReadPixels(0, 0, texW, texH, GL_RGBA, GL_UNSIGNED_BYTE, buf);

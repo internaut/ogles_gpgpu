@@ -11,6 +11,27 @@ public:
     virtual ~FBO();
     
     /**
+     * Set output texture id to <texId> (if you did not call generateIds()).
+     */
+	void setAttachedTexId(GLuint texId) { attachedTexId = texId; }
+    
+    /**
+     * Get output texture id.
+     */
+	int getAttachedTexId() const { return attachedTexId; }
+    
+    /**
+     * Set GL texture unit (to be used in glActiveTexture()) for output texture.
+     * Must be set before calling generateIds()
+     */
+    void setGLTexUnit(GLuint texUnit) { glTexUnit = texUnit; }
+    
+    /**
+     * Get GL texture unit (to be used in glActiveTexture()) for output texture.
+     */
+    GLuint getGLTexUnit() const { return glTexUnit; }
+    
+    /**
      * Generate an FBO id and a texture id for the attached texture.
      */
     virtual void generateIds();
@@ -28,22 +49,12 @@ public:
     /**
      * Bind FBO.
      */
-    virtual void bind();
+    void bind();
     
     /**
      * Unbind FBO.
      */
-    virtual void unbind();
-    
-    /**
-     * Set output texture id to <texId> (if you did not call generateIds()).
-     */
-	void setAttachedTexId(GLuint texId) { attachedTexId = texId; }
-    
-    /**
-     * Get output texture id.
-     */
-	int getAttachedTexId() const { return attachedTexId; }
+    void unbind();
     
     /**
      * Will create a framebuffer texture with texture id <attachedTexId> 
@@ -67,6 +78,7 @@ public:
     
 protected:
 	GLuint id;
+    GLuint glTexUnit;
 	GLuint attachedTexId;
     
 	int texW;

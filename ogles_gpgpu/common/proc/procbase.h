@@ -23,7 +23,7 @@ public:
      * Creates the shader and fbo.
      * Abstract method.
      */
-    virtual void init(int inW, int inH) = 0;
+    virtual void init(int inW, int inH, unsigned int order) = 0;
     
     /**
      * Render a result, i.e. run the shader on the input texture.
@@ -35,6 +35,9 @@ public:
      * Use texture id <id> as input texture.
      */
     void useTexture(GLuint id) { texId = id; }
+    
+    void setOutputSize(float scaleFactor)  { procParamOutScale = scaleFactor; }
+    void setOutputSize(int outW, int outH) { procParamOutW = outW; procParamOutH = outH; }
     
     int getOutFrameW() const { return outFrameW; }
     int getOutFrameH() const { return outFrameH; }
@@ -50,7 +53,7 @@ public:
     GLuint getOutputTexId() const;
     
 protected:
-    virtual void baseInit(int inW, int inH, int outW = 0, int outH = 0, float scaleFactor = 1.0f);
+    virtual void baseInit(int inW, int inH, unsigned int order, int outW = 0, int outH = 0, float scaleFactor = 1.0f);
     
     virtual void createFBO();
     virtual void createShader(const char *vShSrc, const char *fShSrc);
@@ -58,12 +61,19 @@ protected:
     
 	static const GLfloat quadTexCoordsStd[];
 	static const GLfloat quadTexCoordsFlipped[];
+	static const GLfloat quadTexCoordsDiagonal[];
 	static const GLfloat quadVertices[];
     
     FBO *fbo;       // strong ref.!
 	Shader *shader;	// strong ref.!
     
+    unsigned int orderNum;
+    
 	GLuint texId;
+    
+    int procParamOutW;
+    int procParamOutH;
+    float procParamOutScale;
 
 	int inFrameW;
 	int inFrameH;

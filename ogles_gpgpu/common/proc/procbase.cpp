@@ -15,6 +15,12 @@ const GLfloat ProcBase::quadTexCoordsFlipped[] = {
     0, 0,
     1, 0 };
 
+const GLfloat ProcBase::quadTexCoordsDiagonal[] = {
+    0, 0,
+    0, 1,
+    1, 0,
+    1, 1 };
+
 const GLfloat ProcBase::quadVertices[] = {
     -1, -1, 0,
      1, -1, 0,
@@ -26,6 +32,9 @@ ProcBase::ProcBase() {
 	texId = 0;
 	shader = NULL;
     fbo = NULL;
+    
+    procParamOutW = procParamOutH = 0;
+    procParamOutScale = 1.0f;
 }
 
 ProcBase::~ProcBase() {
@@ -49,8 +58,10 @@ GLuint ProcBase::getOutputTexId() const {
     return fbo->getAttachedTexId();
 }
 
-void ProcBase::baseInit(int inW, int inH, int outW, int outH, float scaleFactor) {
+void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH, float scaleFactor) {
     assert(inW > 0 && inH > 0);
+    
+    orderNum = order;
     
     inFrameW = inW;
     inFrameH = inH;
@@ -68,16 +79,19 @@ void ProcBase::baseInit(int inW, int inH, int outW, int outH, float scaleFactor)
     outFrameW = outW;
     outFrameH = outH;
     
-    cout << "ogles_gpgpu::ProcBase - init with input frame size "
-    << inFrameW << "x" << inFrameH
-    << ", output frame size " << outFrameW << "x" << outFrameH
-    << endl;
+    cout << "ogles_gpgpu::ProcBase - init with "
+         << "order number " << orderNum
+         << ", input texture id " << texId
+         << ", input frame size " << inFrameW << "x" << inFrameH
+         << ", output frame size " << outFrameW << "x" << outFrameH
+         << endl;
 }
 
 void ProcBase::createFBO() {
     assert(fbo == NULL);
     
     fbo = new FBO();
+    fbo->setGLTexUnit(1);
     fbo->generateIds();
 }
 

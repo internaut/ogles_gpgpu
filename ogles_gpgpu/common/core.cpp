@@ -26,6 +26,11 @@ void Core::init(int inW, int inH, bool genInputTexId) {
     inputFrameW = inW;
     inputFrameH = inH;
     
+    // init opengl
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    
+    glActiveTexture(GL_TEXTURE1);
+    
     // generate input texture id if necessary
     if (genInputTexId) {
         glGenTextures(1, &inputTexId);
@@ -35,16 +40,15 @@ void Core::init(int inW, int inH, bool genInputTexId) {
     
     // initialize the pipeline
     ProcBase *prevProc = NULL;
+    unsigned int num = 0;
     for (list<ProcBase *>::iterator it = pipeline.begin();
          it != pipeline.end();
          ++it)
     {
-        bool isFirstProc = (it == pipeline.begin());
-        
         // find out the input frame size for the proc
         int pipelineFrameW, pipelineFrameH;
         
-        if (isFirstProc) {
+        if (num == 0) {
             firstProc = *it;
             
             pipelineFrameW = inputFrameW;
@@ -54,16 +58,18 @@ void Core::init(int inW, int inH, bool genInputTexId) {
             pipelineFrameH = prevProc->getOutFrameH();
         }
         
-        // initialize current proc
-        (*it)->init(pipelineFrameW, pipelineFrameH);
-        
         // set input texture id
-        if (!isFirstProc) {
+        if (num > 0) {
             (*it)->useTexture(prevProc->getOutputTexId());  // chain together
         }
         
+        // initialize current proc
+        (*it)->init(pipelineFrameW, pipelineFrameH, num);
+        
         // set pointer to previous proc
         prevProc = *it;
+        
+        num++;
     }
     
     lastProc = prevProc;
@@ -80,6 +86,7 @@ void Core::setInputData(const unsigned char *data) {
     assert(initialized && inputTexId > 0);
     
 	// set texture
+    glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, inputTexId);	// bind input texture
     
 	// set clamping
@@ -112,6 +119,8 @@ void Core::process() {
          ++it)
     {
         (*it)->render();
+        
+        glFinish();
     }
 }
 
