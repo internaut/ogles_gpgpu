@@ -44,7 +44,7 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
     
     cout << "ogles_gpgpu::FBO - " << id
          << " - Creating attached texture " << attachedTexId
-         << " of size " << w << "x" << h << endl;
+         << " of size " << w << "x" << h << " (gen. mipmap: " << genMipmap << ")" << endl;
     
 	texW = w;
 	texH = h;
@@ -57,18 +57,25 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
 	// create texture for FBO
     glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, attachedTexId);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    Tools::checkGLErr("ogles_gpgpu::FBO - fbo texture parameters");
+    
 	glTexImage2D(GL_TEXTURE_2D, 0,
 				 format,
 			     w, h, 0,
 			     format, GL_UNSIGNED_BYTE,
 			     NULL);	// we do not need to pass texture data -> it will be generated!
     
+    Tools::checkGLErr("ogles_gpgpu::FBO - fbo texture creation");
+    
 	if (genMipmap) {
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
+        Tools::checkGLErr("ogles_gpgpu::FBO - fbo texture mipmap generation");
 	}
     
 	// bind it to FBO

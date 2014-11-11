@@ -77,6 +77,8 @@ protected:
     int procParamOutW;
     int procParamOutH;
     float procParamOutScale;
+    
+    bool willDownscale;
 
 	int inFrameW;
 	int inFrameH;

@@ -57,7 +57,8 @@
     }
     
     // load test image
-    NSString *testImgFile = @"moon_2048x2048.png";
+    NSString *testImgFile = @"building_2048x1536.jpg";
+//    NSString *testImgFile = @"moon_2048x2048.png";
     testImg = [[UIImage imageNamed:testImgFile] retain];
     testImgW = (int)testImg.size.width;
     testImgH = (int)testImg.size.height;
@@ -76,8 +77,12 @@
     }
 
     // init UI
-    const CGRect screenRect = [[UIScreen mainScreen] bounds];
-    
+    CGRect screenRect = [[UIScreen mainScreen] bounds];
+    if (screenRect.size.width < screenRect.size.height) {
+        float tmp = screenRect.size.width;
+        screenRect.size.width = screenRect.size.height;
+        screenRect.size.height = tmp;
+    }
     NSLog(@"loading view of size %dx%d", (int)screenRect.size.width, (int)screenRect.size.height);
     
     // create an empty base view
@@ -106,11 +111,12 @@
     NSLog(@"initializing ogles_gpgpu");
     
     grayscaleProc.setOutputSize(0.5f);
-    threshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
-    threshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
+//    threshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
+//    threshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
     gpgpuMngr.addProcToPipeline(&grayscaleProc);
-    gpgpuMngr.addProcToPipeline(&threshProc[0]);
-    gpgpuMngr.addProcToPipeline(&threshProc[1]);
+    gpgpuMngr.addProcToPipeline(&simpleThreshProc);
+//    gpgpuMngr.addProcToPipeline(&threshProc[0]);
+//    gpgpuMngr.addProcToPipeline(&threshProc[1]);
 
     gpgpuMngr.init(testImgW, testImgH, true);
     

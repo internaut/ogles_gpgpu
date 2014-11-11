@@ -44,6 +44,7 @@ ProcBase::ProcBase() {
     texUnit = 1;
 	shader = NULL;
     fbo = NULL;
+    willDownscale = false;
     
     procParamOutW = procParamOutH = 0;
     procParamOutScale = 1.0f;
@@ -91,11 +92,14 @@ void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH
     outFrameW = outW;
     outFrameH = outH;
     
+    willDownscale = (outFrameW < inFrameW || outFrameH < inFrameH);
+    
     cout << "ogles_gpgpu::ProcBase - init with "
          << "order number " << orderNum
          << ", input texture id " << texId
          << ", input frame size " << inFrameW << "x" << inFrameH
          << ", output frame size " << outFrameW << "x" << outFrameH
+         << ", will downscale: " << willDownscale
          << endl;
 }
 

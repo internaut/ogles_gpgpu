@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		283735C61A124B7300CE5628 /* building_2048x1536.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 283735C51A124B7300CE5628 /* building_2048x1536.jpg */; };
 		283EBFEC1A024279007102C3 /* grayscale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFEB1A024279007102C3 /* grayscale.cpp */; };
 		283EBFEE1A024FA9007102C3 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFED1A024FA9007102C3 /* core.cpp */; };
 		283EBFF11A026D34007102C3 /* RootViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFF01A026D34007102C3 /* RootViewController.mm */; };
@@ -29,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		283735C51A124B7300CE5628 /* building_2048x1536.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = building_2048x1536.jpg; sourceTree = "<group>"; };
 		283EBFEB1A024279007102C3 /* grayscale.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = grayscale.cpp; sourceTree = "<group>"; };
 		283EBFED1A024FA9007102C3 /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core.cpp; sourceTree = "<group>"; };
 		283EBFEF1A026D34007102C3 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 			children = (
 				283EBFF61A0289C2007102C3 /* moon_1024x1024.png */,
 				283EBFF41A0287D9007102C3 /* moon_2048x2048.png */,
+				283735C51A124B7300CE5628 /* building_2048x1536.jpg */,
 			);
 			name = assets;
 			path = OGLESGPGPUGrayscale/assets;
@@ -281,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				28DA909B19EFEDA00030CC98 /* InfoPlist.strings in Resources */,
+				283735C61A124B7300CE5628 /* building_2048x1536.jpg in Resources */,
 				28DA90A319EFEDA00030CC98 /* Images.xcassets in Resources */,
 				283EBFF51A0287D9007102C3 /* moon_2048x2048.png in Resources */,
 				283EBFF71A0289C2007102C3 /* moon_1024x1024.png in Resources */,

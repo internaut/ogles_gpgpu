@@ -88,9 +88,9 @@ void ThreshProc::init(int inW, int inH, unsigned int order) {
     // create fbo
     ProcBase::createFBO();
     if (threshType == THRESH_ADAPTIVE_PASS_1) {
-        fbo->createAttachedTex(outFrameH, outFrameW);   // swapped
+        fbo->createAttachedTex(outFrameH, outFrameW, willDownscale);   // swapped
     } else {
-        fbo->createAttachedTex(outFrameW, outFrameH);
+        fbo->createAttachedTex(outFrameW, outFrameH, willDownscale);
     }
     
     // create shader object
