@@ -1,9 +1,18 @@
 #include "grayscale.h"
 
-#include "common_shaders.h"
-
 using namespace std;
 using namespace ogles_gpgpu;
+
+const char *GrayscaleProc::fshaderGrayscaleSrc = TO_STR(
+precision mediump float;
+varying vec2 vTexCoord;
+uniform sampler2D uInputTex;
+const vec3 rgb2gray = vec3(0.299, 0.587, 0.114);
+void main() { \
+    float gray = dot(texture2D(uInputTex, vTexCoord).rgb, rgb2gray);
+    gl_FragColor = vec4(gray, gray, gray, 1.0);
+}\
+);
 
 void GrayscaleProc::init(int inW, int inH, unsigned int order) {
     cout << "ogles_gpgpu::GrayscaleProc - init" << endl;
@@ -16,7 +25,7 @@ void GrayscaleProc::init(int inW, int inH, unsigned int order) {
     fbo->createAttachedTex(outFrameW, outFrameH);
     
     // create shader object
-    ProcBase::createShader(OGLES_GPGPU_DEFAULT_VSHADER, OGLES_GPGPU_COMMON_PROC_GRAYSCALE_FSHADER);
+    ProcBase::createShader(ProcBase::vshaderDefault, fshaderGrayscaleSrc);
     
     // get shader params
     shParamAPos = shader->getParam(ATTR, "aPos");

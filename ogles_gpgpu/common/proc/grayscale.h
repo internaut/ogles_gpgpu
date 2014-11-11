@@ -5,17 +5,6 @@
 
 #include "procbase.h"
 
-#define OGLES_GPGPU_COMMON_PROC_GRAYSCALE_FSHADER "\
-precision mediump float; \
-varying vec2 vTexCoord; \
-uniform sampler2D uInputTex; \
-const vec3 rgb2gray = vec3(0.299, 0.587, 0.114); \
-void main() { \
-    float gray = dot(texture2D(uInputTex, vTexCoord).rgb, rgb2gray); \
-    gl_FragColor = vec4(gray, gray, gray, 1.0); \
-}\
-"
-
 namespace ogles_gpgpu {
 class GrayscaleProc : public ProcBase {
 public:    
@@ -23,7 +12,9 @@ public:
     
     virtual void render();
     
-private:    
+private:
+    static const char *fshaderGrayscaleSrc;
+    
 	GLint shParamAPos;
 	GLint shParamATexCoord;
     GLint shParamUInputTex;

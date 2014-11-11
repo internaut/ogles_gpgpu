@@ -3,6 +3,17 @@
 using namespace ogles_gpgpu;
 using namespace std;
 
+const char *ProcBase::vshaderDefault = TO_STR
+(
+attribute vec4 aPos;
+attribute vec2 aTexCoord;
+varying vec2 vTexCoord;
+void main() {
+    gl_Position = aPos;
+    vTexCoord = aTexCoord;
+}
+);
+
 const GLfloat ProcBase::quadTexCoordsStd[] = {
     0, 0,
     1, 0,
@@ -102,7 +113,5 @@ void ProcBase::createShader(const char *vShSrc, const char *fShSrc) {
     shader = new Shader();
     bool compiled = shader->buildFromSrc(vShSrc, fShSrc);
     
-    if (!compiled) {
-        cerr << "ogles_gpgpu::ProcBase - shader could not be compiled" << endl;
-    }
+    assert(compiled);
 }

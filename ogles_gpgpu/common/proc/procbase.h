@@ -59,6 +59,8 @@ protected:
     virtual void createShader(const char *vShSrc, const char *fShSrc);
     
     
+    static const char *vshaderDefault;
+    
 	static const GLfloat quadTexCoordsStd[];
 	static const GLfloat quadTexCoordsFlipped[];
 	static const GLfloat quadTexCoordsDiagonal[];

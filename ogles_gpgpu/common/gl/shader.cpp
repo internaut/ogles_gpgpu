@@ -4,7 +4,7 @@ using namespace std;
 using namespace ogles_gpgpu;
 
 Shader::Shader() {
-	programId = -1;
+	programId = 0;
 }
 
 Shader::~Shader() {
@@ -43,7 +43,7 @@ GLuint Shader::create(const char *vshSrc, const char *fshSrc, GLuint *vshId, GLu
     
 	if (programId == 0) {
 		cerr << "ogles_gpgpu::Shader - Could not create shader program" << endl;
-		return -1;
+		return 0;
 	}
     
 	glAttachShader(programId, *vshId);   // add the vertex shader to program
@@ -62,7 +62,7 @@ GLuint Shader::create(const char *vshSrc, const char *fshSrc, GLuint *vshId, GLu
         
 		glDeleteProgram(programId);
         
-		return -1;
+		return 0;
 	}
     
 	return programId;
@@ -73,7 +73,7 @@ GLuint Shader::compile(GLenum type, const char *src) {
     
 	if (shId == 0) {
         cerr << "ogles_gpgpu::Shader -  Could not create shader." << endl;
-		return -1;
+		return 0;
 	}
     
     glShaderSource(shId, 1, (const GLchar**)&src, NULL);
@@ -88,11 +88,12 @@ GLuint Shader::compile(GLenum type, const char *src) {
 		GLchar infoLogBuf[1024];
 		GLsizei infoLogLen;
 		glGetShaderInfoLog(shId, 1024, &infoLogLen, infoLogBuf);
-        cerr << infoLogBuf << endl;
+        cerr << infoLogBuf << endl << endl;
+        cerr << "shader source:" << endl << src << endl;
         
 		glDeleteShader(shId);
         
-		return -1;
+		return 0;
 	}
     
 	return shId;
