@@ -57,8 +57,8 @@
     }
     
     // load test image
-    NSString *testImgFile = @"building_2048x1536.jpg";
-//    NSString *testImgFile = @"moon_2048x2048.png";
+//    NSString *testImgFile = @"building_2048x1536.jpg";
+    NSString *testImgFile = @"moon_2048x2048.png";
     testImg = [[UIImage imageNamed:testImgFile] retain];
     testImgW = (int)testImg.size.width;
     testImgH = (int)testImg.size.height;
@@ -112,12 +112,12 @@
     
     grayscaleProc.setOutputSize(0.5f);
 //    grayscaleProc.setOutputSize(1.0f);
-//    threshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
-//    threshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
+    adaptThreshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
+    adaptThreshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
     gpgpuMngr.addProcToPipeline(&grayscaleProc);
-    gpgpuMngr.addProcToPipeline(&simpleThreshProc);
-//    gpgpuMngr.addProcToPipeline(&threshProc[0]);
-//    gpgpuMngr.addProcToPipeline(&threshProc[1]);
+//    gpgpuMngr.addProcToPipeline(&simpleThreshProc);
+    gpgpuMngr.addProcToPipeline(&adaptThreshProc[0]);
+    gpgpuMngr.addProcToPipeline(&adaptThreshProc[1]);
 
     gpgpuMngr.init(testImgW, testImgH, true);
     

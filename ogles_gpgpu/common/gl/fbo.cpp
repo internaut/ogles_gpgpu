@@ -60,7 +60,7 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
     bind();
     
 	// create texture for FBO
-    glActiveTexture(GL_TEXTURE2);
+    glActiveTexture(GL_TEXTURE0 + glTexUnit);
 	glBindTexture(GL_TEXTURE_2D, attachedTexId);
     
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -81,7 +81,10 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
         Tools::checkGLErr("ogles_gpgpu::FBO - fbo texture mipmap generation");
-	}
+	} else {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    }
     
 	// bind it to FBO
 	glFramebufferTexture2D(GL_FRAMEBUFFER,
