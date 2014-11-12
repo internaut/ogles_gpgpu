@@ -72,9 +72,14 @@ public:
 	virtual void readBuffer(unsigned char *buf);
     
     /**
-     * Free allocated FBO buffers.
+     * Free the framebuffer.
      */
-    virtual void freeFBOBuffers();
+    virtual void destroyFramebuffer();
+    
+    /**
+     * Destroy the attached texture.
+     */
+    virtual void destroyAttachedTex();
     
 	int getTexWidth() const { return texW; }
 	int getTexHeight() const { return texH; }

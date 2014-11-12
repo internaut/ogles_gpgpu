@@ -32,11 +32,19 @@ public:
     void addProcToPipeline(ProcBase *proc);
     
     /**
-     * Initialize the processing pipeline.
+     * Initialize
      * Note OpenGL context must be initialized before the pipeline was
      * defined!
      */
-    void init(int inW, int inH, bool genInputTexId);
+    void init(bool genInputTexId);
+    
+    /**
+     * Prepare the processing pipeline for incoming frames of size <inW> x <inH>.
+     * Note OpenGL context must be initialized before the pipeline was
+     * defined!
+     * Note that init() must have been called before.
+     */
+    void prepare(int inW, int inH);
     
     void setUseMipmaps(bool use) { useMipmaps = use; }
     bool getUseMipmaps() const { return useMipmaps; }
@@ -95,6 +103,7 @@ private:
     ProcBase *lastProc;
     
     bool initialized;
+    bool prepared;
     
     bool useMipmaps;
     bool glExtNPOTMipmaps;

@@ -13,7 +13,8 @@ FBO::FBO() {
 }
 
 FBO::~FBO() {
-    freeFBOBuffers();
+    destroyAttachedTex();
+    destroyFramebuffer();
 }
 
 void FBO::generateIds() {
@@ -34,11 +35,16 @@ void FBO::unbind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-void FBO::freeFBOBuffers() {
-    cout << "ogles_gpgpu::FBO - " << id << " freeing FBO buffers" << endl;
+void FBO::destroyFramebuffer() {
+    cout << "ogles_gpgpu::FBO - " << id << " freeing framebuffer" << endl;
+    
+	glDeleteFramebuffers(1, &id);
+}
+
+void FBO::destroyAttachedTex() {
+    cout << "ogles_gpgpu::FBO - " << id << " freeing attached texture" << endl;
     
 	glDeleteTextures(1, &attachedTexId);
-	glDeleteFramebuffers(1, &id);
 }
 
 void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {

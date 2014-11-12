@@ -29,6 +29,7 @@ void Core::destroy() {
 
 Core::Core() {
     initialized = false;
+    prepared = false;
     useMipmaps = false;
     glExtNPOTMipmaps = false;
     inputSizeIsPOT = false;
@@ -48,12 +49,8 @@ void Core::addProcToPipeline(ProcBase *proc) {
     pipeline.push_back(proc);
 }
 
-void Core::init(int inW, int inH, bool genInputTexId) {
-    assert(!initialized && inW > 0 && inH > 0 && pipeline.size() > 0);
-    
-    inputSizeIsPOT = Tools::isPOT(inW) && Tools::isPOT(inH);
-    inputFrameW = inW;
-    inputFrameH = inH;
+void Core::init(bool genInputTexId) {
+    assert(!initialized);
     
     checkGLExtensions();
     
@@ -61,10 +58,6 @@ void Core::init(int inW, int inH, bool genInputTexId) {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glDisable(GL_DEPTH_TEST);
     glActiveTexture(GL_TEXTURE1);
-    
-    cout << "ogles_gpgpu::Core - init with input frame size "
-         << inputFrameW << "x" << inputFrameH
-         << " (POT: " <<  inputSizeIsPOT << ")" << endl;
     
     Tools::checkGLErr("ogles_gpgpu::Core - init");
     
@@ -75,6 +68,24 @@ void Core::init(int inW, int inH, bool genInputTexId) {
         inputTexId = 0;
     }
     
+    cout << "ogles_gpgpu::Core - init - input texture id is " << inputTexId << endl;
+    
+    initialized = true;
+}
+
+void Core::prepare(int inW, int inH) {
+    assert(initialized && inW > 0 && inH > 0 && pipeline.size() > 0);
+    
+    if (prepared && inputFrameW == inW && inputFrameH == inH) return;   // no change
+    
+    inputSizeIsPOT = Tools::isPOT(inW) && Tools::isPOT(inH);
+    inputFrameW = inW;
+    inputFrameH = inH;
+
+    cout << "ogles_gpgpu::Core - prepare with input frame size "
+         << inputFrameW << "x" << inputFrameH
+         << " (POT: " <<  inputSizeIsPOT << ")" << endl;
+
     // initialize the pipeline
     ProcBase *prevProc = NULL;
     unsigned int num = 0;
@@ -95,13 +106,17 @@ void Core::init(int inW, int inH, bool genInputTexId) {
             pipelineFrameH = prevProc->getOutFrameH();
         }
         
-        // set input texture id
-        if (num > 0) {
-            (*it)->useTexture(prevProc->getOutputTexId());  // chain together
+        if (!prepared) {    // for first time preparation
+            // set input texture id
+            if (num > 0) {
+                (*it)->useTexture(prevProc->getOutputTexId());  // chain together
+            }
+            
+            // initialize current proc
+            (*it)->init(pipelineFrameW, pipelineFrameH, num);
+        } else {    // for reinitialization with different frame size
+            (*it)->reinit(pipelineFrameW, pipelineFrameH);
         }
-        
-        // initialize current proc
-        (*it)->init(pipelineFrameW, pipelineFrameH, num);
         
         // if this proc will downscale, we should generate a mipmap for the previous output
         if (num > 0) {
@@ -117,13 +132,13 @@ void Core::init(int inW, int inH, bool genInputTexId) {
     prevProc->createFBOTex(false);
     
     lastProc = prevProc;
-
+    
     // set output texture id and size
     outputTexId = lastProc->getOutputTexId();
     outputFrameW = lastProc->getOutFrameW();
     outputFrameH = lastProc->getOutFrameH();
     
-    initialized = true;
+    prepared = true;
 }
 
 #pragma mark input, processing and output methods

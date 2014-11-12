@@ -88,7 +88,6 @@ void ThreshProc::init(int inW, int inH, unsigned int order) {
     // create fbo
     ProcBase::createFBO();
 
-    
     // create shader object
     const char *shSrc = NULL;
     if (threshType == THRESH_SIMPLE) {

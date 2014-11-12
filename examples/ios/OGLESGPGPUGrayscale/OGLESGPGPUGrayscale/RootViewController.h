@@ -13,6 +13,9 @@
     ogles_gpgpu::ThreshProc simpleThreshProc;
     ogles_gpgpu::ThreshProc adaptThreshProc[2];
     
+    int selectedTestImg;
+    BOOL displayingOutput;
+    
     UIImage *testImg;
     unsigned char *testImgData;
     int testImgW;

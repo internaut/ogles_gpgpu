@@ -81,11 +81,35 @@ void ProcBase::createFBOTex(bool genMipmap) {
     outFrameH = fbo->getTexHeight();
 }
 
+void ProcBase::reinit(int inW, int inH) {
+    setInOutFrameSizes(inW, inH, procParamOutW, procParamOutH, procParamOutScale);
+    
+    fbo->destroyAttachedTex();  // needs to be recreated later!
+    
+    cout << "ogles_gpgpu::ProcBase - reinit with "
+         << "input tex size " << inFrameW << "x" << inFrameH
+         << ", output tex size " << outFrameW << "x" << outFrameH
+         << ", will downscale: " << willDownscale
+         << endl;
+}
+
 void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH, float scaleFactor) {
     assert(inW > 0 && inH > 0);
     
     orderNum = order;
     
+    setInOutFrameSizes(inW, inH, outW, outH, scaleFactor);
+    
+    cout << "ogles_gpgpu::ProcBase - init with "
+         << "order num " << orderNum
+         << ", input tex id " << texId
+         << ", input tex size " << inFrameW << "x" << inFrameH
+         << ", output tex size " << outFrameW << "x" << outFrameH
+         << ", will downscale: " << willDownscale
+         << endl;
+}
+
+void ProcBase::setInOutFrameSizes(int inW, int inH, int outW, int outH, float scaleFactor) {
     inFrameW = inW;
     inFrameH = inH;
     
@@ -103,14 +127,6 @@ void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH
     outFrameH = outH;
     
     willDownscale = (outFrameW < inFrameW || outFrameH < inFrameH);
-    
-    cout << "ogles_gpgpu::ProcBase - init with "
-         << "order num " << orderNum
-         << ", input tex id " << texId
-         << ", input tex size " << inFrameW << "x" << inFrameH
-         << ", output tex size " << outFrameW << "x" << outFrameH
-         << ", will downscale: " << willDownscale
-         << endl;
 }
 
 void ProcBase::createFBO() {

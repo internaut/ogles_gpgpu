@@ -28,6 +28,11 @@ public:
     virtual void init(int inW, int inH, unsigned int order) = 0;
     
     /**
+     * Reinitialize the proc for a different input frame size.
+     */
+    virtual void reinit(int inW, int inH);
+    
+    /**
      * Create a texture that is attached to the FBO and will contain the processing result.
      */
     virtual void createFBOTex(bool genMipmap);
@@ -63,6 +68,7 @@ public:
     
 protected:
     virtual void baseInit(int inW, int inH, unsigned int order, int outW = 0, int outH = 0, float scaleFactor = 1.0f);
+    virtual void setInOutFrameSizes(int inW, int inH, int outW, int outH, float scaleFactor);
     
     virtual void createFBO();
     virtual void createShader(const char *vShSrc, const char *fShSrc);

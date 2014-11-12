@@ -8,11 +8,26 @@
 
 #import "RootViewController.h"
 
+static NSArray *availableTestImages = [NSArray arrayWithObjects:
+                                       @"moon_1024x512.png",
+                                       @"moon_1024x1024.png",
+                                       @"moon_2048x2048.png",
+                                       @"building_2048x1536.jpg",
+                                       nil];
+
 @interface RootViewController ()
+
+- (void)initUI;
 
 - (void)initOGLESGPGPU;
 
-- (void)runGrayscaleConvertOnGPU;
+- (void)testImgBtnPressedAction:(id)sender;
+
+- (void)presentTestImg:(int)num forceDisplay:(BOOL)forceDisplay;
+
+- (void)presentOutputImg;
+
+- (void)runImgProcOnGPU;
 
 - (unsigned char *)uiImageToRGBABytes:(UIImage *)img;
 
@@ -27,21 +42,27 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        [self becomeFirstResponder];
+        selectedTestImg = -1;
+        displayingOutput = NO;
     }
     return self;
 }
 
 - (void)dealloc {
+    // delete data buffers
     if (testImgData) delete [] testImgData;
     if (outputBuf) delete [] outputBuf;
     
+    // delete ogles_gpgpu singleton object
     ogles_gpgpu::Core::destroy();
     gpgpuMngr = NULL;
     
+    // release image objects
     [testImg release];
     [outputImg release];
     
+    // release views
+    [imgView release];
     [baseView release];
     [eaglContext release];
     
@@ -59,28 +80,38 @@
         NSLog(@"failed setting current EAGL context");
     }
     
-    // load test image
-    NSString *testImgFile = @"moon_1024x512.png";
-//    NSString *testImgFile = @"building_2048x1536.jpg";
-//    NSString *testImgFile = @"moon_2048x2048.png";
-    testImg = [[UIImage imageNamed:testImgFile] retain];
-    testImgW = (int)testImg.size.width;
-    testImgH = (int)testImg.size.height;
-    
-    if (testImg) {
-        NSLog(@"loaded test image %@ with size %dx%d", testImgFile, testImgW, testImgH);
-    } else {
-        NSLog(@"could not load test image %@", testImgFile);
-    }
-    
-    // get the RGBA bytes of the image
-    testImgData = [self uiImageToRGBABytes:testImg];
-    
-    if (!testImgData) {
-        NSLog(@"could not get RGBA data from test image %@", testImgFile);
-    }
-
     // init UI
+    [self initUI];
+    
+    // init ogles_gpgpu
+    [self initOGLESGPGPU];
+    
+    // load default image
+    [self presentTestImg:0 forceDisplay:YES];
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (!displayingOutput) {
+        NSLog(@"WILL DISPLAY OUTPUT");
+        
+        // run the image processing stuff on the GPU and display the output
+        [self runImgProcOnGPU];
+        [self presentOutputImg];
+        
+        displayingOutput = YES;
+    } else {
+        NSLog(@"WILL DISPLAY TEST IMAGE");
+        
+        // display the test image as input image
+        [self presentTestImg:selectedTestImg forceDisplay:YES];
+        
+        displayingOutput = NO;
+    }
+}
+
+#pragma mark private methods
+
+- (void)initUI {
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     if (screenRect.size.width < screenRect.size.height) {
         float tmp = screenRect.size.width;
@@ -94,29 +125,103 @@
     
     // create the test image view
     imgView = [[UIImageView alloc] initWithFrame:screenRect];
-    [imgView setImage:testImg];
     [baseView addSubview:imgView];
+    
+    // create buttons for the test images
+    int i = 0;
+    int btnW = 180;
+    int btnMrgn = 10;
+    for (NSString *testImgName in availableTestImages) {
+        UIButton *btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        [btn setTitle:[testImgName stringByDeletingPathExtension] forState:UIControlStateNormal];
+        [btn setTag:i];
+        [btn setBackgroundColor:[UIColor whiteColor]];
+        [btn setFrame:CGRectMake(btnMrgn + (btnW + btnMrgn) * i, 20, btnW, 26)];
+        [btn addTarget:self action:@selector(testImgBtnPressedAction:) forControlEvents:UIControlEventTouchUpInside];
+        
+        [baseView addSubview:btn];
+        i++;
+    }
     
     // finally set the base view as view for this controller
     [self setView:baseView];
-    
-    [self initOGLESGPGPU];
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    NSLog(@"touch on root view controller");
-    
-    [self runGrayscaleConvertOnGPU];
+- (void)testImgBtnPressedAction:(id)sender {
+    UIButton *btn = sender;
+    [self presentTestImg:btn.tag forceDisplay:displayingOutput];
 }
 
-#pragma mark private methods
+- (void)presentTestImg:(int)num forceDisplay:(BOOL)forceDisplay {
+    if (!forceDisplay && selectedTestImg == num) return; // no change
+    
+    // get image file name
+    NSString *testImgFile = [availableTestImages objectAtIndex:num];
+    
+    // release previous image object
+    [testImg release];
+    
+    // load new image data
+    testImg = [[UIImage imageNamed:testImgFile] retain];
+    testImgW = (int)testImg.size.width;
+    testImgH = (int)testImg.size.height;
+    
+    if (testImg) {
+        NSLog(@"loaded test image %@ with size %dx%d", testImgFile, testImgW, testImgH);
+    } else {
+        NSLog(@"could not load test image %@", testImgFile);
+    }
+    
+    // show the image object
+    [imgView setImage:testImg];
+    
+    // release previous image data
+    if (testImgData) delete [] testImgData;
+    
+    // get the RGBA bytes of the image
+    testImgData = [self uiImageToRGBABytes:testImg];
+    
+    if (!testImgData) {
+        NSLog(@"could not get RGBA data from test image %@", testImgFile);
+    }
+    
+    // prepare ogles_gpgpu for this image size
+    gpgpuMngr->prepare(testImgW, testImgH);
+    
+    // delete previous output data buffer
+    if (outputBuf) delete [] outputBuf;
+    
+    // create output data buffer
+    outputBuf = new unsigned char[gpgpuMngr->getOutputFrameW() * gpgpuMngr->getOutputFrameH() * 4];
+    
+    selectedTestImg = num;  // update
+}
+
+- (void)presentOutputImg {
+    // release old image object
+    [outputImg release];
+    
+    // create new image object from RGBA data
+    outputImg = [[self rgbaBytesToUIImage:outputBuf
+                                    width:gpgpuMngr->getOutputFrameW()
+                                   height:gpgpuMngr->getOutputFrameH()] retain];
+    if (!outputImg) {
+        NSLog(@"error converting output RGBA data to UIImage");
+    } else {
+        NSLog(@"presenting output image of size %dx%d", (int)outputImg.size.width, (int)outputImg.size.height);
+    }
+    
+    //    [imgView setFrame:CGRectMake(0, 0, outputImg.size.width, outputImg.size.height)];
+    
+    [imgView setImage:outputImg];
+}
 
 - (void)initOGLESGPGPU {
     NSLog(@"initializing ogles_gpgpu");
     
     gpgpuMngr = ogles_gpgpu::Core::getInstance();
     
-    gpgpuMngr->setUseMipmaps(true);
+    gpgpuMngr->setUseMipmaps(false);
     
     grayscaleProc.setOutputSize(0.5f);
 //    grayscaleProc.setOutputSize(1.0f);
@@ -128,12 +233,10 @@
     gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
     gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
 
-    gpgpuMngr->init(testImgW, testImgH, true);
-    
-    outputBuf = new unsigned char[gpgpuMngr->getOutputFrameW() * gpgpuMngr->getOutputFrameH() * 4];
+    gpgpuMngr->init(true);
 }
 
-- (void)runGrayscaleConvertOnGPU {
+- (void)runImgProcOnGPU {
     NSLog(@"copying image to GPU...");
     gpgpuMngr->setInputData(testImgData);
     NSLog(@"converting...");
@@ -141,20 +244,6 @@
     NSLog(@"copying back to main memory...");
     gpgpuMngr->getOutputData(outputBuf);
     NSLog(@"done.");
-    
-    [outputImg release];
-    outputImg = [[self rgbaBytesToUIImage:outputBuf
-                                    width:gpgpuMngr->getOutputFrameW()
-                                   height:gpgpuMngr->getOutputFrameH()] retain];
-    if (!outputImg) {
-        NSLog(@"error converting output RGBA data to UIImage");
-    } else {
-        NSLog(@"presenting output image of size %dx%d", (int)outputImg.size.width, (int)outputImg.size.height);
-    }
-    
-//    [imgView setFrame:CGRectMake(0, 0, outputImg.size.width, outputImg.size.height)];
-    
-    [imgView setImage:outputImg];
 }
 
 - (unsigned char *)uiImageToRGBABytes:(UIImage *)img {
