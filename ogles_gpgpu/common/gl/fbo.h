@@ -2,8 +2,11 @@
 #define OGLES_GPGPU_COMMON_GL_FBO
 
 #include "../common_includes.h"
+#include "../core.h"
 
 namespace ogles_gpgpu {
+
+class Core;
     
 class FBO {
 public:
@@ -77,6 +80,8 @@ public:
 	int getTexHeight() const { return texH; }
     
 protected:
+    Core *core;
+    
 	GLuint id;
     GLuint glTexUnit;
 	GLuint attachedTexId;

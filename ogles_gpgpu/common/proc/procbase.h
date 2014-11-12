@@ -14,6 +14,8 @@
 
 namespace ogles_gpgpu {
 
+class FBO;
+    
 class ProcBase {
 public:
     ProcBase();

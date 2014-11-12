@@ -1,4 +1,4 @@
-- mipmap - npot handling -> FBO
+- image chooser
 - test ipad3? (npot mipmap?)
 - time measurements
 - apple fast texture upload/download

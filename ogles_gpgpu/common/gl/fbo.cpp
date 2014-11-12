@@ -8,6 +8,8 @@ FBO::FBO() {
 	texW = texH = 0;
     attachedTexId = 0;
     glTexUnit = 0;
+    
+    core = Core::getInstance();
 }
 
 FBO::~FBO() {
@@ -42,7 +44,7 @@ void FBO::freeFBOBuffers() {
 void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
 	assert(attachedTexId > 0 && w > 0 && h > 0);
     
-    if (genMipmap) {
+    if (genMipmap && core->getUseMipmaps()) {
         w = Tools::getBiggerPOTValue(w);
         h = Tools::getBiggerPOTValue(h);
     }

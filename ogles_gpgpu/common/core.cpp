@@ -132,7 +132,9 @@ void Core::setInputData(const unsigned char *data) {
     assert(initialized && inputTexId > 0);
     
     if (useMipmaps && !inputSizeIsPOT && !glExtNPOTMipmaps) {
-        cout << "ogles_gpgpu::Core - setInputData - WARNING: NPOT input image provided but not supported for mipmapping!" << endl;
+        cout << "ogles_gpgpu::Core - setInputData - WARNING: NPOT input image provided but NPOT mipmapping not supported!" << endl
+             << "ogles_gpgpu::Core - setInputData - mipmapping disabled!" << endl;
+        useMipmaps = false;
     }
     
 	// set texture
@@ -148,6 +150,8 @@ void Core::setInputData(const unsigned char *data) {
     
     // mipmapping
     if (firstProc->getWillDownscale() && useMipmaps) {
+        cout << "ogles_gpgpu::Core - setInputData - generating mipmap for input image" << endl;
+        
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glGenerateMipmap(GL_TEXTURE_2D);

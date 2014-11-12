@@ -10,6 +10,8 @@ using namespace std;
 
 namespace ogles_gpgpu {
 
+class ProcBase;
+    
 class Core {
 public:
     /**
