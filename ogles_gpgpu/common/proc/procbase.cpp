@@ -71,6 +71,16 @@ GLuint ProcBase::getOutputTexId() const {
     return fbo->getAttachedTexId();
 }
 
+void ProcBase::createFBOTex(bool genMipmap) {
+    assert(fbo != NULL);
+    
+    fbo->createAttachedTex(outFrameW, outFrameH, genMipmap);
+    
+    // update frame size, because it might be set to a POT size because of mipmapping
+    outFrameW = fbo->getTexWidth();
+    outFrameH = fbo->getTexHeight();
+}
+
 void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH, float scaleFactor) {
     assert(inW > 0 && inH > 0);
     
@@ -95,10 +105,10 @@ void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH
     willDownscale = (outFrameW < inFrameW || outFrameH < inFrameH);
     
     cout << "ogles_gpgpu::ProcBase - init with "
-         << "order number " << orderNum
-         << ", input texture id " << texId
-         << ", input frame size " << inFrameW << "x" << inFrameH
-         << ", output frame size " << outFrameW << "x" << outFrameH
+         << "order num " << orderNum
+         << ", input tex id " << texId
+         << ", input tex size " << inFrameW << "x" << inFrameH
+         << ", output tex size " << outFrameW << "x" << outFrameH
          << ", will downscale: " << willDownscale
          << endl;
 }

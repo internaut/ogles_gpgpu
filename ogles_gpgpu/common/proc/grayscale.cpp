@@ -22,11 +22,6 @@ void GrayscaleProc::init(int inW, int inH, unsigned int order) {
     
     // create fbo
     ProcBase::createFBO();
-    fbo->createAttachedTex(outFrameW, outFrameH, willDownscale);
-    
-    // update frame size, because it might be set to a POT size because of mipmapping
-    outFrameW = fbo->getTexWidth();
-    outFrameH = fbo->getTexHeight();
     
     // create shader object
     ProcBase::createShader(ProcBase::vshaderDefault, fshaderGrayscaleSrc);

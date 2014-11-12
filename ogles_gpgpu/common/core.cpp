@@ -1,10 +1,16 @@
 #include "core.h"
 
+#include <string>
+#include <algorithm>
+
 using namespace std;
 using namespace ogles_gpgpu;
 
 Core::Core() {
     initialized = false;
+    useMipmaps = false;
+    glExtNPOTMipmaps = false;
+    inputSizeIsPOT = false;
     inputFrameW = inputFrameH = 0;
     outputFrameW = outputFrameH = 0;
     outputTexId = 0;
@@ -23,16 +29,21 @@ void Core::addProcToPipeline(ProcBase *proc) {
 
 void Core::init(int inW, int inH, bool genInputTexId) {
     assert(!initialized && inW > 0 && inH > 0 && pipeline.size() > 0);
+    
+    inputSizeIsPOT = Tools::isPOT(inW) && Tools::isPOT(inH);
     inputFrameW = inW;
     inputFrameH = inH;
     
-    cout << "ogles_gpgpu::Core - init - supported OpenGL extensions:" << endl;
-    cout << glGetString(GL_EXTENSIONS) << endl << endl;
+    checkGLExtensions();
     
     // init opengl
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glDisable(GL_DEPTH_TEST);
     glActiveTexture(GL_TEXTURE1);
+    
+    cout << "ogles_gpgpu::Core - init with input frame size "
+         << inputFrameW << "x" << inputFrameH
+         << " (POT: " <<  inputSizeIsPOT << ")" << endl;
     
     Tools::checkGLErr("ogles_gpgpu::Core - init");
     
@@ -71,11 +82,18 @@ void Core::init(int inW, int inH, bool genInputTexId) {
         // initialize current proc
         (*it)->init(pipelineFrameW, pipelineFrameH, num);
         
+        // if this proc will downscale, we should generate a mipmap for the previous output
+        if (num > 0) {
+            prevProc->createFBOTex(useMipmaps && (*it)->getWillDownscale());
+        }
+        
         // set pointer to previous proc
         prevProc = *it;
         
         num++;
     }
+    
+    prevProc->createFBOTex(false);
     
     lastProc = prevProc;
 
@@ -90,6 +108,10 @@ void Core::init(int inW, int inH, bool genInputTexId) {
 void Core::setInputData(const unsigned char *data) {
     assert(initialized && inputTexId > 0);
     
+    if (useMipmaps && !inputSizeIsPOT && !glExtNPOTMipmaps) {
+        cout << "ogles_gpgpu::Core - setInputData - WARNING: NPOT input image provided but not supported for mipmapping!" << endl;
+    }
+    
 	// set texture
     glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, inputTexId);	// bind input texture
@@ -102,9 +124,15 @@ void Core::setInputData(const unsigned char *data) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputFrameW, inputFrameH, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     
     // mipmapping
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//	glGenerateMipmap(GL_TEXTURE_2D);
+    if (firstProc->getWillDownscale() && useMipmaps) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    }
+	
     
     Tools::checkGLErr("ogles_gpgpu::Core - setInputData");
     
@@ -135,4 +163,26 @@ void Core::getOutputData(unsigned char *buf) {
     assert(initialized);
     
     lastProc->getResultData(buf);
+}
+
+void Core::checkGLExtensions() {
+    string glExtString((const char *)glGetString(GL_EXTENSIONS));
+    
+    vector<string> glExt = Tools::split(glExtString);
+    
+    for (vector<string>::iterator it = glExt.begin();
+         it != glExt.end();
+         ++it)
+    {
+        string extName = *it;
+        transform(extName.begin(), extName.end(), extName.begin(), ::tolower);
+        
+        if (it->compare("gl_arb_texture_non_power_of_two") == 0
+         || it->compare("gl_oes_texture_npot") == 0)
+        {
+            glExtNPOTMipmaps = true;
+        }
+    }
+    
+    cout << "ogles_gpgpu::Core - checkGLExtensions - NPOT mipmaps: " << glExtNPOTMipmaps << endl;
 }

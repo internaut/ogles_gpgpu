@@ -26,6 +26,11 @@ public:
     virtual void init(int inW, int inH, unsigned int order) = 0;
     
     /**
+     * Create a texture that is attached to the FBO and will contain the processing result.
+     */
+    virtual void createFBOTex(bool genMipmap);
+    
+    /**
      * Render a result, i.e. run the shader on the input texture.
      * Abstract method.
      */
@@ -41,6 +46,8 @@ public:
     
     int getOutFrameW() const { return outFrameW; }
     int getOutFrameH() const { return outFrameH; }
+    
+    bool getWillDownscale() const { return willDownscale; }
     
     /**
      * Return the result data from the FBO.

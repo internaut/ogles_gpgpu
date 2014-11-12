@@ -28,6 +28,9 @@ public:
      */
     void init(int inW, int inH, bool genInputTexId);
     
+    void setUseMipmaps(bool use) { useMipmaps = use; }
+    bool getUseMipmaps() const { return useMipmaps; }
+    
     /**
      * Set input as OpenGL texture id.
      */
@@ -58,12 +61,19 @@ public:
     int getOutputFrameH() const { return outputFrameH; }
     
 private:
+    void checkGLExtensions();
+    
     list<ProcBase *> pipeline;  // contains weak refs to ProcBase objects
     
     ProcBase *firstProc;
     ProcBase *lastProc;
     
     bool initialized;
+    
+    bool useMipmaps;
+    bool glExtNPOTMipmaps;
+    
+    bool inputSizeIsPOT;
     
     int inputFrameW;
     int inputFrameH;

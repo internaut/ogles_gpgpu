@@ -57,8 +57,9 @@
     }
     
     // load test image
+    NSString *testImgFile = @"moon_1024x512.png";
 //    NSString *testImgFile = @"building_2048x1536.jpg";
-    NSString *testImgFile = @"moon_2048x2048.png";
+//    NSString *testImgFile = @"moon_2048x2048.png";
     testImg = [[UIImage imageNamed:testImgFile] retain];
     testImgW = (int)testImg.size.width;
     testImgH = (int)testImg.size.height;

@@ -25,6 +25,8 @@ public:
     
     virtual void init(int inW, int inH, unsigned int order);
     
+    virtual void createFBOTex(bool genMipmap);
+    
     virtual void render();
     
 private:

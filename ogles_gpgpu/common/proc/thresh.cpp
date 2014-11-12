@@ -87,15 +87,7 @@ void ThreshProc::init(int inW, int inH, unsigned int order) {
     
     // create fbo
     ProcBase::createFBO();
-    if (threshType == THRESH_ADAPTIVE_PASS_1) {
-        fbo->createAttachedTex(outFrameH, outFrameW, willDownscale);   // swapped
-    } else {
-        fbo->createAttachedTex(outFrameW, outFrameH, willDownscale);
-    }
-    
-    // update frame size, because it might be set to a POT size because of mipmapping
-    outFrameW = fbo->getTexWidth();
-    outFrameH = fbo->getTexHeight();
+
     
     // create shader object
     const char *shSrc = NULL;
@@ -132,6 +124,20 @@ void ThreshProc::init(int inW, int inH, unsigned int order) {
         memcpy(texCoordBuf, ProcBase::quadTexCoordsDiagonal,
                OGLES_GPGPU_QUAD_TEX_BUFSIZE * sizeof(GLfloat));
     }
+}
+
+void ThreshProc::createFBOTex(bool genMipmap) {
+    assert(fbo != NULL);
+    
+    if (threshType == THRESH_ADAPTIVE_PASS_1) {
+        fbo->createAttachedTex(outFrameH, outFrameW, genMipmap);   // swapped
+    } else {
+        fbo->createAttachedTex(outFrameW, outFrameH, genMipmap);
+    }
+    
+    // update frame size, because it might be set to a POT size because of mipmapping
+    outFrameW = fbo->getTexWidth();
+    outFrameH = fbo->getTexHeight();
 }
 
 void ThreshProc::render() {
