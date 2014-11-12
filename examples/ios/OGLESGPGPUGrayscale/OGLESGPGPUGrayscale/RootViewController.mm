@@ -111,6 +111,7 @@
     NSLog(@"initializing ogles_gpgpu");
     
     grayscaleProc.setOutputSize(0.5f);
+//    grayscaleProc.setOutputSize(1.0f);
 //    threshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
 //    threshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
     gpgpuMngr.addProcToPipeline(&grayscaleProc);
@@ -141,6 +142,9 @@
     } else {
         NSLog(@"presenting output image of size %dx%d", (int)outputImg.size.width, (int)outputImg.size.height);
     }
+    
+//    [imgView setFrame:CGRectMake(0, 0, outputImg.size.width, outputImg.size.height)];
+    
     [imgView setImage:outputImg];
 }
 

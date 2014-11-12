@@ -9,6 +9,7 @@ namespace ogles_gpgpu {
 class Tools {
 public:
     static void checkGLErr(const char *msg);
+    static float getBiggerPOTValue(float v);
 };
     
 }

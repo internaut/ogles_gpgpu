@@ -11,3 +11,7 @@ void Tools::checkGLErr(const char *msg) {
         cerr << msg << " - GL error " << err << " occurred" << endl;
 	}
 }
+
+float Tools::getBiggerPOTValue(float v) {
+    return powf(2.0f, ceilf(log2f(v)));
+}

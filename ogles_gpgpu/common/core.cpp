@@ -26,6 +26,9 @@ void Core::init(int inW, int inH, bool genInputTexId) {
     inputFrameW = inW;
     inputFrameH = inH;
     
+    cout << "ogles_gpgpu::Core - init - supported OpenGL extensions:" << endl;
+    cout << glGetString(GL_EXTENSIONS) << endl << endl;
+    
     // init opengl
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glDisable(GL_DEPTH_TEST);
@@ -94,14 +97,16 @@ void Core::setInputData(const unsigned char *data) {
 	// set clamping
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     
     // copy data as texture to GPU
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputFrameW, inputFrameH, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
-	// generate mipmap
-	glGenerateMipmap(GL_TEXTURE_2D);
+    
+    // mipmapping
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//	glGenerateMipmap(GL_TEXTURE_2D);
+    
+    Tools::checkGLErr("ogles_gpgpu::Core - setInputData");
     
     glFinish();
 }

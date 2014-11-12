@@ -42,6 +42,11 @@ void FBO::freeFBOBuffers() {
 void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
 	assert(attachedTexId > 0 && w > 0 && h > 0);
     
+    if (genMipmap) {
+        w = Tools::getBiggerPOTValue(w);
+        h = Tools::getBiggerPOTValue(h);
+    }
+    
     cout << "ogles_gpgpu::FBO - " << id
          << " - Creating attached texture " << attachedTexId
          << " of size " << w << "x" << h << " (gen. mipmap: " << genMipmap << ")" << endl;

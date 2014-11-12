@@ -93,6 +93,10 @@ void ThreshProc::init(int inW, int inH, unsigned int order) {
         fbo->createAttachedTex(outFrameW, outFrameH, willDownscale);
     }
     
+    // update frame size, because it might be set to a POT size because of mipmapping
+    outFrameW = fbo->getTexWidth();
+    outFrameH = fbo->getTexHeight();
+    
     // create shader object
     const char *shSrc = NULL;
     if (threshType == THRESH_SIMPLE) {
@@ -131,7 +135,7 @@ void ThreshProc::init(int inW, int inH, unsigned int order) {
 }
 
 void ThreshProc::render() {
-    cout << "ogles_gpgpu::ThreshProc - render (thresh type " << threshType << ")" << endl;
+    cout << "ogles_gpgpu::ThreshProc - render (thresh type " << threshType << ") to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
     
 	shader->use();
     
@@ -152,11 +156,11 @@ void ThreshProc::render() {
 	fbo->bind();
     
 	// set the viewport
-	if (threshType == THRESH_ADAPTIVE_PASS_1) {
-		glViewport(0, 0, outFrameH, outFrameW);	// swapped
-	} else {
+//	if (threshType == THRESH_ADAPTIVE_PASS_1) {
+//		glViewport(0, 0, outFrameH, outFrameW);	// swapped
+//	} else {
 		glViewport(0, 0, outFrameW, outFrameH);
-	}
+//	}
     
 	glClear(GL_COLOR_BUFFER_BIT);
     

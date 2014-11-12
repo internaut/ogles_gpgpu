@@ -24,6 +24,10 @@ void GrayscaleProc::init(int inW, int inH, unsigned int order) {
     ProcBase::createFBO();
     fbo->createAttachedTex(outFrameW, outFrameH, willDownscale);
     
+    // update frame size, because it might be set to a POT size because of mipmapping
+    outFrameW = fbo->getTexWidth();
+    outFrameH = fbo->getTexHeight();
+    
     // create shader object
     ProcBase::createShader(ProcBase::vshaderDefault, fshaderGrayscaleSrc);
     
@@ -42,7 +46,7 @@ void GrayscaleProc::init(int inW, int inH, unsigned int order) {
 }
 
 void GrayscaleProc::render() {
-    cout << "ogles_gpgpu::GrayscaleProc - render" << endl;
+    cout << "ogles_gpgpu::GrayscaleProc - render to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
     
 	shader->use();
     
