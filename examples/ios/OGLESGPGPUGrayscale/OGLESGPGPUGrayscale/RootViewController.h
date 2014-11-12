@@ -8,7 +8,7 @@
     
     EAGLContext *eaglContext;
     
-    ogles_gpgpu::Core gpgpuMngr;
+    ogles_gpgpu::Core *gpgpuMngr;
     ogles_gpgpu::GrayscaleProc grayscaleProc;
     ogles_gpgpu::ThreshProc simpleThreshProc;
     ogles_gpgpu::ThreshProc adaptThreshProc[2];

@@ -12,7 +12,15 @@ namespace ogles_gpgpu {
 
 class Core {
 public:
-    Core();
+    /**
+     * Get singleton instance.
+     */
+    static Core *getInstance();
+    
+    /**
+     * Destroy singleton instance.
+     */
+    static void destroy();
     
     /**
      * Add a pointer to a GPGPU processor object to the pipeline.
@@ -61,7 +69,23 @@ public:
     int getOutputFrameH() const { return outputFrameH; }
     
 private:
+    /**
+     * Private constructor for singleton instance.
+     */
+    Core();
+    
+    /**
+     * Empty copy constructor.
+     */
+    Core (const Core&) {}
+    
+    /**
+     * Check which OpenGL extensions are available.
+     */
     void checkGLExtensions();
+    
+    
+    static Core *instance;  // singleton instance
     
     list<ProcBase *> pipeline;  // contains weak refs to ProcBase objects
     

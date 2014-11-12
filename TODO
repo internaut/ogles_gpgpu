@@ -1,15 +1,27 @@
-- core -> singleton
 - mipmap - npot handling -> FBO
 - test ipad3? (npot mipmap?)
 - time measurements
 - apple fast texture upload/download
+- multipass proc base
+- docs
 
 - rename project: OGLESGPGPUStillImage
 
 - new project: OGLESGPGPUCamera
+- more filters
+
+- release 1
+
+- compare with openCV?
 
 - include into ocv_ar
 
+- release 2
+
 - android port
 
+- release 3
+
 - rasp pi port
+
+- release 4

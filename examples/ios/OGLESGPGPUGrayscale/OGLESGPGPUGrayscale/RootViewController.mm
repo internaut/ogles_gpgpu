@@ -57,8 +57,8 @@
     }
     
     // load test image
-    NSString *testImgFile = @"moon_1024x512.png";
-//    NSString *testImgFile = @"building_2048x1536.jpg";
+//    NSString *testImgFile = @"moon_1024x512.png";
+    NSString *testImgFile = @"building_2048x1536.jpg";
 //    NSString *testImgFile = @"moon_2048x2048.png";
     testImg = [[UIImage imageNamed:testImgFile] retain];
     testImgW = (int)testImg.size.width;
@@ -111,33 +111,38 @@
 - (void)initOGLESGPGPU {
     NSLog(@"initializing ogles_gpgpu");
     
+    gpgpuMngr = ogles_gpgpu::Core::getInstance();
+    
+//    gpgpuMngr->setUseMipmaps(true);
+    
     grayscaleProc.setOutputSize(0.5f);
 //    grayscaleProc.setOutputSize(1.0f);
     adaptThreshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
     adaptThreshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
-    gpgpuMngr.addProcToPipeline(&grayscaleProc);
-//    gpgpuMngr.addProcToPipeline(&simpleThreshProc);
-    gpgpuMngr.addProcToPipeline(&adaptThreshProc[0]);
-    gpgpuMngr.addProcToPipeline(&adaptThreshProc[1]);
-
-    gpgpuMngr.init(testImgW, testImgH, true);
     
-    outputBuf = new unsigned char[gpgpuMngr.getOutputFrameW() * gpgpuMngr.getOutputFrameH() * 4];
+    gpgpuMngr->addProcToPipeline(&grayscaleProc);
+//    gpgpuMngr->addProcToPipeline(&simpleThreshProc);
+    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
+    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
+
+    gpgpuMngr->init(testImgW, testImgH, true);
+    
+    outputBuf = new unsigned char[gpgpuMngr->getOutputFrameW() * gpgpuMngr->getOutputFrameH() * 4];
 }
 
 - (void)runGrayscaleConvertOnGPU {
     NSLog(@"copying image to GPU...");
-    gpgpuMngr.setInputData(testImgData);
+    gpgpuMngr->setInputData(testImgData);
     NSLog(@"converting...");
-    gpgpuMngr.process();
+    gpgpuMngr->process();
     NSLog(@"copying back to main memory...");
-    gpgpuMngr.getOutputData(outputBuf);
+    gpgpuMngr->getOutputData(outputBuf);
     NSLog(@"done.");
     
     [outputImg release];
     outputImg = [[self rgbaBytesToUIImage:outputBuf
-                                    width:gpgpuMngr.getOutputFrameW()
-                                   height:gpgpuMngr.getOutputFrameH()] retain];
+                                    width:gpgpuMngr->getOutputFrameW()
+                                   height:gpgpuMngr->getOutputFrameH()] retain];
     if (!outputImg) {
         NSLog(@"error converting output RGBA data to UIImage");
     } else {

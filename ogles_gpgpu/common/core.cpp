@@ -6,6 +6,27 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
+#pragma mark singleton stuff
+
+Core *Core::instance = NULL;
+
+Core *Core::getInstance() {
+    if (!Core::instance) {
+        Core::instance = new Core();
+    }
+    
+    return Core::instance;
+}
+
+void Core::destroy() {
+    if (Core::instance) {
+        delete Core::instance;
+        Core::instance = NULL;
+    }
+}
+
+#pragma mark constructor and setup methods
+
 Core::Core() {
     initialized = false;
     useMipmaps = false;
@@ -105,6 +126,8 @@ void Core::init(int inW, int inH, bool genInputTexId) {
     initialized = true;
 }
 
+#pragma mark input, processing and output methods
+
 void Core::setInputData(const unsigned char *data) {
     assert(initialized && inputTexId > 0);
     
@@ -164,6 +187,8 @@ void Core::getOutputData(unsigned char *buf) {
     
     lastProc->getResultData(buf);
 }
+
+#pragma mark helper methods
 
 void Core::checkGLExtensions() {
     string glExtString((const char *)glGetString(GL_EXTENSIONS));
