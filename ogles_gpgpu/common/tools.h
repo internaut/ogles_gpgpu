@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <sstream>
+#include <ctime>
 
 #define TO_STR_(x) #x
 #define TO_STR(x) TO_STR_(x)
@@ -20,6 +21,22 @@ public:
     static float getBiggerPOTValue(float v);
     
     static vector<string> split(const string &s, char delim = ' ');
+
+#ifdef OGLES_GPGPU_BENCHMARK
+    static void resetTimeMeasurement();
+    static void startTimeMeasurement();
+    static void stopTimeMeasurement();
+    
+    static float getTicksDiffInMs(clock_t t1, clock_t t2);
+    static vector<float> getTimeMeasurements() { return timeMeasurements; }
+#endif
+    
+private:
+    
+#ifdef OGLES_GPGPU_BENCHMARK
+    static clock_t startTick;
+    static vector<float> timeMeasurements;
+#endif
 };
     
 }

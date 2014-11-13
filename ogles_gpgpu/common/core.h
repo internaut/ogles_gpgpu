@@ -5,6 +5,7 @@
 #include "proc/procbase.h"
 
 #include <list>
+#include <vector>
 
 using namespace std;
 
@@ -77,6 +78,10 @@ public:
     
     int getOutputFrameW() const { return outputFrameW; }
     int getOutputFrameH() const { return outputFrameH; }
+    
+#ifdef OGLES_GPGPU_BENCHMARK
+    vector<float> getTimeMeasurements() const {  return Tools::getTimeMeasurements(); }
+#endif
     
 private:
     /**

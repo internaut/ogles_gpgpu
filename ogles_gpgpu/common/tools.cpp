@@ -5,6 +5,11 @@
 using namespace ogles_gpgpu;
 using namespace std;
 
+#ifdef OGLES_GPGPU_BENCHMARK
+clock_t Tools::startTick = 0;
+vector<float> Tools::timeMeasurements;
+#endif
+
 void Tools::checkGLErr(const char *msg) {
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
@@ -32,3 +37,23 @@ vector<string> Tools::split(const string &s, char delim) {
     
     return elems;
 }
+
+#ifdef OGLES_GPGPU_BENCHMARK
+void Tools::resetTimeMeasurement() {
+    startTick = 0;
+    timeMeasurements.clear();
+}
+
+void Tools::startTimeMeasurement() {
+    startTick = clock();
+}
+
+void Tools::stopTimeMeasurement() {
+    float ms = getTicksDiffInMs(startTick, clock());
+    timeMeasurements.push_back(ms);
+}
+
+float Tools::getTicksDiffInMs(clock_t t1, clock_t t2) {
+    return (float)(((double)(t2 - t1) / CLOCKS_PER_SEC) * 1000.0);
+}
+#endif

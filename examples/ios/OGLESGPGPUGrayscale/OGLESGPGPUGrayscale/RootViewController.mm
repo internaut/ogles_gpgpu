@@ -244,6 +244,19 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
     NSLog(@"copying back to main memory...");
     gpgpuMngr->getOutputData(outputBuf);
     NSLog(@"done.");
+    
+#ifdef OGLES_GPGPU_BENCHMARK
+    NSLog(@"Time measurements:");
+    NSLog(@"---");
+    vector<float> timeMeasurements = gpgpuMngr->getTimeMeasurements();
+    for (vector<float>::iterator it = timeMeasurements.begin();
+         it != timeMeasurements.end();
+         ++it)
+    {
+        NSLog(@"> %f ms", *it);
+    }
+    NSLog(@"---");
+#endif
 }
 
 - (unsigned char *)uiImageToRGBABytes:(UIImage *)img {

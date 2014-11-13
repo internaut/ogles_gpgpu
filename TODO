@@ -1,8 +1,8 @@
-- test ipad3? (npot mipmap?)
-- time measurements
 - apple fast texture upload/download
 - multipass proc base
 - docs
+
+- test ipad3 / ios 8
 
 - rename project: OGLESGPGPUStillImage
 

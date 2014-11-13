@@ -146,6 +146,12 @@ void Core::prepare(int inW, int inH) {
 void Core::setInputData(const unsigned char *data) {
     assert(initialized && inputTexId > 0);
     
+#ifdef OGLES_GPGPU_BENCHMARK
+    Tools::resetTimeMeasurement();
+    
+    Tools::startTimeMeasurement();
+#endif
+    
     if (useMipmaps && !inputSizeIsPOT && !glExtNPOTMipmaps) {
         cout << "ogles_gpgpu::Core - setInputData - WARNING: NPOT input image provided but NPOT mipmapping not supported!" << endl
              << "ogles_gpgpu::Core - setInputData - mipmapping disabled!" << endl;
@@ -175,14 +181,21 @@ void Core::setInputData(const unsigned char *data) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     }
 	
-    
     Tools::checkGLErr("ogles_gpgpu::Core - setInputData");
     
     glFinish();
+    
+#ifdef OGLES_GPGPU_BENCHMARK
+    Tools::stopTimeMeasurement();
+#endif
 }
 
 void Core::process() {
     assert(initialized);
+    
+#ifdef OGLES_GPGPU_BENCHMARK
+    Tools::startTimeMeasurement();
+#endif
     
     // set input texture id
     firstProc->useTexture(inputTexId);
@@ -199,12 +212,24 @@ void Core::process() {
         
         glFinish();
     }
+    
+#ifdef OGLES_GPGPU_BENCHMARK
+    Tools::stopTimeMeasurement();
+#endif
 }
 
 void Core::getOutputData(unsigned char *buf) {
     assert(initialized);
     
+#ifdef OGLES_GPGPU_BENCHMARK
+    Tools::startTimeMeasurement();
+#endif
+    
     lastProc->getResultData(buf);
+    
+#ifdef OGLES_GPGPU_BENCHMARK
+    Tools::stopTimeMeasurement();
+#endif
 }
 
 #pragma mark helper methods
@@ -214,12 +239,16 @@ void Core::checkGLExtensions() {
     
     vector<string> glExt = Tools::split(glExtString);
     
+//    cout << "ogles_gpgpu::Core - checkGLExtensions - list of extensions:" << endl;
+    
     for (vector<string>::iterator it = glExt.begin();
          it != glExt.end();
          ++it)
     {
         string extName = *it;
         transform(extName.begin(), extName.end(), extName.begin(), ::tolower);
+        
+//        cout << "> " << extName << endl;
         
         if (it->compare("gl_arb_texture_non_power_of_two") == 0
          || it->compare("gl_oes_texture_npot") == 0)
