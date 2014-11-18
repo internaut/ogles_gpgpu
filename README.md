@@ -25,6 +25,7 @@
 * rename project: OGLESGPGPUStillImage
 
 * new project: OGLESGPGPUCamera
+* MemTransfer -> MemMap (MemMngr) ?
 * more filters
 
 ### Milestone 2

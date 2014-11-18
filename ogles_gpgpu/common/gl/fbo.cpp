@@ -117,7 +117,7 @@ void FBO::readBuffer(unsigned char *buf) {
     
 	bind();
     
-    memTransfer->fromGPU(attachedTexId, texW, texH, buf);
+    memTransfer->fromGPU(buf);
     
 	unbind();
 }

@@ -43,7 +43,7 @@ public:
      * Note OpenGL context must be initialized before the pipeline was
      * defined!
      */
-    void init(bool genInputTexId);
+    void init(bool genInputTexId, void *glContext = NULL);
     
     /**
      * Prepare the processing pipeline for incoming frames of size <inW> x <inH>.
@@ -85,6 +85,8 @@ public:
     int getOutputFrameW() const { return outputFrameW; }
     int getOutputFrameH() const { return outputFrameH; }
     
+    void *getGLContextPtr() const { return glContextPtr; }
+    
 #ifdef OGLES_GPGPU_BENCHMARK
     vector<float> getTimeMeasurements() const {  return Tools::getTimeMeasurements(); }
 #endif
@@ -107,6 +109,8 @@ private:
     
     
     static Core *instance;  // singleton instance
+    
+    void *glContextPtr;
     
     MemTransfer *memTransfer;
     

@@ -37,6 +37,7 @@ Core::Core() {
     outputFrameW = outputFrameH = 0;
     outputTexId = 0;
     firstProc = lastProc = NULL;
+    glContextPtr = NULL;
     
     memTransfer = MemTransfer::getInstance();
 }
@@ -55,10 +56,13 @@ void Core::addProcToPipeline(ProcBase *proc) {
     pipeline.push_back(proc);
 }
 
-void Core::init(bool genInputTexId) {
+void Core::init(bool genInputTexId, void *glContext) {
     assert(!initialized);
     
     checkGLExtensions();
+    
+    // set OpenGL context pointer
+    glContextPtr = glContext;
     
     // init opengl
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -75,6 +79,8 @@ void Core::init(bool genInputTexId) {
     }
     
     cout << "ogles_gpgpu::Core - init - input texture id is " << inputTexId << endl;
+    
+    memTransfer->init();
     
     initialized = true;
 }
@@ -144,6 +150,12 @@ void Core::prepare(int inW, int inH) {
     outputFrameW = lastProc->getOutFrameW();
     outputFrameH = lastProc->getOutFrameH();
     
+    // prepare MemTransfer handler
+    // TODO: handle different input pixel formats
+    memTransfer->setInputTexId(inputTexId);
+    memTransfer->setOutputTexId(outputTexId);
+    memTransfer->prepare(inputFrameW, inputFrameH, outputFrameW, outputFrameH);
+    
     prepared = true;
 }
 
@@ -168,7 +180,7 @@ void Core::setInputData(const unsigned char *data) {
     glActiveTexture(GL_TEXTURE1);
     
     // copy data as texture to GPU
-    memTransfer->toGPU(inputTexId, inputFrameW, inputFrameH, data);
+    memTransfer->toGPU(data);
 
 	// set clamping
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
