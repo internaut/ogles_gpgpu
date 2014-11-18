@@ -3,6 +3,7 @@
 
 #include "../common_includes.h"
 #include "../core.h"
+#include "memtransfer.h"
 
 namespace ogles_gpgpu {
 
@@ -86,6 +87,7 @@ public:
     
 protected:
     Core *core;
+    MemTransfer *memTransfer;
     
 	GLuint id;
     GLuint glTexUnit;

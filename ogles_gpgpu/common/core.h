@@ -3,6 +3,7 @@
 
 #include "common_includes.h"
 #include "proc/procbase.h"
+#include "gl/memtransfer.h"
 
 #include <list>
 #include <vector>
@@ -24,6 +25,11 @@ public:
      * Destroy singleton instance.
      */
     static void destroy();
+    
+    /**
+     * Deconstructor.
+     */
+    ~Core();
     
     /**
      * Add a pointer to a GPGPU processor object to the pipeline.
@@ -101,6 +107,8 @@ private:
     
     
     static Core *instance;  // singleton instance
+    
+    MemTransfer *memTransfer;
     
     list<ProcBase *> pipeline;  // contains weak refs to ProcBase objects
     

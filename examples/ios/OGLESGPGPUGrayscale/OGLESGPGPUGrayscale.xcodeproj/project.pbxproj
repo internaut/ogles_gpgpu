@@ -28,6 +28,7 @@
 		28DA90DB19F0013D0030CC98 /* tools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28DA90DA19F0013D0030CC98 /* tools.cpp */; };
 		28DA90DE19F002D10030CC98 /* procbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28DA90DC19F002D10030CC98 /* procbase.cpp */; };
 		28E101221A090A2100BEA3EF /* thresh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28E101211A090A2100BEA3EF /* thresh.cpp */; };
+		28F6B3B11A16430B00C1E1DB /* memtransfer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28F6B3AF1A16430B00C1E1DB /* memtransfer.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -68,6 +69,8 @@
 		28DA90DC19F002D10030CC98 /* procbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = procbase.cpp; sourceTree = "<group>"; };
 		28DA90DD19F002D10030CC98 /* procbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = procbase.h; sourceTree = "<group>"; };
 		28E101211A090A2100BEA3EF /* thresh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = thresh.cpp; sourceTree = "<group>"; };
+		28F6B3AF1A16430B00C1E1DB /* memtransfer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memtransfer.cpp; sourceTree = "<group>"; };
+		28F6B3B01A16430B00C1E1DB /* memtransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memtransfer.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,6 +195,8 @@
 			children = (
 				28DA90C619EFEE950030CC98 /* fbo.h */,
 				28DA90D819EFFD070030CC98 /* fbo.cpp */,
+				28F6B3B01A16430B00C1E1DB /* memtransfer.h */,
+				28F6B3AF1A16430B00C1E1DB /* memtransfer.cpp */,
 				28DA90C719EFEE950030CC98 /* shader.h */,
 				28DA90D019EFF02B0030CC98 /* shader.cpp */,
 			);
@@ -302,6 +307,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28F6B3B11A16430B00C1E1DB /* memtransfer.cpp in Sources */,
 				28DA90D119EFF02B0030CC98 /* shader.cpp in Sources */,
 				28DA90A119EFEDA00030CC98 /* AppDelegate.mm in Sources */,
 				283EBFEE1A024FA9007102C3 /* core.cpp in Sources */,

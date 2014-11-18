@@ -10,6 +10,7 @@ FBO::FBO() {
     glTexUnit = 0;
     
     core = Core::getInstance();
+    memTransfer = MemTransfer::getInstance();
 }
 
 FBO::~FBO() {
@@ -114,21 +115,9 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
 void FBO::readBuffer(unsigned char *buf) {
 	assert(attachedTexId > 0 && texW > 0 && texH > 0);
     
-//#if defined (BENCHMARK) || defined (SECURE_GRAPHICS_BUF_READ)
-//	glFinish();
-//#endif
-    
 	bind();
     
-	glBindTexture(GL_TEXTURE_2D, attachedTexId);
-    
-	// old (and slow) way using glReadPixels:
-    glReadPixels(0, 0, texW, texH, GL_RGBA, GL_UNSIGNED_BYTE, buf);
-    Tools::checkGLErr("ogles_gpgpu::FBO - readBuffer");
+    memTransfer->fromGPU(attachedTexId, texW, texH, buf);
     
 	unbind();
-    
-//#ifdef BENCHMARK
-//	glFinish();
-//#endif
 }

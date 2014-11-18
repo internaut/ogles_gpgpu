@@ -37,6 +37,12 @@ Core::Core() {
     outputFrameW = outputFrameH = 0;
     outputTexId = 0;
     firstProc = lastProc = NULL;
+    
+    memTransfer = MemTransfer::getInstance();
+}
+
+Core::~Core() {
+    MemTransfer::destroy();
 }
 
 void Core::addProcToPipeline(ProcBase *proc) {
@@ -160,14 +166,13 @@ void Core::setInputData(const unsigned char *data) {
     
 	// set texture
     glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, inputTexId);	// bind input texture
+    
+    // copy data as texture to GPU
+    memTransfer->toGPU(inputTexId, inputFrameW, inputFrameH, data);
 
 	// set clamping
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    
-    // copy data as texture to GPU
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputFrameW, inputFrameH, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
     
     // mipmapping
     if (firstProc->getWillDownscale() && useMipmaps) {
