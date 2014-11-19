@@ -92,6 +92,9 @@ public:
     vector<float> getTimeMeasurements() const {  return Tools::getTimeMeasurements(); }
 #endif
     
+    
+    static bool usePlatformOptimizations;
+    
 private:
     /**
      * Private constructor for singleton instance.

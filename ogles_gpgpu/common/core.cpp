@@ -9,6 +9,7 @@ using namespace ogles_gpgpu;
 #pragma mark singleton stuff
 
 Core *Core::instance = NULL;
+bool Core::usePlatformOptimizations = true;
 
 Core *Core::getInstance() {
     if (!Core::instance) {

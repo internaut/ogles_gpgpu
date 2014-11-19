@@ -220,6 +220,7 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
     NSLog(@"initializing ogles_gpgpu");
     
     gpgpuMngr = ogles_gpgpu::Core::getInstance();
+    ogles_gpgpu::Core::usePlatformOptimizations = true;
     
     gpgpuMngr->setUseMipmaps(false);
     
@@ -230,8 +231,8 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
     
     gpgpuMngr->addProcToPipeline(&grayscaleProc);
 //    gpgpuMngr->addProcToPipeline(&simpleThreshProc);
-    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
-    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
+//    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
+//    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
 
     gpgpuMngr->init(eaglContext);
 }
