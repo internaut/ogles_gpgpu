@@ -103,7 +103,7 @@ void ProcBase::reinit(int inW, int inH) {
     
     if (orderNum == 0) {    // recreate input
         fbo->getMemTransfer()->releaseInput();
-        useTexture(fbo->getMemTransfer()->prepareInput(inFrameW, inFrameH));
+        useTexture(fbo->getMemTransfer()->prepareInput(inFrameW, inFrameH, inputDataFmt));
     }
     
     cout << "ogles_gpgpu::ProcBase - reinit with "
@@ -123,7 +123,7 @@ void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH
     
     // prepare for external input data
     if (orderNum == 0) {
-        useTexture(fbo->getMemTransfer()->prepareInput(inW, inH));
+        useTexture(fbo->getMemTransfer()->prepareInput(inW, inH, inputDataFmt));
         cout << "ogles_gpgpu::ProcBase - init - prepared for external input data" << endl;
     }
     

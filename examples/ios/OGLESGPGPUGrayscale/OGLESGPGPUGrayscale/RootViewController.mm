@@ -186,7 +186,7 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
     }
     
     // prepare ogles_gpgpu for this image size
-    gpgpuMngr->prepare(testImgW, testImgH);
+    gpgpuMngr->prepare(testImgW, testImgH, GL_BGRA);
     
     // delete previous output data buffer
     if (outputBuf) delete [] outputBuf;

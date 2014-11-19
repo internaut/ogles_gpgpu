@@ -108,11 +108,9 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
     CVReturn res;
     
     // define pixel format
-    OSType pxFmt;
-    if (inputPixelFormat == GL_RGBA) {
-        pxFmt = kCVPixelFormatType_32RGBA;
-    } else if (inputPxFormat == GL_BGRA) {
-        pxFmt = kCVPixelFormatType_32BGRA;
+    OSType pxBufFmt;
+    if (inputPixelFormat == GL_BGRA) {
+        pxBufFmt = kCVPixelFormatType_32BGRA;
     } else {
         cerr << "ogles_gpgpu::MemTransferIOS - prepareInput - unsupported input pixel format " << inputPixelFormat << endl;
         preparedInput = false;
@@ -122,7 +120,7 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
     // create input pixel buffer
     res = CVPixelBufferCreate(kCFAllocatorDefault,
                               inputW, inputH,
-                              kCVPixelFormatType_32BGRA,    // !
+                              pxBufFmt,
                               bufferAttr,
                               &bufRef);
     
@@ -143,7 +141,7 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
                                                        GL_RGBA, // opengl format
                                                        inputW,
                                                        inputH,
-                                                       GL_BGRA, // !
+                                                       inputPixelFormat,
                                                        GL_UNSIGNED_BYTE,
                                                        0,
                                                        &texRef);

@@ -46,12 +46,13 @@ public:
     void init(void *glContext = NULL);
     
     /**
-     * Prepare the processing pipeline for incoming frames of size <inW> x <inH>.
+     * Prepare the processing pipeline for incoming frames of size <inW> x <inH>
+     * and pixel format <inFmt>.
      * Note OpenGL context must be initialized before the pipeline was
      * defined!
      * Note that init() must have been called before.
      */
-    void prepare(int inW, int inH);
+    void prepare(int inW, int inH, GLenum inFmt = GL_RGBA);
     
     void setUseMipmaps(bool use) { useMipmaps = use; }
     bool getUseMipmaps() const { return useMipmaps; }

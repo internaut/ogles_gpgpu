@@ -79,7 +79,7 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
 	glTexImage2D(GL_TEXTURE_2D, 0,
 				 GL_RGBA,
 			     outTexW, outTexH, 0,
-			     GL_RGBA, GL_UNSIGNED_BYTE,
+			     inputPixelFormat, GL_UNSIGNED_BYTE,
 			     NULL);	// we do not need to pass texture data -> it will be generated!
     
     Tools::checkGLErr("ogles_gpgpu::MemTransfer - prepareInput - fbo texture creation");

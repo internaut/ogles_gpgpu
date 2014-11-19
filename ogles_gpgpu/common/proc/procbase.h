@@ -33,6 +33,11 @@ public:
     virtual void reinit(int inW, int inH);
     
     /**
+     * Set pixel data format for input data
+     */
+    virtual void setExternalInputDataFormat(GLenum fmt) { inputDataFmt = fmt; }
+    
+    /**
      * Insert external data into this processor. It will be used as input texture.
      * Note: orderNum must be 0 for that (first processor in pipeline).
      */
@@ -107,6 +112,8 @@ protected:
     float procParamOutScale;
     
     bool willDownscale;
+    
+    GLenum inputDataFmt;
 
 	int inFrameW;
 	int inFrameH;

@@ -72,7 +72,7 @@ void Core::init(void *glContext) {
     initialized = true;
 }
 
-void Core::prepare(int inW, int inH) {
+void Core::prepare(int inW, int inH, GLenum inFmt) {
     assert(initialized && inW > 0 && inH > 0 && pipeline.size() > 0);
     
     if (prepared && inputFrameW == inW && inputFrameH == inH) return;   // no change
@@ -97,6 +97,7 @@ void Core::prepare(int inW, int inH) {
         
         if (num == 0) {
             firstProc = *it;
+            firstProc->setExternalInputDataFormat(inFmt);
             
             pipelineFrameW = inputFrameW;
             pipelineFrameH = inputFrameH;
