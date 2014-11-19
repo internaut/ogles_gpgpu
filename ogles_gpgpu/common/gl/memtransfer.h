@@ -8,35 +8,49 @@ namespace ogles_gpgpu {
 class MemTransfer {
 public:
     /**
-     * Get singleton instance.
+     * Instance creator.
      */
-    static MemTransfer *getInstance();
+    static MemTransfer *createInstance();
     
     /**
-     * Destroy singleton instance.
+     * Deconstructor
      */
-    static void destroy();
+    ~MemTransfer();
     
     /**
      * Initialize method to be called AFTER the OpenGL context was created.
      */
-    virtual void init() { }
+    virtual void init() { initialized = true; }
     
     /**
-     * Prepare for input frames of size <inTexW>x<inTexH> and output frame of size <outTexW>x<outTexH> and
-     * a certain <inputPxFormat>.
+     * Prepare for input frames of size <inTexW>x<inTexH>. Return a texture id for the input frames.
      */
-    virtual void prepare(int inTexW, int inTexH, int outTexW, int outTexH, GLenum inputPxFormat = GL_RGBA);
+    virtual GLuint prepareInput(int inTexW, int inTexH, GLenum inputPxFormat = GL_RGBA);
     
     /**
-     * Set an input texture id
+     * Prepare for output frames of size <outTexW>x<outTexH>. Return a texture id for the output frames.
      */
-    virtual void setInputTexId(GLuint texId) { inputTexId = texId; }
+    virtual GLuint prepareOutput(int outTexW, int outTexH);
     
     /**
-     * Set an output texture id
+     * Delete input texture.
      */
-    virtual void setOutputTexId(GLuint texId) { outputTexId = texId; }
+    virtual void releaseInput();
+    
+    /**
+     * Delete output texture.
+     */
+    virtual void releaseOutput();
+    
+//    /**
+//     * Set an input texture id
+//     */
+//    virtual void setInputTexId(GLuint texId) { inputTexId = texId; }
+//    
+//    /**
+//     * Set an output texture id
+//     */
+//    virtual void setOutputTexId(GLuint texId) { outputTexId = texId; }
     
     virtual GLuint getInputTexId() const { return inputTexId; }
     virtual GLuint getOutputTexId() const { return outputTexId; }
@@ -53,17 +67,15 @@ public:
     
 protected:
     /**
-     * Private constructor for singleton instance.
+     * Constructor
      */
     MemTransfer();
     
-    /**
-     * Empty copy constructor.
-     */
-    MemTransfer (const MemTransfer&) {}
     
+    bool initialized;
     
-    bool prepared;
+    bool preparedInput;
+    bool preparedOutput;
     
     int inputW;
     int inputH;
@@ -74,9 +86,6 @@ protected:
     GLuint outputTexId;
     
     GLenum inputPixelFormat;
-    
-private:
-    static MemTransfer *instance;  // singleton instance
 };
 
 }

@@ -60,6 +60,19 @@ ProcBase::~ProcBase() {
 	}
 }
 
+void ProcBase::printInfo() {
+    assert(fbo);
+    
+    cout << "ogles_gpgpu::ProcBase - info: "
+         << "order num " << orderNum
+         << ", input tex id " << texId
+         << ", input tex size " << inFrameW << "x" << inFrameH
+         << ", output tex id " << fbo->getAttachedTexId()
+         << ", output tex size " << outFrameW << "x" << outFrameH
+         << ", will downscale: " << willDownscale
+         << endl;
+}
+
 void ProcBase::getResultData(unsigned char *data) const {
     assert(fbo != NULL);
     fbo->readBuffer(data);
@@ -82,9 +95,16 @@ void ProcBase::createFBOTex(bool genMipmap) {
 }
 
 void ProcBase::reinit(int inW, int inH) {
+    assert(fbo != NULL);
+    
     setInOutFrameSizes(inW, inH, procParamOutW, procParamOutH, procParamOutScale);
     
     fbo->destroyAttachedTex();  // needs to be recreated later!
+    
+    if (orderNum == 0) {    // recreate input
+        fbo->getMemTransfer()->releaseInput();
+        useTexture(fbo->getMemTransfer()->prepareInput(inFrameW, inFrameH));
+    }
     
     cout << "ogles_gpgpu::ProcBase - reinit with "
          << "input tex size " << inFrameW << "x" << inFrameH
@@ -94,19 +114,29 @@ void ProcBase::reinit(int inW, int inH) {
 }
 
 void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH, float scaleFactor) {
+    assert(fbo != NULL);
     assert(inW > 0 && inH > 0);
     
     orderNum = order;
     
     setInOutFrameSizes(inW, inH, outW, outH, scaleFactor);
     
-    cout << "ogles_gpgpu::ProcBase - init with "
-         << "order num " << orderNum
-         << ", input tex id " << texId
-         << ", input tex size " << inFrameW << "x" << inFrameH
-         << ", output tex size " << outFrameW << "x" << outFrameH
-         << ", will downscale: " << willDownscale
-         << endl;
+    // prepare for external input data
+    if (orderNum == 0) {
+        useTexture(fbo->getMemTransfer()->prepareInput(inW, inH));
+        cout << "ogles_gpgpu::ProcBase - init - prepared for external input data" << endl;
+    }
+    
+//    cout << "ogles_gpgpu::ProcBase - init with "
+//         << "order num " << orderNum
+//         << ", input tex size " << inFrameW << "x" << inFrameH
+//         << ", output tex size " << outFrameW << "x" << outFrameH
+//         << ", will downscale: " << willDownscale
+//         << endl;
+}
+
+void ProcBase::setExternalInputData(const unsigned char *data) {
+    fbo->getMemTransfer()->toGPU(data);
 }
 
 void ProcBase::setInOutFrameSizes(int inW, int inH, int outW, int outH, float scaleFactor) {

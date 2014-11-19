@@ -233,7 +233,7 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
     gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
     gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
 
-    gpgpuMngr->init(true, eaglContext);
+    gpgpuMngr->init(eaglContext);
 }
 
 - (void)runImgProcOnGPU {

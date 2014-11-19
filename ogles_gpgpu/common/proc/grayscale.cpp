@@ -17,11 +17,11 @@ void main() {
 void GrayscaleProc::init(int inW, int inH, unsigned int order) {
     cout << "ogles_gpgpu::GrayscaleProc - init" << endl;
     
-    // parent init - set defaults
-    ProcBase::baseInit(inW, inH, order, procParamOutW, procParamOutH, procParamOutScale);
-    
     // create fbo
     ProcBase::createFBO();
+    
+    // parent init - set defaults
+    ProcBase::baseInit(inW, inH, order, procParamOutW, procParamOutH, procParamOutScale);
     
     // create shader object
     ProcBase::createShader(ProcBase::vshaderDefault, fshaderGrayscaleSrc);

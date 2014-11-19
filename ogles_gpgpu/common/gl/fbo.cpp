@@ -10,22 +10,19 @@ FBO::FBO() {
     glTexUnit = 0;
     
     core = Core::getInstance();
-    memTransfer = MemTransfer::getInstance();
+    memTransfer = MemTransfer::createInstance();
+    memTransfer->init();
 }
 
 FBO::~FBO() {
-    destroyAttachedTex();
     destroyFramebuffer();
+    
+    // attached texture will be destroyed together with memTransfer instance
+    delete memTransfer;
 }
 
 void FBO::generateIds() {
     glGenFramebuffers(1, &id);
-    glActiveTexture(GL_TEXTURE0 + glTexUnit);
-	glGenTextures(1, &attachedTexId);
-    
-    cout << "ogles_gpgpu::FBO - " << id
-         << " generated ids - attached tex is " << attachedTexId
-         << " on tex unit " << glTexUnit << endl;
 }
 
 void FBO::bind() {
@@ -43,48 +40,31 @@ void FBO::destroyFramebuffer() {
 }
 
 void FBO::destroyAttachedTex() {
-    cout << "ogles_gpgpu::FBO - " << id << " freeing attached texture" << endl;
+    assert(memTransfer);
     
-	glDeleteTextures(1, &attachedTexId);
+    memTransfer->releaseOutput();
 }
 
 void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
-	assert(attachedTexId > 0 && w > 0 && h > 0);
+	assert(memTransfer && w > 0 && h > 0);
     
+    // get a corrected width and height when we use a mipmap
     if (genMipmap && core->getUseMipmaps()) {
         w = Tools::getBiggerPOTValue(w);
         h = Tools::getBiggerPOTValue(h);
     }
     
-    cout << "ogles_gpgpu::FBO - " << id
-         << " - Creating attached texture " << attachedTexId
-         << " of size " << w << "x" << h << " (gen. mipmap: " << genMipmap << ")" << endl;
-    
-	texW = w;
+    texW = w;
 	texH = h;
-    
-	GLenum format = GL_RGBA;
     
     // bind FBO
     bind();
     
-	// create texture for FBO
+    // create attached texture
     glActiveTexture(GL_TEXTURE0 + glTexUnit);
-	glBindTexture(GL_TEXTURE_2D, attachedTexId);
+    attachedTexId = memTransfer->prepareOutput(texW, texH);
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    
-    Tools::checkGLErr("ogles_gpgpu::FBO - fbo texture parameters");
-    
-	glTexImage2D(GL_TEXTURE_2D, 0,
-				 format,
-			     w, h, 0,
-			     format, GL_UNSIGNED_BYTE,
-			     NULL);	// we do not need to pass texture data -> it will be generated!
-    
-    Tools::checkGLErr("ogles_gpgpu::FBO - fbo texture creation");
-    
+	// set further texture parameters
 	if (genMipmap) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -106,14 +86,19 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
         cerr << "ogles_gpgpu::FBO - " << id
              << " - Framebuffer incomplete - error " << fboStatus << endl;
-	}
+        attachedTexId = 0;
+	} else {
+        cout << "ogles_gpgpu::FBO - " << id
+             << " - Created attached texture " << attachedTexId
+             << " of size " << w << "x" << h << " (gen. mipmap: " << genMipmap << ")" << endl;
+    }
     
     // unbind FBO
 	unbind();
 }
 
 void FBO::readBuffer(unsigned char *buf) {
-	assert(attachedTexId > 0 && texW > 0 && texH > 0);
+	assert(memTransfer && attachedTexId > 0 && texW > 0 && texH > 0);
     
 	bind();
     

@@ -43,7 +43,7 @@ public:
      * Note OpenGL context must be initialized before the pipeline was
      * defined!
      */
-    void init(bool genInputTexId, void *glContext = NULL);
+    void init(void *glContext = NULL);
     
     /**
      * Prepare the processing pipeline for incoming frames of size <inW> x <inH>.
@@ -111,8 +111,6 @@ private:
     static Core *instance;  // singleton instance
     
     void *glContextPtr;
-    
-    MemTransfer *memTransfer;
     
     list<ProcBase *> pipeline;  // contains weak refs to ProcBase objects
     

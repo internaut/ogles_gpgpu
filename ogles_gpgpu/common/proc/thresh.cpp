@@ -76,6 +76,9 @@ ThreshProc::ThreshProc() {
 void ThreshProc::init(int inW, int inH, unsigned int order) {
     cout << "ogles_gpgpu::ThreshProc - init" << endl;
     
+    // create fbo
+    ProcBase::createFBO();
+    
     // parent init - set defaults
     ProcBase::baseInit(inW, inH, order, procParamOutW, procParamOutH, procParamOutScale);
     
@@ -84,9 +87,6 @@ void ThreshProc::init(int inW, int inH, unsigned int order) {
         pxDx = 1.0f / (float)outFrameW;
         pxDy = 1.0f / (float)outFrameH;
     }
-    
-    // create fbo
-    ProcBase::createFBO();
 
     // create shader object
     const char *shSrc = NULL;

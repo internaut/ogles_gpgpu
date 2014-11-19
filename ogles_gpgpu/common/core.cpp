@@ -35,15 +35,13 @@ Core::Core() {
     inputSizeIsPOT = false;
     inputFrameW = inputFrameH = 0;
     outputFrameW = outputFrameH = 0;
-    outputTexId = 0;
+    inputTexId = outputTexId = 0;
     firstProc = lastProc = NULL;
     glContextPtr = NULL;
-    
-    memTransfer = MemTransfer::getInstance();
 }
 
 Core::~Core() {
-    MemTransfer::destroy();
+
 }
 
 void Core::addProcToPipeline(ProcBase *proc) {
@@ -56,7 +54,7 @@ void Core::addProcToPipeline(ProcBase *proc) {
     pipeline.push_back(proc);
 }
 
-void Core::init(bool genInputTexId, void *glContext) {
+void Core::init(void *glContext) {
     assert(!initialized);
     
     checkGLExtensions();
@@ -70,17 +68,6 @@ void Core::init(bool genInputTexId, void *glContext) {
     glActiveTexture(GL_TEXTURE1);
     
     Tools::checkGLErr("ogles_gpgpu::Core - init");
-    
-    // generate input texture id if necessary
-    if (genInputTexId) {
-        glGenTextures(1, &inputTexId);
-    } else {
-        inputTexId = 0;
-    }
-    
-    cout << "ogles_gpgpu::Core - init - input texture id is " << inputTexId << endl;
-    
-    memTransfer->init();
     
     initialized = true;
 }
@@ -119,11 +106,6 @@ void Core::prepare(int inW, int inH) {
         }
         
         if (!prepared) {    // for first time preparation
-            // set input texture id
-            if (num > 0) {
-                (*it)->useTexture(prevProc->getOutputTexId());  // chain together
-            }
-            
             // initialize current proc
             (*it)->init(pipelineFrameW, pipelineFrameH, num);
         } else {    // for reinitialization with different frame size
@@ -133,6 +115,9 @@ void Core::prepare(int inW, int inH) {
         // if this proc will downscale, we should generate a mipmap for the previous output
         if (num > 0) {
             prevProc->createFBOTex(useMipmaps && (*it)->getWillDownscale());
+            
+            // set input texture id
+            (*it)->useTexture(prevProc->getOutputTexId());  // chain together
         }
         
         // set pointer to previous proc
@@ -145,17 +130,25 @@ void Core::prepare(int inW, int inH) {
     
     lastProc = prevProc;
     
+    // get input texture id
+    inputTexId = firstProc->getInputTexId();
+    
     // set output texture id and size
     outputTexId = lastProc->getOutputTexId();
     outputFrameW = lastProc->getOutFrameW();
     outputFrameH = lastProc->getOutFrameH();
     
-    // prepare MemTransfer handler
-    // TODO: handle different input pixel formats
-    memTransfer->setInputTexId(inputTexId);
-    memTransfer->setOutputTexId(outputTexId);
-    memTransfer->prepare(inputFrameW, inputFrameH, outputFrameW, outputFrameH);
+    cout << "ogles_gpgpu::Core - prepared (input tex "
+         << inputTexId << " / output tex " << outputTexId << ")" << endl;
     
+    // print report
+    for (list<ProcBase *>::iterator it = pipeline.begin();
+         it != pipeline.end();
+         ++it)
+    {
+        (*it)->printInfo();
+    }
+
     prepared = true;
 }
 
@@ -180,11 +173,7 @@ void Core::setInputData(const unsigned char *data) {
     glActiveTexture(GL_TEXTURE1);
     
     // copy data as texture to GPU
-    memTransfer->toGPU(data);
-
-	// set clamping
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    firstProc->setExternalInputData(data);
     
     // mipmapping
     if (firstProc->getWillDownscale() && useMipmaps) {

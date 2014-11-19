@@ -33,6 +33,12 @@ public:
     virtual void reinit(int inW, int inH);
     
     /**
+     * Insert external data into this processor. It will be used as input texture.
+     * Note: orderNum must be 0 for that (first processor in pipeline).
+     */
+    virtual void setExternalInputData(const unsigned char *data);
+    
+    /**
      * Create a texture that is attached to the FBO and will contain the processing result.
      */
     virtual void createFBOTex(bool genMipmap);
@@ -42,6 +48,8 @@ public:
      * Abstract method.
      */
     virtual void render() = 0;
+    
+    virtual void printInfo();
     
     /**
      * Use texture id <id> as input texture at texture <unit>.
@@ -60,6 +68,11 @@ public:
      * Return the result data from the FBO.
      */
     virtual void getResultData(unsigned char *data) const;
+    
+    /**
+     * Return input texture id.
+     */
+    GLuint getInputTexId() const { return texId; }
     
     /**
      * Return the output texture id (= texture that is attached to the FBO).

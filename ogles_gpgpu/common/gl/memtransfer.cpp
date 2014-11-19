@@ -2,52 +2,93 @@
 
 using namespace ogles_gpgpu;
 
-#pragma mark singleton stuff
+#pragma mark constructor/deconstructor
 
-MemTransfer *MemTransfer::instance = NULL;
-
-MemTransfer *MemTransfer::getInstance() {
-    if (!MemTransfer::instance) {
-        // TODO: create platform specific instance
-        MemTransfer::instance = new MemTransfer();
-    }
-    
-    return MemTransfer::instance;
+MemTransfer *MemTransfer::createInstance() {
+    return new MemTransfer();   // TODO: specializations
 }
-
-void MemTransfer::destroy() {
-    if (MemTransfer::instance) {
-        delete MemTransfer::instance;
-        MemTransfer::instance = NULL;
-    }
-}
-
-#pragma mark public methods
 
 MemTransfer::MemTransfer() {
     inputW = inputH = outputW = outputH = 0;
     inputTexId = 0;
     outputTexId = 0;
-    prepared = false;
+    initialized = false;
+    preparedInput = false;
+    preparedOutput = false;
+    inputPixelFormat = GL_RGBA;
 }
 
-void MemTransfer::prepare(int inTexW, int inTexH, int outTexW, int outTexH, GLenum inputPxFormat) {
-    assert(inTexW > 0 && inTexH > 0 && outTexW > 0 && outTexH > 0);
+MemTransfer::~MemTransfer() {
+    releaseInput();
+    releaseOutput();
+}
+
+#pragma mark public methods
+
+GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat) {
+    assert(initialized && inTexW > 0 && inTexH > 0);
     
     inputW = inTexW;
     inputH = inTexH;
+    inputPixelFormat = inputPxFormat;
+    
+    glGenTextures(1, &inputTexId);
+    
+    if (inputTexId == 0) {
+        cerr << "ogles_gpgpu::MemTransfer - prepareInput - no valid input texture generated" << endl;
+        return 0;
+    }
+    
+    preparedInput = true;
+    
+    return inputTexId;
+}
+
+GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
+    assert(initialized && outTexW > 0 && outTexH > 0);
+    
     outputW = outTexW;
     outputH = outTexH;
-    inputPixelFormat = inputPxFormat;
-    prepared = true;
     
-    cout << "ogles_gpgpu::MemTransfer - prepare with input size "
-         << inputW << "x" << inputH << " and " << outputW << "x" << outputH
-         << " (px format " << inputPixelFormat << ")" << endl;
+    glGenTextures(1, &outputTexId);
+    
+    if (outputTexId == 0) {
+        cerr << "ogles_gpgpu::MemTransfer - prepareInput - no valid output texture generated" << endl;
+        return 0;
+    }
+    
+    glBindTexture(GL_TEXTURE_2D, outputTexId);
+    
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    
+    Tools::checkGLErr("ogles_gpgpu::MemTransfer - prepareInput - fbo texture parameters");
+    
+	glTexImage2D(GL_TEXTURE_2D, 0,
+				 GL_RGBA,
+			     outTexW, outTexH, 0,
+			     GL_RGBA, GL_UNSIGNED_BYTE,
+			     NULL);	// we do not need to pass texture data -> it will be generated!
+    
+    Tools::checkGLErr("ogles_gpgpu::MemTransfer - prepareInput - fbo texture creation");
+    
+    preparedOutput = true;
+    
+    return outputTexId;
+}
+
+void MemTransfer::releaseInput() {
+    if (inputTexId > 0) glDeleteTextures(1, &inputTexId);
+    inputTexId = 0;
+}
+
+void MemTransfer::releaseOutput() {
+    if (outputTexId > 0) glDeleteTextures(1, &outputTexId);
+    outputTexId = 0;
 }
 
 void MemTransfer::toGPU(const unsigned char *buf) {
-    assert(prepared && inputTexId > 0 && buf);
+    assert(preparedInput && inputTexId > 0 && buf);
     
 	glBindTexture(GL_TEXTURE_2D, inputTexId);	// bind input texture
 
@@ -56,10 +97,14 @@ void MemTransfer::toGPU(const unsigned char *buf) {
     
     // check for error
     Tools::checkGLErr("ogles_gpgpu::MemTransfer - toGPU");
+    
+	// set clamping (allows NPOT textures)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
 
 void MemTransfer::fromGPU(unsigned char *buf) {
-    assert(prepared && outputTexId > 0 && buf);
+    assert(preparedOutput && outputTexId > 0 && buf);
     
 	glBindTexture(GL_TEXTURE_2D, outputTexId);
     

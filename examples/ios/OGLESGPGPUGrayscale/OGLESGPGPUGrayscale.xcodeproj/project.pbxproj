@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		283735C61A124B7300CE5628 /* building_2048x1536.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 283735C51A124B7300CE5628 /* building_2048x1536.jpg */; };
-		283922EA1A1B556B00D44961 /* memtransfer_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283922E81A1B556B00D44961 /* memtransfer_ios.cpp */; };
 		283EBFEC1A024279007102C3 /* grayscale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFEB1A024279007102C3 /* grayscale.cpp */; };
 		283EBFEE1A024FA9007102C3 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFED1A024FA9007102C3 /* core.cpp */; };
 		283EBFF11A026D34007102C3 /* RootViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 283EBFF01A026D34007102C3 /* RootViewController.mm */; };
@@ -34,8 +33,6 @@
 
 /* Begin PBXFileReference section */
 		283735C51A124B7300CE5628 /* building_2048x1536.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = building_2048x1536.jpg; sourceTree = "<group>"; };
-		283922E81A1B556B00D44961 /* memtransfer_ios.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memtransfer_ios.cpp; sourceTree = "<group>"; };
-		283922E91A1B556B00D44961 /* memtransfer_ios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memtransfer_ios.h; sourceTree = "<group>"; };
 		283EBFEB1A024279007102C3 /* grayscale.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = grayscale.cpp; sourceTree = "<group>"; };
 		283EBFED1A024FA9007102C3 /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core.cpp; sourceTree = "<group>"; };
 		283EBFEF1A026D34007102C3 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
@@ -239,8 +236,6 @@
 			isa = PBXGroup;
 			children = (
 				28DA90D619EFF2DE0030CC98 /* gl_includes.h */,
-				283922E91A1B556B00D44961 /* memtransfer_ios.h */,
-				283922E81A1B556B00D44961 /* memtransfer_ios.cpp */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -314,7 +309,6 @@
 			files = (
 				28F6B3B11A16430B00C1E1DB /* memtransfer.cpp in Sources */,
 				28DA90D119EFF02B0030CC98 /* shader.cpp in Sources */,
-				283922EA1A1B556B00D44961 /* memtransfer_ios.cpp in Sources */,
 				28DA90A119EFEDA00030CC98 /* AppDelegate.mm in Sources */,
 				283EBFEE1A024FA9007102C3 /* core.cpp in Sources */,
 				28DA90DE19F002D10030CC98 /* procbase.cpp in Sources */,

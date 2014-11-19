@@ -15,11 +15,6 @@ public:
     virtual ~FBO();
     
     /**
-     * Set output texture id to <texId> (if you did not call generateIds()).
-     */
-	void setAttachedTexId(GLuint texId) { attachedTexId = texId; }
-    
-    /**
      * Get output texture id.
      */
 	int getAttachedTexId() const { return attachedTexId; }
@@ -36,7 +31,8 @@ public:
     GLuint getGLTexUnit() const { return glTexUnit; }
     
     /**
-     * Generate an FBO id and a texture id for the attached texture.
+     * Generate an FBO id.
+     * TODO: make this method redundant and remove it
      */
     virtual void generateIds();
     
@@ -61,7 +57,7 @@ public:
     void unbind();
     
     /**
-     * Will create a framebuffer texture with texture id <attachedTexId> 
+     * Will create a framebuffer output texture with texture id <attachedTexId>
      * and will bind it to this FBO.
      */
     virtual void createAttachedTex(int w, int h, bool genMipmap = false, GLenum attachment = GL_COLOR_ATTACHMENT0);
@@ -78,12 +74,14 @@ public:
     virtual void destroyFramebuffer();
     
     /**
-     * Destroy the attached texture.
+     * Free the attached texture for framebuffer output.
      */
     virtual void destroyAttachedTex();
     
 	int getTexWidth() const { return texW; }
 	int getTexHeight() const { return texH; }
+    
+    MemTransfer *getMemTransfer() const { return memTransfer; }
     
 protected:
     Core *core;
