@@ -3,7 +3,7 @@
 
 #include "../common_includes.h"
 #include "../core.h"
-#include "memtransfer.h"
+#include "memtransfer_factory.h"
 
 namespace ogles_gpgpu {
 

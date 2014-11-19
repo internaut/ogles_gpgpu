@@ -13,28 +13,46 @@ using namespace std;
 using namespace ogles_gpgpu;
 
 MemTransferIOS::~MemTransferIOS() {
-    releaseBuffers();
+    releaseInput();
+    releaseOutput();
+    
     CFRelease(textureCache);
     CFRelease(bufferAttr);
 }
 
-void MemTransferIOS::releaseBuffers() {
-    CVPixelBufferRelease(inputPixelBuffer);
-    inputPixelBuffer = NULL;
+#pragma mark public methods
+
+void MemTransferIOS::releaseInput() {
+    if (inputPixelBuffer) {
+        CVPixelBufferRelease(inputPixelBuffer);
+        inputPixelBuffer = NULL;
+    }
     
-    CVPixelBufferRelease(outputPixelBuffer);
-    outputPixelBuffer = NULL;
+    if (inputTexture) {
+        CFRelease(inputTexture);
+        inputTexture = NULL;
+    }
     
-    CFRelease(inputTexture);
-    inputTexture = NULL;
+    CVOpenGLESTextureCacheFlush(textureCache, 0);
+}
+
+void MemTransferIOS::releaseOutput() {
+    if (outputPixelBuffer) {
+        CVPixelBufferRelease(outputPixelBuffer);
+        outputPixelBuffer = NULL;
+    }
     
-    CFRelease(outputTexture);
-    outputTexture = NULL;
+    if (outputTexture) {
+        CFRelease(outputTexture);
+        outputTexture = NULL;
+    }
     
     CVOpenGLESTextureCacheFlush(textureCache, 0);
 }
 
 void MemTransferIOS::init() {
+    assert(!initialized);
+    
     CFDictionaryRef empty;
     empty = CFDictionaryCreate(kCFAllocatorDefault, // our empty IOSurface properties dictionary
                                NULL,
@@ -63,25 +81,28 @@ void MemTransferIOS::init() {
     if (res != kCVReturnSuccess) {
         cerr << "ogles_gpgpu::MemTransferIOS - toGPU - error at CVOpenGLESTextureCacheCreate - " << res << endl;
     }
+    
+    // call parent init
+    MemTransfer::init();
 }
 
-void MemTransferIOS::prepare(int inTexW, int inTexH, int outTexW, int outTexH, GLenum inputPxFormat) {
-    if (inputW == inTexW
-     && inputH == inTexH
-     && outputW == outTexW
-     && outputH == outTexH
-     && inputPixelFormat == inputPxFormat)
-    {
-        return; // no change;
+GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat) {
+    if (inputW == inTexW && inputH == inTexH && inputPixelFormat == inputPxFormat) {
+        return inputTexId; // no change
     }
     
-    if (prepared) { // already prepared -- release buffers!
-        releaseBuffers();
+    if (preparedInput) {    // already prepared -- release buffers!
+        releaseInput();
     }
     
-    // call parent to set attributes
-    MemTransfer::prepare(inTexW, inTexH, outTexW, outTexH, inputPxFormat);
+    // set attributes
+    inputW = inTexW;
+    inputH = inTexH;
+    inputPixelFormat = inputPxFormat;
     
+    // prepare
+    CVPixelBufferRef bufRef;
+    CVOpenGLESTextureRef texRef;
     CVReturn res;
     
     // define pixel format
@@ -91,65 +112,96 @@ void MemTransferIOS::prepare(int inTexW, int inTexH, int outTexW, int outTexH, G
     } else if (inputPxFormat == GL_BGRA) {
         pxFmt = kCVPixelFormatType_32BGRA;
     } else {
-        cerr << "ogles_gpgpu::MemTransferIOS - prepare - unsupported input pixel format " << inputPixelFormat << endl;
-        prepared = false;
-        return;
+        cerr << "ogles_gpgpu::MemTransferIOS - prepareInput - unsupported input pixel format " << inputPixelFormat << endl;
+        preparedInput = false;
+        return 0;
     }
     
     // create input pixel buffer
     res = CVPixelBufferCreate(kCFAllocatorDefault,
                               inputW, inputH,
-                              pxFmt,
+                              kCVPixelFormatType_32BGRA,    // !
                               bufferAttr,
-                              &inputPixelBuffer);
+                              &bufRef);
     
     if (res != kCVReturnSuccess) {
-        cerr << "ogles_gpgpu::MemTransferIOS - prepare - error at CVPixelBufferCreate - " << res << endl;
-        prepared = false;
-        return;
+        cerr << "ogles_gpgpu::MemTransferIOS - prepareInput - error at CVPixelBufferCreate - " << res << endl;
+        preparedInput = false;
+        return 0;
     }
     
     inputPixelBufferSize = inputW * inputH * 4; // always assume 4 channels of 8 bit data
-    
-    // create output pixel buffer
-    res = CVPixelBufferCreate(kCFAllocatorDefault,
-                              outputW, outputH,
-                              kCVPixelFormatType_32RGBA,    // default OpenGL format
-                              bufferAttr,
-                              &outputPixelBuffer);
-    
-    if (res != kCVReturnSuccess) {
-        cerr << "ogles_gpgpu::MemTransferIOS - prepare - error at CVPixelBufferCreate - " << res << endl;
-        prepared = false;
-        return;
-    }
 
     // create input texture
     res = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
                                                        textureCache,
-                                                       inputPixelBuffer,
+                                                       bufRef,
                                                        NULL, // texture attributes
                                                        GL_TEXTURE_2D,
                                                        GL_RGBA, // opengl format
                                                        inputW,
                                                        inputH,
-                                                       inputPixelFormat,
+                                                       GL_BGRA, // !
                                                        GL_UNSIGNED_BYTE,
                                                        0,
-                                                       &inputTexture);
+                                                       &texRef);
     
     if (res != kCVReturnSuccess) {
-        cerr << "ogles_gpgpu::MemTransferIOS - prepare - error at CVOpenGLESTextureCacheCreateTextureFromImage for input - " << res << endl;
-        prepared = false;
-        return;
+        cerr << "ogles_gpgpu::MemTransferIOS - prepareInput - error at CVOpenGLESTextureCacheCreateTextureFromImage - " << res << endl;
+        preparedInput = false;
+        return 0;
+    }
+    
+    // get created texture id
+    inputTexId = CVOpenGLESTextureGetName(texRef);
+    
+    cout << "ogles_gpgpu::MemTransferIOS - prepareInput - created input tex with id " << inputTexId << endl;
+    
+    // set member variables
+    inputPixelBuffer = bufRef;
+    inputTexture = texRef;
+    preparedInput = true;
+    
+    return inputTexId;
+}
+
+GLuint MemTransferIOS::prepareOutput(int outTexW, int outTexH) {
+    if (outputW == outTexW && outputH == outTexH) {
+        return outputTexId; // no change
+    }
+    
+    if (preparedOutput) {    // already prepared -- release buffers!
+        releaseOutput();
+    }
+    
+    // set attributes
+    outputW = outTexW;
+    outputH = outTexH;
+    
+    // prepare
+    CVPixelBufferRef bufRef;
+    CVOpenGLESTextureRef texRef;
+    CVReturn res;
+    
+    // create output pixel buffer
+    res = CVPixelBufferCreate(kCFAllocatorDefault,
+                              outputW, outputH,
+                              kCVPixelFormatType_32BGRA,    // !
+                              bufferAttr,
+                              &bufRef);
+    
+    if (res != kCVReturnSuccess) {
+        cerr << "ogles_gpgpu::MemTransferIOS - prepareOutput - error at CVPixelBufferCreate - " << res << endl;
+        preparedOutput = false;
+        return 0;
     }
     
     outputPixelBufferSize = outputW * outputH * 4; // always assume 4 channels of 8 bit data
-
+    
     // create output texture
     res = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
                                                        textureCache,
-                                                       outputPixelBuffer,
+                                                       bufRef,
                                                        NULL, // texture attributes
                                                        GL_TEXTURE_2D,
                                                        GL_RGBA, // opengl format
@@ -158,24 +210,29 @@ void MemTransferIOS::prepare(int inTexW, int inTexH, int outTexW, int outTexH, G
                                                        GL_RGBA, // opengl format
                                                        GL_UNSIGNED_BYTE,
                                                        0,
-                                                       &inputTexture);
+                                                       &texRef);
     
     if (res != kCVReturnSuccess) {
-        cerr << "ogles_gpgpu::MemTransferIOS - prepare - error at CVOpenGLESTextureCacheCreateTextureFromImage for output - " << res << endl;
-        prepared = false;
-        return;
+        cerr << "ogles_gpgpu::MemTransferIOS - prepareOutput - error at CVOpenGLESTextureCacheCreateTextureFromImage - " << res << endl;
+        preparedOutput = false;
+        return 0;
     }
     
-    // get the created texture ids
-    inputTexId = CVOpenGLESTextureGetName(inputTexture);
-    outputTexId = CVOpenGLESTextureGetName(outputTexture);
+    // get created texture id
+    outputTexId = CVOpenGLESTextureGetName(texRef);
     
-    // all done
-    cout << "ogles_gpgpu::MemTransferIOS - prepare - created input tex id " << inputTexId << " / output tex id " << outputTexId << endl;
+    cout << "ogles_gpgpu::MemTransferIOS - prepareOutput - created output tex with id " << outputTexId << endl;
+    
+    // set member variables
+    outputPixelBuffer = bufRef;
+    outputTexture = texRef;
+    preparedOutput = true;
+    
+    return outputTexId;
 }
 
 void MemTransferIOS::toGPU(const unsigned char *buf) {
-    assert(prepared && inputTexId > 0 && buf);
+    assert(preparedInput && inputTexId > 0 && buf);
     
     // copy data to pixel buffer
     void *pixelBufferAddr = lockBufferAndGetPtr(BUF_TYPE_INPUT);
@@ -187,7 +244,7 @@ void MemTransferIOS::toGPU(const unsigned char *buf) {
 }
 
 void MemTransferIOS::fromGPU(unsigned char *buf) {
-    assert(prepared && outputTexId > 0 && buf);
+    assert(preparedOutput && outputTexId > 0 && buf);
     
     // bind the texture
 	glBindTexture(GL_TEXTURE_2D, outputTexId);
@@ -196,6 +253,8 @@ void MemTransferIOS::fromGPU(unsigned char *buf) {
     memcpy(buf, pixelBufferAddr, outputPixelBufferSize);
     unlockBuffer(BUF_TYPE_OUTPUT);
 }
+
+#pragma mark private methods
 
 void *MemTransferIOS::lockBufferAndGetPtr(BufType bufType) {
     CVPixelBufferRef buf;

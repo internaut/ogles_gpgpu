@@ -10,7 +10,7 @@ FBO::FBO() {
     glTexUnit = 0;
     
     core = Core::getInstance();
-    memTransfer = MemTransfer::createInstance();
+    memTransfer = MemTransferFactory::createInstance();
     memTransfer->init();
 }
 

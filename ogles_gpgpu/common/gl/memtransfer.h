@@ -8,14 +8,14 @@ namespace ogles_gpgpu {
 class MemTransfer {
 public:
     /**
-     * Instance creator.
+     * Constructor
      */
-    static MemTransfer *createInstance();
+    MemTransfer();
     
     /**
      * Deconstructor
      */
-    ~MemTransfer();
+    virtual ~MemTransfer();
     
     /**
      * Initialize method to be called AFTER the OpenGL context was created.
@@ -42,16 +42,6 @@ public:
      */
     virtual void releaseOutput();
     
-//    /**
-//     * Set an input texture id
-//     */
-//    virtual void setInputTexId(GLuint texId) { inputTexId = texId; }
-//    
-//    /**
-//     * Set an output texture id
-//     */
-//    virtual void setOutputTexId(GLuint texId) { outputTexId = texId; }
-    
     virtual GLuint getInputTexId() const { return inputTexId; }
     virtual GLuint getOutputTexId() const { return outputTexId; }
     
@@ -66,12 +56,6 @@ public:
     virtual void fromGPU(unsigned char *buf);
     
 protected:
-    /**
-     * Constructor
-     */
-    MemTransfer();
-    
-    
     bool initialized;
     
     bool preparedInput;

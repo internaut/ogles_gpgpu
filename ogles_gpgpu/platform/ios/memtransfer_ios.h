@@ -11,35 +11,54 @@ typedef enum {
     BUF_TYPE_INPUT = 0,
     BUF_TYPE_OUTPUT
 } BufType;
-
+    
 class MemTransferIOS : public MemTransfer {
 public:
-    ~MemTransferIOS();
+    MemTransferIOS() :  MemTransfer(),
+                        bufferAttr(NULL),
+                        inputPixelBuffer(NULL),
+                        outputPixelBuffer(NULL),
+                        inputTexture(NULL),
+                        outputTexture(NULL),
+                        textureCache(NULL),
+                        inputPixelBufferSize(0),
+                        outputPixelBufferSize(0) { }
+    
+    virtual ~MemTransferIOS();
     
     virtual void init();
     
-    virtual void prepare(int inTexW, int inTexH, int outTexW, int outTexH, GLenum inputPxFormat = GL_RGBA);
+    /**
+     * Prepare for input frames of size <inTexW>x<inTexH>. Return a texture id for the input frames.
+     */
+    virtual GLuint prepareInput(int inTexW, int inTexH, GLenum inputPxFormat = GL_RGBA);
     
-    virtual void setInputTexId(GLuint texId) { /* does nothing */ }
-    virtual void setOutputTexId(GLuint texId) { /* does nothing */ }
+    /**
+     * Prepare for output frames of size <outTexW>x<outTexH>. Return a texture id for the output frames.
+     */
+    virtual GLuint prepareOutput(int outTexW, int outTexH);
     
+    /**
+     * Delete input texture.
+     */
+    virtual void releaseInput();
+    
+    /**
+     * Delete output texture.
+     */
+    virtual void releaseOutput();
+    
+    /**
+     * Map data in <buf> to GPU.
+     */
     virtual void toGPU(const unsigned char *buf);
-    virtual void fromGPU(unsigned char *buf);
     
-protected:
-    MemTransferIOS() : MemTransfer(),
-                       bufferAttr(NULL),
-                       inputPixelBuffer(NULL),
-                       outputPixelBuffer(NULL),
-                       inputTexture(NULL),
-                       outputTexture(NULL),
-                       textureCache(NULL),
-                       inputPixelBufferSize(0),
-                       outputPixelBufferSize(0) { }
+    /**
+     * Map data from GPU to <buf>
+     */
+    virtual void fromGPU(unsigned char *buf);
 
 private:
-    void releaseBuffers();
-    
     void *lockBufferAndGetPtr(BufType bufType);
     void unlockBuffer(BufType bufType);
     

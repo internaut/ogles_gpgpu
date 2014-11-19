@@ -4,10 +4,6 @@ using namespace ogles_gpgpu;
 
 #pragma mark constructor/deconstructor
 
-MemTransfer *MemTransfer::createInstance() {
-    return new MemTransfer();   // TODO: specializations
-}
-
 MemTransfer::MemTransfer() {
     inputW = inputH = outputW = outputH = 0;
     inputTexId = 0;
