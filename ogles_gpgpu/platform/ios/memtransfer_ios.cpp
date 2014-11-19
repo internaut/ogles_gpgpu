@@ -87,6 +87,8 @@ void MemTransferIOS::init() {
 }
 
 GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat) {
+    assert(initialized && inTexW > 0 && inTexH > 0);
+    
     if (inputW == inTexW && inputH == inTexH && inputPixelFormat == inputPxFormat) {
         return inputTexId; // no change
     }
@@ -166,6 +168,8 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
 }
 
 GLuint MemTransferIOS::prepareOutput(int outTexW, int outTexH) {
+    assert(initialized && outTexW > 0 && outTexH > 0);
+    
     if (outputW == outTexW && outputH == outTexH) {
         return outputTexId; // no change
     }

@@ -24,6 +24,15 @@ MemTransfer::~MemTransfer() {
 GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat) {
     assert(initialized && inTexW > 0 && inTexH > 0);
     
+    if (inputW == inTexW && inputH == inTexH && inputPixelFormat == inputPxFormat) {
+        return inputTexId; // no change
+    }
+    
+    if (preparedInput) {    // already prepared -- release buffers!
+        releaseInput();
+    }
+    
+    // set attributes
     inputW = inTexW;
     inputH = inTexH;
     inputPixelFormat = inputPxFormat;
@@ -43,6 +52,15 @@ GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat) {
 GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
     assert(initialized && outTexW > 0 && outTexH > 0);
     
+    if (outputW == outTexW && outputH == outTexH) {
+        return outputTexId; // no change
+    }
+    
+    if (preparedOutput) {    // already prepared -- release buffers!
+        releaseOutput();
+    }
+    
+    // set attributes
     outputW = outTexW;
     outputH = outTexH;
     
@@ -74,13 +92,17 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
 }
 
 void MemTransfer::releaseInput() {
-    if (inputTexId > 0) glDeleteTextures(1, &inputTexId);
-    inputTexId = 0;
+    if (inputTexId > 0) {
+        glDeleteTextures(1, &inputTexId);
+        inputTexId = 0;
+    }
 }
 
 void MemTransfer::releaseOutput() {
-    if (outputTexId > 0) glDeleteTextures(1, &outputTexId);
-    outputTexId = 0;
+    if (outputTexId > 0) {
+        glDeleteTextures(1, &outputTexId);
+        outputTexId = 0;
+    }
 }
 
 void MemTransfer::toGPU(const unsigned char *buf) {
