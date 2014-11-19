@@ -159,6 +159,9 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
     
     cout << "ogles_gpgpu::MemTransferIOS - prepareInput - created input tex with id " << inputTexId << endl;
     
+    // set texture parameters
+    setCommonTextureParams(inputTexId);
+    
     // set member variables
     inputPixelBuffer = bufRef;
     inputTexture = texRef;
@@ -226,6 +229,9 @@ GLuint MemTransferIOS::prepareOutput(int outTexW, int outTexH) {
     outputTexId = CVOpenGLESTextureGetName(texRef);
     
     cout << "ogles_gpgpu::MemTransferIOS - prepareOutput - created output tex with id " << outputTexId << endl;
+    
+    // set texture parameters
+    setCommonTextureParams(outputTexId);
     
     // set member variables
     outputPixelBuffer = bufRef;

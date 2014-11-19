@@ -56,6 +56,13 @@ public:
     virtual void fromGPU(unsigned char *buf);
     
 protected:
+    /**
+     * bind texture if <texId> > 0 and
+     * set clamping (allows NPOT textures)
+     */
+    virtual void setCommonTextureParams(GLuint texId);
+    
+    
     bool initialized;
     
     bool preparedInput;

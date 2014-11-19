@@ -71,10 +71,8 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
         return 0;
     }
     
-    glBindTexture(GL_TEXTURE_2D, outputTexId);
-    
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // will bind the texture, too:
+    setCommonTextureParams(outputTexId);
     
     Tools::checkGLErr("ogles_gpgpu::MemTransfer - prepareInput - fbo texture parameters");
     
@@ -116,9 +114,7 @@ void MemTransfer::toGPU(const unsigned char *buf) {
     // check for error
     Tools::checkGLErr("ogles_gpgpu::MemTransfer - toGPU");
     
-	// set clamping (allows NPOT textures)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    setCommonTextureParams(0);
 }
 
 void MemTransfer::fromGPU(unsigned char *buf) {
@@ -131,4 +127,16 @@ void MemTransfer::fromGPU(unsigned char *buf) {
 
     // check for error
     Tools::checkGLErr("ogles_gpgpu::MemTransfer - fromGPU");
+}
+
+#pragma mark protected methods
+
+void MemTransfer::setCommonTextureParams(GLuint texId) {
+    if (texId > 0) {
+        glBindTexture(GL_TEXTURE_2D, texId);
+    }
+    
+	// set clamping (allows NPOT textures)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }
