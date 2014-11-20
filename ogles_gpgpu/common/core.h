@@ -1,3 +1,7 @@
+/**
+ * ogles_gpgpu main processing handler
+ */
+
 #ifndef OGLES_GPGPU_COMMON_CORE
 #define OGLES_GPGPU_COMMON_CORE
 
@@ -13,7 +17,12 @@ using namespace std;
 namespace ogles_gpgpu {
 
 class ProcBase;
-    
+
+/**
+ * main processing handler. set up and initialize processing pipeline.
+ * set processing input, run the processing tasks, get the processing output.
+ * is a singleton class that returns an object via getInstance().
+ */
 class Core {
 public:
     /**
@@ -32,14 +41,17 @@ public:
     ~Core();
     
     /**
-     * Add a pointer to a GPGPU processor object to the pipeline.
+     * Add a weak ref pointer to a GPGPU processor object to the pipeline.
      * Note: OpenGL context must be initialized before a ProcBase object
      * was created!
      */
     void addProcToPipeline(ProcBase *proc);
     
     /**
-     * Initialize
+     * Initialize OpenGL settings and the pipeline.
+     * Optionally pass the OpenGL context (needed for platform specific optimizations).
+     * Needs to be called after addProcToPipeline().
+     * Can be called only once per instance.
      * Note OpenGL context must be initialized before the pipeline was
      * defined!
      */
@@ -48,13 +60,22 @@ public:
     /**
      * Prepare the processing pipeline for incoming frames of size <inW> x <inH>
      * and pixel format <inFmt>.
+     * Can be called several times (will re-initialize the pipeline).
      * Note OpenGL context must be initialized before the pipeline was
      * defined!
      * Note that init() must have been called before.
      */
     void prepare(int inW, int inH, GLenum inFmt = GL_RGBA);
     
+    /**
+     * Use mipmaps: <use>.
+     * Note that some hardware only supports mipmapping for POT images.
+     */
     void setUseMipmaps(bool use) { useMipmaps = use; }
+    
+    /**
+     * Get "use mipmaps" status.
+     */
     bool getUseMipmaps() const { return useMipmaps; }
     
     /**
@@ -83,16 +104,28 @@ public:
      */
     void getOutputData(unsigned char *buf);
     
+    /**
+     * Get output frame width.
+     */
     int getOutputFrameW() const { return outputFrameW; }
+    
+    /**
+     * Get output frame height.
+     */
     int getOutputFrameH() const { return outputFrameH; }
     
+    /**
+     * Get pointer to OpenGL context (platform specific type).
+     */
     void *getGLContextPtr() const { return glContextPtr; }
     
 #ifdef OGLES_GPGPU_BENCHMARK
     vector<float> getTimeMeasurements() const {  return Tools::getTimeMeasurements(); }
 #endif
     
-    
+    /**
+     * Global switch for platform optimizations. Should be set before calling init().
+     */
     static bool usePlatformOptimizations;
     
 private:
@@ -114,28 +147,28 @@ private:
     
     static Core *instance;  // singleton instance
     
-    void *glContextPtr;
+    void *glContextPtr;     // pointer to OpenGL context (platform specific type), weak ref.
     
     list<ProcBase *> pipeline;  // contains weak refs to ProcBase objects
     
-    ProcBase *firstProc;
-    ProcBase *lastProc;
+    ProcBase *firstProc;    // pointer to first processor in pipeline
+    ProcBase *lastProc;     // pointer to last processor in pipeline
     
-    bool initialized;
-    bool prepared;
+    bool initialized;       // pipeline initialized?
+    bool prepared;          // input prepared?
     
-    bool useMipmaps;
-    bool glExtNPOTMipmaps;
+    bool useMipmaps;        // use mipmaps?
+    bool glExtNPOTMipmaps;  // hardware supports NPOT mipmapping?
     
-    bool inputSizeIsPOT;
+    bool inputSizeIsPOT;    // input frame size is POT?
     
-    int inputFrameW;
-    int inputFrameH;
-    int outputFrameW;
-    int outputFrameH;
+    int inputFrameW;        // input frame width
+    int inputFrameH;        // input frame height
+    int outputFrameW;       // output frame width
+    int outputFrameH;       // output frame width
 
-    GLuint inputTexId;
-    GLuint outputTexId;
+    GLuint inputTexId;      // input texture id
+    GLuint outputTexId;     // output texture id
 };
     
 }

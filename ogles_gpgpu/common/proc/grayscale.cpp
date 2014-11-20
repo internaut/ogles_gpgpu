@@ -23,6 +23,7 @@ void main() {
 );
 
 GrayscaleProc::GrayscaleProc() {
+    // set defaults
     inputConvType = GRAYSCALE_INPUT_CONVERSION_NONE;
     setGrayscaleConvType(GRAYSCALE_INPUT_CONVERSION_RGB);
 }

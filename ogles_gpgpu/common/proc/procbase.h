@@ -1,3 +1,6 @@
+/**
+ * GPGPU processor base class.
+ */
 #ifndef OGLES_GPGPU_COMMON_PROC_BASE
 #define OGLES_GPGPU_COMMON_PROC_BASE
 
@@ -15,25 +18,37 @@
 namespace ogles_gpgpu {
 
 class FBO;
-    
+
+/**
+ * ProcBase implements a GPGPU processor base class for a common interface and with some
+ * helper methods.
+ */
 class ProcBase {
 public:
+    /**
+     * Constructor.
+     */
     ProcBase();
+    
+    /**
+     * Deconstructor.
+     */
     virtual ~ProcBase();
     
     /**
-     * Creates the shader and fbo.
+     * Init the processor for input frames of size <inW>x<inH> which is at
+     * position <order> in the processing pipeline.
      * Abstract method.
      */
     virtual void init(int inW, int inH, unsigned int order) = 0;
     
     /**
-     * Reinitialize the proc for a different input frame size.
+     * Reinitialize the proc for a different input frame size of <inW>x<inH>.
      */
     virtual void reinit(int inW, int inH);
     
     /**
-     * Set pixel data format for input data
+     * Set pixel data format for input data to <fmt>.
      */
     virtual void setExternalInputDataFormat(GLenum fmt) { inputDataFmt = fmt; }
     
@@ -45,6 +60,7 @@ public:
     
     /**
      * Create a texture that is attached to the FBO and will contain the processing result.
+     * Set <genMipmap> to true to generate a mipmap (usually only works with POT textures).
      */
     virtual void createFBOTex(bool genMipmap);
     
@@ -54,19 +70,39 @@ public:
      */
     virtual void render() = 0;
     
+    /**
+     * Print some information about the processor's setup.
+     */
     virtual void printInfo();
     
     /**
-     * Use texture id <id> as input texture at texture <unit>.
+     * Use texture id <id> as input texture at texture <useTexUnit>.
      */
     void useTexture(GLuint id, GLuint useTexUnit = 1) { texId = id; texUnit = useTexUnit; }
     
+    /**
+     * Set output size by scaling down or up the input frame size by factor <scaleFactor>.
+     */
     void setOutputSize(float scaleFactor)  { procParamOutScale = scaleFactor; }
+
+    /**
+     * Set output size by scaling down or up the input frame to size <outW>x<outH>.
+     */
     void setOutputSize(int outW, int outH) { procParamOutW = outW; procParamOutH = outH; }
     
+    /**
+     * Get the output frame width.
+     */
     int getOutFrameW() const { return outFrameW; }
+    
+    /**
+     * Get the output frame height.
+     */
     int getOutFrameH() const { return outFrameH; }
     
+    /**
+     * Returns true if output size < input size.
+     */
     bool getWillDownscale() const { return willDownscale; }
     
     /**
@@ -85,41 +121,59 @@ public:
     GLuint getOutputTexId() const;
     
 protected:
+    /**
+     * Common initializations with input size <inW>x<inH>, pipeline processing <order>, output size <outW>x<outH> and
+     * scaling factor <scaleFactor>. If output size is 0x0, the output size will be calculated by input size * scaling
+     * factor.
+     */
     virtual void baseInit(int inW, int inH, unsigned int order, int outW = 0, int outH = 0, float scaleFactor = 1.0f);
+    
+    /**
+     * Common frame size setter for input size <inW>x<inH> and output size <outW>x<outH> and scaling factor
+     * <scaleFactor>. If output size is 0x0, the output size will be calculated by input size * scaling factor.
+     */
     virtual void setInOutFrameSizes(int inW, int inH, int outW, int outH, float scaleFactor);
     
+    /**
+     * Create an FBO for this processor. This will contain the result after rendering in its attached texture.
+     */
     virtual void createFBO();
+    
+    /**
+     * Create the shader program from vertex and fragment shader source code
+     * <vshSrc> and <fshSrc>.
+     */
     virtual void createShader(const char *vShSrc, const char *fShSrc);
     
     
-    static const char *vshaderDefault;
+    static const char *vshaderDefault;  // default vertex shader to render a fullscreen quad
     
-	static const GLfloat quadTexCoordsStd[];
-	static const GLfloat quadTexCoordsFlipped[];
-	static const GLfloat quadTexCoordsDiagonal[];
-	static const GLfloat quadVertices[];
+	static const GLfloat quadTexCoordsStd[];        // default quad texture coordinates
+	static const GLfloat quadTexCoordsFlipped[];    // flipped quad texture coordinates
+	static const GLfloat quadTexCoordsDiagonal[];   // diagonal quad texture coordinates
+	static const GLfloat quadVertices[];            // default quad vertices
     
     FBO *fbo;       // strong ref.!
 	Shader *shader;	// strong ref.!
     
-    unsigned int orderNum;
+    unsigned int orderNum;  // position of this processor in the pipeline
     
-	GLuint texId;
-    GLuint texUnit;
+	GLuint texId;   // input texture id
+    GLuint texUnit; // input texture unit (glActiveTexture())
     
-    int procParamOutW;
-    int procParamOutH;
-    float procParamOutScale;
+    int procParamOutW;          // output frame width parameter
+    int procParamOutH;          // output frame height parameter
+    float procParamOutScale;    // output frame scaling parameter
     
-    bool willDownscale;
+    bool willDownscale; // is true if output size < input size.
     
-    GLenum inputDataFmt;
+    GLenum inputDataFmt;    // input pixel data format
 
-	int inFrameW;
-	int inFrameH;
+	int inFrameW;   // input frame width
+	int inFrameH;   // input frame height
     
-	int outFrameW;
-	int outFrameH;
+	int outFrameW;  // output frame width
+	int outFrameH;  // output frame height
 };
 
 }

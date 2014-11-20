@@ -13,9 +13,11 @@ using namespace std;
 using namespace ogles_gpgpu;
 
 MemTransferIOS::~MemTransferIOS() {
+    // release in- and outputs
     releaseInput();
     releaseOutput();
     
+    // release texture cache and buffer attributes
     CFRelease(textureCache);
     CFRelease(bufferAttr);
 }
@@ -265,10 +267,12 @@ void MemTransferIOS::fromGPU(unsigned char *buf) {
 #pragma mark private methods
 
 void *MemTransferIOS::lockBufferAndGetPtr(BufType bufType) {
+    // get the buffer reference and lock options
     CVPixelBufferRef buf;
     CVOptionFlags lockOpt;
     getPixelBufferAndLockFlags(bufType, &buf, &lockOpt);
     
+    // lock
     CVReturn res = CVPixelBufferLockBaseAddress(buf, lockOpt);
     
     if (res != kCVReturnSuccess) {
@@ -276,14 +280,17 @@ void *MemTransferIOS::lockBufferAndGetPtr(BufType bufType) {
         return NULL;
     }
     
+    // return address
     return CVPixelBufferGetBaseAddress(buf);
 }
 
 void MemTransferIOS::unlockBuffer(BufType bufType) {
+    // get the buffer reference and lock options
     CVPixelBufferRef buf;
     CVOptionFlags lockOpt;
     getPixelBufferAndLockFlags(bufType, &buf, &lockOpt);
     
+    // unlock
     CVReturn res = CVPixelBufferUnlockBaseAddress(buf, lockOpt);
     
     if (res != kCVReturnSuccess) {
@@ -294,9 +301,9 @@ void MemTransferIOS::unlockBuffer(BufType bufType) {
 void MemTransferIOS::getPixelBufferAndLockFlags(BufType bufType, CVPixelBufferRef *buf, CVOptionFlags *lockOpt) {
     if (bufType == BUF_TYPE_INPUT) {
         *buf = inputPixelBuffer;
-        *lockOpt = 0;
+        *lockOpt = 0;                           // read and write
     } else {
         *buf = outputPixelBuffer;
-        *lockOpt = kCVPixelBufferLock_ReadOnly;
+        *lockOpt = kCVPixelBufferLock_ReadOnly; // read only
     }
 }

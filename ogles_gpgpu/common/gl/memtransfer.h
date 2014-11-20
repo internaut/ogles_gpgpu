@@ -1,3 +1,7 @@
+/**
+ * MemTransfer handles memory transfer and mapping between CPU and GPU memory space.
+ */
+
 #ifndef OGLES_GPGPU_COMMON_GL_MEMTRANSFER
 #define OGLES_GPGPU_COMMON_GL_MEMTRANSFER
 
@@ -5,6 +9,11 @@
 
 namespace ogles_gpgpu {
 
+/**
+ * MemTransfer handles memory transfer and mapping between CPU and GPU memory space.
+ * Input (from CPU to GPU space) and output (from GPU to CPU space) can be set up
+ * separately.
+ */
 class MemTransfer {
 public:
     /**
@@ -42,7 +51,14 @@ public:
      */
     virtual void releaseOutput();
     
+    /**
+     * Get input texture id.
+     */
     virtual GLuint getInputTexId() const { return inputTexId; }
+    
+    /**
+     * Get output texture id.
+     */
     virtual GLuint getOutputTexId() const { return outputTexId; }
     
     /**
@@ -63,20 +79,20 @@ protected:
     virtual void setCommonTextureParams(GLuint texId);
     
     
-    bool initialized;
+    bool initialized;       // is initialized?
     
-    bool preparedInput;
-    bool preparedOutput;
+    bool preparedInput;     // input is prepared?
+    bool preparedOutput;    // output is prepared?
     
-    int inputW;
-    int inputH;
-    int outputW;
-    int outputH;
+    int inputW;             // input texture width
+    int inputH;             // input texture height
+    int outputW;            // output texture width
+    int outputH;            // output texture heights
     
-    GLuint inputTexId;
-    GLuint outputTexId;
+    GLuint inputTexId;      // input texture id
+    GLuint outputTexId;     // output texture id
     
-    GLenum inputPixelFormat;
+    GLenum inputPixelFormat;    // input texture pixel format
 };
 
 }

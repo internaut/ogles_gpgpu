@@ -68,6 +68,7 @@ void main() {
 );
 
 ThreshProc::ThreshProc() {
+    // set defaults
     threshType = THRESH_SIMPLE;
     threshVal = 0.5f;
     pxDx = pxDy = 0.0f;
@@ -161,11 +162,8 @@ void ThreshProc::render() {
 	fbo->bind();
     
 	// set the viewport
-//	if (threshType == THRESH_ADAPTIVE_PASS_1) {
-//		glViewport(0, 0, outFrameH, outFrameW);	// swapped
-//	} else {
-		glViewport(0, 0, outFrameW, outFrameH);
-//	}
+    glViewport(0, 0, outFrameW, outFrameH); // w and h will already be swapped in case of adapt.thresh. pass 1
+
     
 	glClear(GL_COLOR_BUFFER_BIT);
     

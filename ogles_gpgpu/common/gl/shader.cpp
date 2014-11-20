@@ -24,9 +24,10 @@ void Shader::use() {
 }
 
 GLint Shader::getParam(ShaderParamType type, const char *name) const {
+    // get position according to type and name
 	GLint id = (type == ATTR) ?
-    glGetAttribLocation(programId, name) :
-    glGetUniformLocation(programId, name);
+        glGetAttribLocation(programId, name) :
+        glGetUniformLocation(programId, name);
     
 	if (id < 0) {
         cerr << "ogles_gpgpu::Shader - Could not get parameter id for param " << name << endl;
@@ -36,9 +37,11 @@ GLint Shader::getParam(ShaderParamType type, const char *name) const {
 }
 
 GLuint Shader::create(const char *vshSrc, const char *fshSrc, GLuint *vshId, GLuint *fshId) {
+    // compile shaders for full shader program
 	*vshId = compile(GL_VERTEX_SHADER, vshSrc);
 	*fshId = compile(GL_FRAGMENT_SHADER, fshSrc);
     
+    // create shader program
 	GLuint programId = glCreateProgram();
     
 	if (programId == 0) {
@@ -48,7 +51,7 @@ GLuint Shader::create(const char *vshSrc, const char *fshSrc, GLuint *vshId, GLu
     
 	glAttachShader(programId, *vshId);   // add the vertex shader to program
 	glAttachShader(programId, *fshId);   // add the fragment shader to program
-	glLinkProgram(programId);
+	glLinkProgram(programId);   // link both shaders to a full program
     
 	// check link status
 	GLint linkStatus;
@@ -69,6 +72,7 @@ GLuint Shader::create(const char *vshSrc, const char *fshSrc, GLuint *vshId, GLu
 }
 
 GLuint Shader::compile(GLenum type, const char *src) {
+    // create a shader
 	GLuint shId = glCreateShader(type);
     
 	if (shId == 0) {
@@ -76,7 +80,10 @@ GLuint Shader::compile(GLenum type, const char *src) {
 		return 0;
 	}
     
+    // set shader source
     glShaderSource(shId, 1, (const GLchar**)&src, NULL);
+    
+    // compile the shader
     glCompileShader(shId);
     
     // check compile status

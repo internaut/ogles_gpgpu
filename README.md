@@ -20,9 +20,13 @@
 
 * new project: OGLESGPGPUCamera
 * MemTransfer -> MemMap (MemMngr) ?
+* ProcSimpleFilter base class
 * more filters
 
 * test ipad3 / ios 8
+
+* add common file header
+* add license
 
 ### Milestone 2
 

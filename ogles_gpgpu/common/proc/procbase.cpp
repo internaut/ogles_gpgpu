@@ -164,7 +164,6 @@ void ProcBase::createFBO() {
     
     fbo = new FBO();
     fbo->setGLTexUnit(1);
-    fbo->generateIds();
 }
 
 void ProcBase::createShader(const char *vShSrc, const char *fShSrc) {

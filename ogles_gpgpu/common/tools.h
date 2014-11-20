@@ -1,3 +1,6 @@
+/**
+ * Common tools collection.
+ */
 #ifndef OGLES_GPGPU_COMMON_TOOLS
 #define OGLES_GPGPU_COMMON_TOOLS
 
@@ -13,13 +16,30 @@ using namespace std;
 
 namespace ogles_gpgpu {
 
+/**
+ * Common tools collection.
+ */
 class Tools {
 public:
+    /**
+     * Check for an OpenGL error in the previous call(s). Produce error
+     * message with prefix <msg>.
+     */
     static void checkGLErr(const char *msg);
     
+    /**
+     * Check if <v> is a power-of-two (POT) value.
+     */
     static bool isPOT(float v);
+    
+    /**
+     * Get the next bigger POT value if <v> is not a POT value.
+     */
     static float getBiggerPOTValue(float v);
     
+    /**
+     * Split a string <s> by delimiter <delim>.
+     */
     static vector<string> split(const string &s, char delim = ' ');
 
 #ifdef OGLES_GPGPU_BENCHMARK

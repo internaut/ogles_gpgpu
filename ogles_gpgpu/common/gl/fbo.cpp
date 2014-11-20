@@ -4,14 +4,21 @@ using namespace std;
 using namespace ogles_gpgpu;
 
 FBO::FBO() {
+    // set defaults
 	id = 0;
 	texW = texH = 0;
     attachedTexId = 0;
     glTexUnit = 0;
     
+    // get singleton Core instance
     core = Core::getInstance();
+    
+    // create a dedicated MemTransfer object for this FBO
     memTransfer = MemTransferFactory::createInstance();
     memTransfer->init();
+    
+    // generate a FBO id
+    generateIds();
 }
 
 FBO::~FBO() {
@@ -19,10 +26,6 @@ FBO::~FBO() {
     
     // attached texture will be destroyed together with memTransfer instance
     delete memTransfer;
-}
-
-void FBO::generateIds() {
-    glGenFramebuffers(1, &id);
 }
 
 void FBO::bind() {
@@ -42,6 +45,7 @@ void FBO::destroyFramebuffer() {
 void FBO::destroyAttachedTex() {
     assert(memTransfer);
     
+    // will release attached texture
     memTransfer->releaseOutput();
 }
 
@@ -100,9 +104,16 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
 void FBO::readBuffer(unsigned char *buf) {
 	assert(memTransfer && attachedTexId > 0 && texW > 0 && texH > 0);
     
+    // bind the FBO
 	bind();
     
+    // get the contents of its attached texture
     memTransfer->fromGPU(buf);
     
+    // unbind again
 	unbind();
+}
+
+void FBO::generateIds() {
+    glGenFramebuffers(1, &id);
 }

@@ -5,6 +5,7 @@ using namespace ogles_gpgpu;
 #pragma mark constructor/deconstructor
 
 MemTransfer::MemTransfer() {
+    // set defaults
     inputW = inputH = outputW = outputH = 0;
     inputTexId = 0;
     outputTexId = 0;
@@ -15,6 +16,7 @@ MemTransfer::MemTransfer() {
 }
 
 MemTransfer::~MemTransfer() {
+    // release in- and output
     releaseInput();
     releaseOutput();
 }
@@ -37,6 +39,7 @@ GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat) {
     inputH = inTexH;
     inputPixelFormat = inputPxFormat;
     
+    // generate texture id
     glGenTextures(1, &inputTexId);
     
     if (inputTexId == 0) {
@@ -44,6 +47,7 @@ GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat) {
         return 0;
     }
     
+    // done
     preparedInput = true;
     
     return inputTexId;
@@ -64,6 +68,7 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
     outputW = outTexW;
     outputH = outTexH;
     
+    // generate texture id
     glGenTextures(1, &outputTexId);
     
     if (outputTexId == 0) {
@@ -76,6 +81,7 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
     
     Tools::checkGLErr("ogles_gpgpu::MemTransfer - prepareInput - fbo texture parameters");
     
+    // create empty texture space on GPU
 	glTexImage2D(GL_TEXTURE_2D, 0,
 				 GL_RGBA,
 			     outTexW, outTexH, 0,
@@ -84,6 +90,7 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
     
     Tools::checkGLErr("ogles_gpgpu::MemTransfer - prepareInput - fbo texture creation");
     
+    // done
     preparedOutput = true;
     
     return outputTexId;

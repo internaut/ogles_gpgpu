@@ -8,8 +8,10 @@ using namespace ogles_gpgpu;
 
 #pragma mark singleton stuff
 
-Core *Core::instance = NULL;
-bool Core::usePlatformOptimizations = true;
+// initialize static variables
+
+Core *Core::instance = NULL;                // no instance
+bool Core::usePlatformOptimizations = true; // turn on platform optimizations
 
 Core *Core::getInstance() {
     if (!Core::instance) {
@@ -29,6 +31,7 @@ void Core::destroy() {
 #pragma mark constructor and setup methods
 
 Core::Core() {
+    // set defaults
     initialized = false;
     prepared = false;
     useMipmaps = false;
@@ -46,12 +49,14 @@ Core::~Core() {
 }
 
 void Core::addProcToPipeline(ProcBase *proc) {
+    // pipeline needs to be set up before calling init()
     if (initialized) {
         cerr << "ogles_gpgpu::Core - adding processor failed: pipeline already initialized" << endl;
     }
     
     cout << "ogles_gpgpu::Core - adding processor #" << (pipeline.size() + 1) << " to pipeline" << endl;
     
+    // add not processor to pipeline
     pipeline.push_back(proc);
 }
 
@@ -78,6 +83,7 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
     
     if (prepared && inputFrameW == inW && inputFrameH == inH) return;   // no change
     
+    // set input frame size
     inputSizeIsPOT = Tools::isPOT(inW) && Tools::isPOT(inH);
     inputFrameW = inW;
     inputFrameH = inH;
@@ -96,13 +102,17 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
         // find out the input frame size for the proc
         int pipelineFrameW, pipelineFrameH;
         
-        if (num == 0) {
+        if (num == 0) { // special set up for first pipeline processor
             firstProc = *it;
+            
+            // first pipeline processor will get input data (e.g. RGBA pixel data)
             firstProc->setExternalInputDataFormat(inFmt);
             
+            // first pipeline's frame size is the input frame size
             pipelineFrameW = inputFrameW;
             pipelineFrameH = inputFrameH;
         } else {
+            // subsequent pipeline's frame size is the previous processor's output frame size
             pipelineFrameW = prevProc->getOutFrameW();
             pipelineFrameH = prevProc->getOutFrameH();
         }
@@ -116,6 +126,7 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
         
         // if this proc will downscale, we should generate a mipmap for the previous output
         if (num > 0) {
+            // create a texture that is attached to an FBO for the output
             prevProc->createFBOTex(useMipmaps && (*it)->getWillDownscale());
             
             // set input texture id
@@ -128,8 +139,10 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
         num++;
     }
     
+    // create the FBO texture for the last processor, too
     prevProc->createFBOTex(false);
     
+    // set last processor
     lastProc = prevProc;
     
     // get input texture id
@@ -143,7 +156,7 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
     cout << "ogles_gpgpu::Core - prepared (input tex "
          << inputTexId << " / output tex " << outputTexId << ")" << endl;
     
-    // print report
+    // print report (to spot errors in the pipeline)
     for (list<ProcBase *>::iterator it = pipeline.begin();
          it != pipeline.end();
          ++it)
@@ -165,6 +178,7 @@ void Core::setInputData(const unsigned char *data) {
     Tools::startTimeMeasurement();
 #endif
     
+    // check set up and input data
     if (useMipmaps && !inputSizeIsPOT && !glExtNPOTMipmaps) {
         cout << "ogles_gpgpu::Core - setInputData - WARNING: NPOT input image provided but NPOT mipmapping not supported!" << endl
              << "ogles_gpgpu::Core - setInputData - mipmapping disabled!" << endl;
@@ -180,11 +194,12 @@ void Core::setInputData(const unsigned char *data) {
     // mipmapping
     if (firstProc->getWillDownscale() && useMipmaps) {
         cout << "ogles_gpgpu::Core - setInputData - generating mipmap for input image" << endl;
-        
+        // enabled
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
+        // disabled
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     }
@@ -233,6 +248,7 @@ void Core::getOutputData(unsigned char *buf) {
     Tools::startTimeMeasurement();
 #endif
     
+    // will copy the result data from the GPU's memory space to <buf>
     lastProc->getResultData(buf);
     
 #ifdef OGLES_GPGPU_BENCHMARK
@@ -243,21 +259,25 @@ void Core::getOutputData(unsigned char *buf) {
 #pragma mark helper methods
 
 void Core::checkGLExtensions() {
+    // get string with extensions seperated by a SPACE
     string glExtString((const char *)glGetString(GL_EXTENSIONS));
     
+    // get extensions as vector
     vector<string> glExt = Tools::split(glExtString);
     
+    // check extensions
 //    cout << "ogles_gpgpu::Core - checkGLExtensions - list of extensions:" << endl;
-    
     for (vector<string>::iterator it = glExt.begin();
          it != glExt.end();
          ++it)
     {
+        // get lowercase extension string
         string extName = *it;
         transform(extName.begin(), extName.end(), extName.begin(), ::tolower);
         
 //        cout << "> " << extName << endl;
         
+        // check for NPOT mipmapping support
         if (it->compare("gl_arb_texture_non_power_of_two") == 0
          || it->compare("gl_oes_texture_npot") == 0)
         {

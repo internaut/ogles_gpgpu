@@ -1,3 +1,6 @@
+/**
+ * Framebuffer object handler.
+ */
 #ifndef OGLES_GPGPU_COMMON_GL_FBO
 #define OGLES_GPGPU_COMMON_GL_FBO
 
@@ -8,10 +11,21 @@
 namespace ogles_gpgpu {
 
 class Core;
-    
+
+/**
+ * Framebuffer object handler. Set up an OpenGL framebuffer with an attached texture
+ * for the framebuffer output.
+ */
 class FBO {
 public:
+    /**
+     * Constructor.
+     */
     FBO();
+    
+    /**
+     * Deconstructor.
+     */
     virtual ~FBO();
     
     /**
@@ -21,7 +35,6 @@ public:
     
     /**
      * Set GL texture unit (to be used in glActiveTexture()) for output texture.
-     * Must be set before calling generateIds()
      */
     void setGLTexUnit(GLuint texUnit) { glTexUnit = texUnit; }
     
@@ -31,13 +44,7 @@ public:
     GLuint getGLTexUnit() const { return glTexUnit; }
     
     /**
-     * Generate an FBO id.
-     * TODO: make this method redundant and remove it
-     */
-    virtual void generateIds();
-    
-    /**
-     * Set the FBO id (if you did not call generateIds()).
+     * Set the FBO id manually (usually not necessary).
      */
 	void setId(GLuint fboId) { id = fboId; }
     
@@ -78,21 +85,38 @@ public:
      */
     virtual void destroyAttachedTex();
     
+    /**
+     * Return output texture width
+     */
 	int getTexWidth() const { return texW; }
+    
+    /**
+     * Return output texture height
+     */
 	int getTexHeight() const { return texH; }
     
+    /**
+     * Get MemTransfer object associated with this FBO.
+     */
     MemTransfer *getMemTransfer() const { return memTransfer; }
     
 protected:
-    Core *core;
-    MemTransfer *memTransfer;
+    /**
+     * Generate an FBO id.
+     */
+    virtual void generateIds();
     
-	GLuint id;
-    GLuint glTexUnit;
-	GLuint attachedTexId;
     
-	int texW;
-	int texH;
+    Core *core;                 // Core singleton
+    
+    MemTransfer *memTransfer;   // MemTransfer object associated with this FBO
+    
+	GLuint id;                  // OpenGL FBO id
+    GLuint glTexUnit;           // GL texture unit (to be used in glActiveTexture()) for output texture
+	GLuint attachedTexId;       // output texture id
+    
+	int texW;   // output texture width
+	int texH;   // output texture height
 };
     
 }
