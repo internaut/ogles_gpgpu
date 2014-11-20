@@ -8,6 +8,7 @@
 
 #import "RootViewController.h"
 
+// array with available test images
 static NSArray *availableTestImages = [NSArray arrayWithObjects:
                                        @"moon_1024x512.png",
                                        @"moon_1024x1024.png",
@@ -15,26 +16,58 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
                                        @"building_2048x1536.jpg",
                                        nil];
 
+/**
+ * RootViewController private methods
+ */
 @interface RootViewController ()
 
+/**
+ * Init views
+ */
 - (void)initUI;
 
+/**
+ * Init ogles_gpgpu. Set up processing pipeline.
+ */
 - (void)initOGLESGPGPU;
 
+/**
+ * Action when input test image was selected (buttons on top)
+ */
 - (void)testImgBtnPressedAction:(id)sender;
 
+/**
+ * Present test image number <num>. Force display update <forceDisplay>.
+ */
 - (void)presentTestImg:(int)num forceDisplay:(BOOL)forceDisplay;
 
+/**
+ * Present the image processing output
+ */
 - (void)presentOutputImg;
 
+/**
+ * Run image processing on GPU via ogles_gpgpu.
+ */
 - (void)runImgProcOnGPU;
 
+/**
+ * Helper method: Convert UIImage <img> to RGBA data.
+ */
 - (unsigned char *)uiImageToRGBABytes:(UIImage *)img;
 
+/**
+ * Helper method: Convert RGBA <data> of size <w>x<h> to UIImage object.
+ */
 - (UIImage *)rgbaBytesToUIImage:(unsigned char *)data width:(int)w height:(int)h;
 
 @end
 
+
+
+/**
+ * RootViewController implementation
+ */
 @implementation RootViewController
 
 #pragma mark init/dealloc
@@ -42,6 +75,7 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        // set defaults
         selectedTestImg = -1;
         displayingOutput = NO;
     }
@@ -112,6 +146,7 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
 #pragma mark private methods
 
 - (void)initUI {
+    // get screen rect for landscape mode
     CGRect screenRect = [[UIScreen mainScreen] bounds];
     if (screenRect.size.width < screenRect.size.height) {
         float tmp = screenRect.size.width;
@@ -127,7 +162,7 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
     imgView = [[UIImageView alloc] initWithFrame:screenRect];
     [baseView addSubview:imgView];
     
-    // create buttons for the test images
+    // create buttons for loading the test images
     int i = 0;
     int btnW = 180;
     int btnMrgn = 10;
@@ -219,22 +254,30 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
 - (void)initOGLESGPGPU {
     NSLog(@"initializing ogles_gpgpu");
     
+    // get ogles_gpgpu::Core singleton instance
     gpgpuMngr = ogles_gpgpu::Core::getInstance();
+    
+    // enable iOS optimizations (fast texture access)
     ogles_gpgpu::Core::usePlatformOptimizations = true;
     
+    // do not use mipmaps (will not work with NPOT images)
     gpgpuMngr->setUseMipmaps(false);
     
-    grayscaleProc.setOutputSize(0.5f);
+    // set up grayscale processor
+    grayscaleProc.setOutputSize(0.5f);  // downscale to half size
     grayscaleProc.setGrayscaleConvType(ogles_gpgpu::GRAYSCALE_INPUT_CONVERSION_BGR);    // needed, because we actually have BGRA input data when we use iOS optimized memory access
-//    grayscaleProc.setOutputSize(1.0f);
+
+    // set up adaptive thresholding (two passes)
     adaptThreshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
     adaptThreshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
     
+    // create the pipeline
     gpgpuMngr->addProcToPipeline(&grayscaleProc);
 //    gpgpuMngr->addProcToPipeline(&simpleThreshProc);
     gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
     gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
 
+    // initialize the pipeline
     gpgpuMngr->init(eaglContext);
 }
 

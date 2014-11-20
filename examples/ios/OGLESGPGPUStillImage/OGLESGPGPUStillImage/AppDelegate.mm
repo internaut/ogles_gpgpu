@@ -1,10 +1,6 @@
-//
-//  AppDelegate.m
-//  OGLESGPGPUGrayscale
-//
-//  Created by Markus Konrad on 16.10.14.
-//  Copyright (c) 2014 INKA Research Group. All rights reserved.
-//
+/**
+ * iOS App AppDelegate -- application lifecycle handling
+ */
 
 #import "AppDelegate.h"
 
@@ -12,12 +8,15 @@
 
 @implementation AppDelegate
 
+/**
+ * Startup method
+ */
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
     self.window.backgroundColor = [UIColor whiteColor];
     
+    // root view controller contains the main application logic
     RootViewController *rootViewCtrl = [[[RootViewController alloc] initWithNibName:nil bundle:nil] autorelease];
     
     [self.window setRootViewController:rootViewCtrl];
