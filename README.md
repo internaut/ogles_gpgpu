@@ -2,9 +2,9 @@
 
 ## Features
 
-## Supported platforms
+## Tested platforms
 
-* iOS (>= 7.1)
+* iOS 7.1
 
 ## Tested devices
 
@@ -16,7 +16,6 @@
 
 ### Milestone 1
 
-* apple fast texture upload/download
 * multipass proc base
 * docs
 
@@ -30,12 +29,12 @@
 
 ### Milestone 2
 
-* comparisons with openCV
-* AR support (include into ocv_ar)
+* android port
 
 ### Milestone 3
 
-* android port
+* comparisons with openCV
+* AR support (include into ocv_ar)
 
 ### Milestone 4
 
