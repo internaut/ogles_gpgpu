@@ -16,16 +16,13 @@
 
 ### Milestone 1
 
-* multipass proc base
 * docs
-
-* test ipad3 / ios 8
-
-* rename project: OGLESGPGPUStillImage
 
 * new project: OGLESGPGPUCamera
 * MemTransfer -> MemMap (MemMngr) ?
 * more filters
+
+* test ipad3 / ios 8
 
 ### Milestone 2
 
@@ -39,3 +36,7 @@
 ### Milestone 4
 
 * rasp pi port
+
+### Milestone 5
+
+* multipass proc base
