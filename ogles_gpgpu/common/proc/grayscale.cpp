@@ -3,16 +3,29 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
+const GLfloat GrayscaleProc::grayscaleConvVecRGB[3] = {
+    0.299, 0.587, 0.114
+};
+
+const GLfloat GrayscaleProc::grayscaleConvVecBGR[3] = {
+    0.114, 0.587, 0.299
+};
+
 const char *GrayscaleProc::fshaderGrayscaleSrc = TO_STR(
 precision mediump float;
 varying vec2 vTexCoord;
 uniform sampler2D uInputTex;
-const vec3 rgb2gray = vec3(0.299, 0.587, 0.114);
+uniform vec3 uInputConvVec;
 void main() {
-    float gray = dot(texture2D(uInputTex, vTexCoord).rgb, rgb2gray);
+    float gray = dot(texture2D(uInputTex, vTexCoord).rgb, uInputConvVec);
     gl_FragColor = vec4(gray, gray, gray, 1.0);
 }
 );
+
+GrayscaleProc::GrayscaleProc() {
+    inputConvType = GRAYSCALE_INPUT_CONVERSION_NONE;
+    setGrayscaleConvType(GRAYSCALE_INPUT_CONVERSION_RGB);
+}
 
 void GrayscaleProc::init(int inW, int inH, unsigned int order) {
     cout << "ogles_gpgpu::GrayscaleProc - init" << endl;
@@ -30,6 +43,7 @@ void GrayscaleProc::init(int inW, int inH, unsigned int order) {
     shParamAPos = shader->getParam(ATTR, "aPos");
 	shParamATexCoord = shader->getParam(ATTR, "aTexCoord");
     shParamUInputTex = shader->getParam(UNIF, "uInputTex");
+    shParamUInputConvVec = shader->getParam(UNIF, "uInputConvVec");
     
 	// set geometry
 	memcpy(vertexBuf, ProcBase::quadVertices,
@@ -56,6 +70,8 @@ void GrayscaleProc::render() {
     
 	// set uniforms
     glUniform1i(shParamUInputTex, texUnit);
+    glUniform3fv(shParamUInputConvVec, 1, grayscaleConvVec);
+    Tools::checkGLErr("ogles_gpgpu::GrayscaleProc - set uniforms");
     
 	// render to FBO
 	fbo->bind();
@@ -88,4 +104,28 @@ void GrayscaleProc::render() {
     
 	fbo->unbind();
 
+}
+
+void GrayscaleProc::setGrayscaleConvVec(const GLfloat v[3]) {
+    inputConvType = GRAYSCALE_INPUT_CONVERSION_CUSTOM;
+    memcpy(grayscaleConvVec, v, sizeof(GLfloat) * 3);
+}
+
+void GrayscaleProc::setGrayscaleConvType(GrayscaleInputConversionType type) {
+    if (inputConvType == type) return;  // no change
+    
+    const GLfloat *v = NULL;
+    
+    if (type == GRAYSCALE_INPUT_CONVERSION_RGB) {
+        v = &grayscaleConvVecRGB[0];
+    } else if (type == GRAYSCALE_INPUT_CONVERSION_BGR) {
+        v = &grayscaleConvVecBGR[0];
+    } else {
+        cerr << "ogles_gpgpu::GrayscaleProc - unknown grayscale input conversion type " << type << endl;
+        v = &grayscaleConvVecRGB[0];    // set default
+    }
+    
+    memcpy(grayscaleConvVec, v, sizeof(GLfloat) * 3);
+    
+    inputConvType = type;
 }

@@ -225,14 +225,15 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
     gpgpuMngr->setUseMipmaps(false);
     
     grayscaleProc.setOutputSize(0.5f);
+    grayscaleProc.setGrayscaleConvType(ogles_gpgpu::GRAYSCALE_INPUT_CONVERSION_BGR);    // needed, because we actually have BGRA input data when we use iOS optimized memory access
 //    grayscaleProc.setOutputSize(1.0f);
     adaptThreshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
     adaptThreshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
     
     gpgpuMngr->addProcToPipeline(&grayscaleProc);
 //    gpgpuMngr->addProcToPipeline(&simpleThreshProc);
-//    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
-//    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
+    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
+    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
 
     gpgpuMngr->init(eaglContext);
 }
