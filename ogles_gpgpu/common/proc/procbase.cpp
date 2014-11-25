@@ -20,11 +20,23 @@ const GLfloat ProcBase::quadTexCoordsStd[] = {
     0, 1,
     1, 1 };
 
+const GLfloat ProcBase::quadTexCoordsStdMirrored[] = {
+    1, 0,
+    0, 0,
+    1, 1,
+    0, 1 };
+
 const GLfloat ProcBase::quadTexCoordsFlipped[] = {
     0, 1,
     1, 1,
     0, 0,
     1, 0 };
+
+const GLfloat ProcBase::quadTexCoordsFlippedMirrored[] = {
+    1, 1,
+    0, 1,
+    1, 0,
+    0, 0 };
 
 const GLfloat ProcBase::quadTexCoordsDiagonal[] = {
     0, 0,
@@ -157,8 +169,14 @@ void ProcBase::initTexCoordBuf(GLfloat *buf, RenderOrientation overrideRenderOri
         case RenderOrientationStd:
             coordsPtr = ProcBase::quadTexCoordsStd;
             break;
+        case RenderOrientationStdMirrored:
+            coordsPtr = ProcBase::quadTexCoordsStdMirrored;
+            break;
         case RenderOrientationFlipped:
             coordsPtr = ProcBase::quadTexCoordsFlipped;
+            break;
+        case RenderOrientationFlippedMirrored:
+            coordsPtr = ProcBase::quadTexCoordsFlippedMirrored;
             break;
         case RenderOrientationDiagonal:
             coordsPtr = ProcBase::quadTexCoordsDiagonal;

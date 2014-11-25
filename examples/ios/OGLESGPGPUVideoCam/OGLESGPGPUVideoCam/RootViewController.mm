@@ -332,7 +332,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     [[(AVCaptureVideoPreviewLayer *)camView.layer connection] setVideoOrientation:(AVCaptureVideoOrientation)o];
     
     if (o == UIInterfaceOrientationLandscapeLeft) {
-        dispRenderOrientation = ogles_gpgpu::RenderOrientationStd;
+        dispRenderOrientation = ogles_gpgpu::RenderOrientationStdMirrored;
     } else {
         dispRenderOrientation = ogles_gpgpu::RenderOrientationFlipped;
     }

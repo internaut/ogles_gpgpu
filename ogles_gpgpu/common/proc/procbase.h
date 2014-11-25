@@ -161,7 +161,9 @@ protected:
     static const char *vshaderDefault;  // default vertex shader to render a fullscreen quad
     
 	static const GLfloat quadTexCoordsStd[];        // default quad texture coordinates
+    static const GLfloat quadTexCoordsStdMirrored[];        // default quad texture coordinates (mirrored)
 	static const GLfloat quadTexCoordsFlipped[];    // flipped quad texture coordinates
+	static const GLfloat quadTexCoordsFlippedMirrored[];    // flipped, mirrored quad texture coordinates
 	static const GLfloat quadTexCoordsDiagonal[];   // diagonal quad texture coordinates
 	static const GLfloat quadVertices[];            // default quad vertices
     

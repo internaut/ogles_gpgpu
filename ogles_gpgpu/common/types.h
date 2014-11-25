@@ -10,7 +10,9 @@ namespace ogles_gpgpu {
 typedef enum {
     RenderOrientationNone = -1,
     RenderOrientationStd = 0,
+    RenderOrientationStdMirrored,
     RenderOrientationFlipped,
+    RenderOrientationFlippedMirrored,
     RenderOrientationDiagonal
 } RenderOrientation;
 
