@@ -48,6 +48,8 @@ ProcBase::ProcBase() {
     
     procParamOutW = procParamOutH = 0;
     procParamOutScale = 1.0f;
+    
+    renderOrientation = RenderOrientationStd;
 }
 
 ProcBase::~ProcBase() {
@@ -78,6 +80,12 @@ void ProcBase::getResultData(unsigned char *data) const {
     fbo->readBuffer(data);
 }
 
+MemTransfer *ProcBase::getMemTransferObj() const {
+    assert(fbo);
+    
+    return fbo->getMemTransfer();
+}
+
 GLuint ProcBase::getOutputTexId() const {
     assert(fbo != NULL);
     
@@ -94,15 +102,14 @@ void ProcBase::createFBOTex(bool genMipmap) {
     outFrameH = fbo->getTexHeight();
 }
 
-void ProcBase::reinit(int inW, int inH) {
+void ProcBase::reinit(int inW, int inH, bool prepareForExternalInput) {
     assert(fbo != NULL);
     
     setInOutFrameSizes(inW, inH, procParamOutW, procParamOutH, procParamOutScale);
     
     fbo->destroyAttachedTex();  // needs to be recreated later!
     
-    if (orderNum == 0) {    // recreate input
-        fbo->getMemTransfer()->releaseInput();
+    if (prepareForExternalInput) {    // recreate input
         useTexture(fbo->getMemTransfer()->prepareInput(inFrameW, inFrameH, inputDataFmt));
     }
     
@@ -113,7 +120,7 @@ void ProcBase::reinit(int inW, int inH) {
          << endl;
 }
 
-void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH, float scaleFactor) {
+void ProcBase::baseInit(int inW, int inH, unsigned int order, bool prepareForExternalInput, int outW, int outH, float scaleFactor) {
     assert(inW > 0 && inH > 0);
     
     orderNum = order;
@@ -121,7 +128,7 @@ void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH
     setInOutFrameSizes(inW, inH, outW, outH, scaleFactor);
     
     // prepare for external input data
-    if (orderNum == 0) {
+    if (prepareForExternalInput) {
         assert(fbo != NULL);
         useTexture(fbo->getMemTransfer()->prepareInput(inW, inH, inputDataFmt));
         cout << "ogles_gpgpu::ProcBase - init - prepared for external input data" << endl;
@@ -137,6 +144,28 @@ void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH
 
 void ProcBase::setExternalInputData(const unsigned char *data) {
     fbo->getMemTransfer()->toGPU(data);
+}
+
+void ProcBase::initTexCoordBuf(GLfloat *buf, RenderOrientation overrideRenderOrientation) {
+    RenderOrientation o = overrideRenderOrientation == RenderOrientationNone ?
+                          renderOrientation : overrideRenderOrientation;
+    
+    const GLfloat *coordsPtr;
+    
+    switch (o) {
+        default:
+        case RenderOrientationStd:
+            coordsPtr = ProcBase::quadTexCoordsStd;
+            break;
+        case RenderOrientationFlipped:
+            coordsPtr = ProcBase::quadTexCoordsFlipped;
+            break;
+        case RenderOrientationDiagonal:
+            coordsPtr = ProcBase::quadTexCoordsDiagonal;
+            break;
+    }
+    
+	memcpy(buf, coordsPtr, OGLES_GPGPU_QUAD_TEX_BUFSIZE * sizeof(GLfloat));
 }
 
 void ProcBase::setInOutFrameSizes(int inW, int inH, int outW, int outH, float scaleFactor) {

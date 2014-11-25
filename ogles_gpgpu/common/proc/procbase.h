@@ -8,6 +8,7 @@
 
 #include "../gl/fbo.h"
 #include "../gl/shader.h"
+#include "../gl/memtransfer.h"
 
 #define OGLES_GPGPU_QUAD_VERTICES 				4
 #define OGLES_GPGPU_QUAD_COORDS_PER_VERTEX      3
@@ -40,12 +41,12 @@ public:
      * position <order> in the processing pipeline.
      * Abstract method.
      */
-    virtual void init(int inW, int inH, unsigned int order) = 0;
+    virtual void init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false) = 0;
     
     /**
      * Reinitialize the proc for a different input frame size of <inW>x<inH>.
      */
-    virtual void reinit(int inW, int inH);
+    virtual void reinit(int inW, int inH, bool prepareForExternalInput = false);
     
     /**
      * Set pixel data format for input data to <fmt>.
@@ -78,17 +79,21 @@ public:
     /**
      * Use texture id <id> as input texture at texture <useTexUnit>.
      */
-    void useTexture(GLuint id, GLuint useTexUnit = 1) { texId = id; texUnit = useTexUnit; }
+    virtual void useTexture(GLuint id, GLuint useTexUnit = 1) { texId = id; texUnit = useTexUnit; }
     
     /**
      * Set output size by scaling down or up the input frame size by factor <scaleFactor>.
      */
-    void setOutputSize(float scaleFactor)  { procParamOutScale = scaleFactor; }
+    virtual void setOutputSize(float scaleFactor)  { procParamOutScale = scaleFactor; }
 
     /**
      * Set output size by scaling down or up the input frame to size <outW>x<outH>.
      */
-    void setOutputSize(int outW, int outH) { procParamOutW = outW; procParamOutH = outH; }
+    virtual void setOutputSize(int outW, int outH) { procParamOutW = outW; procParamOutH = outH; }
+    
+    virtual void setOutputRenderOrientation(RenderOrientation o) { renderOrientation = o; }
+    
+    RenderOrientation getOutputRenderOrientation() const { return renderOrientation; }
     
     /**
      * Get the output frame width.
@@ -111,6 +116,11 @@ public:
     virtual void getResultData(unsigned char *data) const;
     
     /**
+     * Return pointer to MemTransfer object of this processor.
+     */
+    virtual MemTransfer *getMemTransferObj() const;
+    
+    /**
      * Return input texture id.
      */
     GLuint getInputTexId() const { return texId; }
@@ -126,7 +136,9 @@ protected:
      * scaling factor <scaleFactor>. If output size is 0x0, the output size will be calculated by input size * scaling
      * factor.
      */
-    virtual void baseInit(int inW, int inH, unsigned int order, int outW = 0, int outH = 0, float scaleFactor = 1.0f);
+    virtual void baseInit(int inW, int inH, unsigned int order, bool prepareForExternalInput = false, int outW = 0, int outH = 0, float scaleFactor = 1.0f);
+    
+    virtual void initTexCoordBuf(GLfloat *buf, RenderOrientation overrideRenderOrientation = RenderOrientationNone);
     
     /**
      * Common frame size setter for input size <inW>x<inH> and output size <outW>x<outH> and scaling factor
@@ -164,6 +176,8 @@ protected:
     int procParamOutW;          // output frame width parameter
     int procParamOutH;          // output frame height parameter
     float procParamOutScale;    // output frame scaling parameter
+    
+    RenderOrientation renderOrientation;
     
     bool willDownscale; // is true if output size < input size.
     

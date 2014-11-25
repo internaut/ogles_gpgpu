@@ -65,6 +65,7 @@
 		28193A4D1A2489EB0055834F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		28193A531A2491A10055834F /* disp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = disp.cpp; sourceTree = "<group>"; };
 		28193A541A2491A10055834F /* disp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = disp.h; sourceTree = "<group>"; };
+		28193A561A24D2D30055834F /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		28579B031A23C06000B1710F /* OGLESGPGPUVideoCam.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGLESGPGPUVideoCam.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28579B061A23C06000B1710F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		28579B081A23C06000B1710F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -131,6 +132,7 @@
 				28193A2B1A2488730055834F /* proc */,
 				28193A331A2488730055834F /* tools.h */,
 				28193A321A2488730055834F /* tools.cpp */,
+				28193A561A24D2D30055834F /* types.h */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -185,8 +187,8 @@
 			isa = PBXGroup;
 			children = (
 				28193A381A2488730055834F /* gl_includes.h */,
-				28193A391A2488730055834F /* memtransfer_ios.cpp */,
 				28193A3A1A2488730055834F /* memtransfer_ios.h */,
+				28193A391A2488730055834F /* memtransfer_ios.cpp */,
 			);
 			path = ios;
 			sourceTree = "<group>";

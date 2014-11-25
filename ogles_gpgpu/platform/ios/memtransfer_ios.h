@@ -50,7 +50,7 @@ public:
     /**
      * Prepare for input frames of size <inTexW>x<inTexH>. Return a texture id for the input frames.
      */
-    virtual GLuint prepareInput(int inTexW, int inTexH, GLenum inputPxFormat = GL_RGBA);
+    virtual GLuint prepareInput(int inTexW, int inTexH, GLenum inputPxFormat = GL_RGBA, void *inputDataPtr = NULL);
     
     /**
      * Prepare for output frames of size <outTexW>x<outTexH>. Return a texture id for the output frames.

@@ -35,7 +35,7 @@ public:
      * Init the processor for input frames of size <inW>x<inH> which is at
      * position <order> in the processing pipeline.
      */
-    virtual void init(int inW, int inH, unsigned int order);
+    virtual void init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
     
     /**
      * Render the output.

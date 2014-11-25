@@ -63,10 +63,11 @@ void Core::addProcToPipeline(ProcBase *proc) {
     pipeline.push_back(proc);
 }
 
-Disp *Core::createRenderDisplay(int dispW, int dispH) {
+Disp *Core::createRenderDisplay(int dispW, int dispH, RenderOrientation orientation) {
     assert(!renderDisp);
     
     renderDisp = new Disp();
+    renderDisp->setOutputRenderOrientation(orientation);
     
     if (dispW > 0 && dispH > 0) {
         renderDisp->setOutputSize(dispW, dispH);
@@ -134,9 +135,9 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
         
         if (!prepared) {    // for first time preparation
             // initialize current proc
-            (*it)->init(pipelineFrameW, pipelineFrameH, num);
+            (*it)->init(pipelineFrameW, pipelineFrameH, num, num == 0 && inFmt != GL_NONE);
         } else {    // for reinitialization with different frame size
-            (*it)->reinit(pipelineFrameW, pipelineFrameH);
+            (*it)->reinit(pipelineFrameW, pipelineFrameH, num == 0 && inFmt != GL_NONE);
         }
         
         // if this proc will downscale, we should generate a mipmap for the previous output
@@ -194,6 +195,19 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
 }
 
 #pragma mark input, processing and output methods
+
+MemTransfer *Core::getInputMemTransfer() const {
+    return firstProc->getMemTransferObj();
+}
+
+MemTransfer *Core::getOutputMemTransfer() const {
+    return lastProc->getMemTransferObj();
+}
+
+void Core::setInputTexId(GLuint inTexId) {
+    inputTexId = inTexId;
+    firstProc->useTexture(inputTexId);
+}
 
 void Core::setInputData(const unsigned char *data) {
     assert(initialized && inputTexId > 0);

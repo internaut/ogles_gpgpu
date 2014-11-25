@@ -28,14 +28,14 @@ GrayscaleProc::GrayscaleProc() {
     setGrayscaleConvType(GRAYSCALE_INPUT_CONVERSION_RGB);
 }
 
-void GrayscaleProc::init(int inW, int inH, unsigned int order) {
+void GrayscaleProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     cout << "ogles_gpgpu::GrayscaleProc - init" << endl;
     
     // create fbo
     ProcBase::createFBO();
     
     // parent init - set defaults
-    ProcBase::baseInit(inW, inH, order, procParamOutW, procParamOutH, procParamOutScale);
+    ProcBase::baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
     
     // create shader object
     ProcBase::createShader(ProcBase::vshaderDefault, fshaderGrayscaleSrc);
@@ -51,12 +51,11 @@ void GrayscaleProc::init(int inW, int inH, unsigned int order) {
            OGLES_GPGPU_QUAD_VERTEX_BUFSIZE * sizeof(GLfloat));
     
 	// set texture coordinates
-	memcpy(texCoordBuf, ProcBase::quadTexCoordsStd,
-		   OGLES_GPGPU_QUAD_TEX_BUFSIZE * sizeof(GLfloat));
+    initTexCoordBuf(texCoordBuf);
 }
 
 void GrayscaleProc::render() {
-    cout << "ogles_gpgpu::GrayscaleProc - render to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
+    cout << "ogles_gpgpu::GrayscaleProc - input tex " << texId << " / render to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
     
 	shader->use();
     

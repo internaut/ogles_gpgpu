@@ -38,14 +38,9 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 - (void)procOutputSelectBtnAction:(UIButton *)sender;
 
 /**
- * force to redraw views. this method is only to display the intermediate
- * frame processing output for debugging
+ * Prepare the GLKView and ogles_gpgpu for camera frames of <size>.
  */
-- (void)updateView;
-
 - (void)prepareForFramesOfSize:(CGSize)size;
-
-- (void)setCorrectedFrameForViews:(NSValue *)newFrameRect;
 
 @end
 
@@ -59,9 +54,11 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        showCamPreview = YES;
+        showCamPreview = NO;
         firstFrame = YES;
         prepared = NO;
+        
+        [self interfaceOrientationChanged:self.interfaceOrientation];
         
         // create an OpenGL context first of all
         eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
@@ -120,6 +117,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     // set up camera
     [self initCam];
     
+    // set up ogles_gpgpu
     [self initOGLESGPGPU];
 }
 
@@ -147,20 +145,29 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
         firstFrame = NO;
     }
     
-    [self performSelectorOnMainThread:@selector(updateView)
-                           withObject:nil
-                        waitUntilDone:NO];
+    gpgpuInputHandler->prepareInput(frameSize.width, frameSize.height, GL_BGRA, imgBuf);
+    
+    // set input
+    gpgpuMngr->setInputTexId(gpgpuInputHandler->getInputTexId());
+    
+    // run processing pipeline
+    gpgpuMngr->process();
+    
+    [glView display];
+}
+
+#pragma mark GLKView delegate methods
+
+- (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
+    if (!prepared) return;
+    
+    NSLog(@"GLKView draw");
+    
+    // render output directly to screen
+    outputDispRenderer->render();
 }
 
 #pragma mark private methods
-
-- (void)updateView {
-    if (!prepared) return;
-    
-    outputDispRenderer->render();
-    
-    [glView setNeedsDisplay];
-}
 
 - (void)initUI {
     const CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -173,11 +180,13 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     
     // create the image view for the camera frames
     camView = [[CamView alloc] initWithFrame:baseFrame];
+    [camView setHidden:showCamPreview];
     [baseView addSubview:camView];
     
     // create the GLKView to show the processed frames as textures
     glView = [[GLKView alloc] initWithFrame:baseFrame context:eaglContext];
-    [glView setHidden:YES]; // initally hidden
+    [glView setDelegate:self];
+    [glView setHidden:showCamPreview];
     [baseView addSubview:glView];
     
     // set a list of buttons for processing output display
@@ -218,7 +227,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     
     // set up grayscale processor
     grayscaleProc.setOutputSize(0.5f);  // downscale to half size
-    grayscaleProc.setGrayscaleConvType(ogles_gpgpu::GRAYSCALE_INPUT_CONVERSION_BGR);    // needed, because we actually have BGRA input data when we use iOS optimized memory access
+//    grayscaleProc.setGrayscaleConvType(ogles_gpgpu::GRAYSCALE_INPUT_CONVERSION_BGR);    // needed, because we actually have BGRA input data when we use iOS optimized memory access
     
     // set up adaptive thresholding (two passes)
 //    adaptThreshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
@@ -231,6 +240,8 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 //    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
     
     outputDispRenderer = gpgpuMngr->createRenderDisplay(glView.frame.size.width, glView.frame.size.height);
+    outputDispRenderer->setOutputRenderOrientation(dispRenderOrientation);
+//    outputDispRenderer = gpgpuMngr->createRenderDisplay();
     
     // initialize the pipeline
     gpgpuMngr->init(eaglContext);
@@ -278,10 +289,13 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     vidDataOutput = [[AVCaptureVideoDataOutput alloc] init];
     [camSession addOutput:vidDataOutput];
     
+    // Set dispatch to be on the main thread so OpenGL can do things with the data
+    [vidDataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+    
     // set output delegate to self
-    dispatch_queue_t queue = dispatch_queue_create("vid_output_queue", NULL);
-    [vidDataOutput setSampleBufferDelegate:self queue:queue];
-    dispatch_release(queue);
+//    dispatch_queue_t queue = dispatch_queue_create("vid_output_queue", NULL);
+//    [vidDataOutput setSampleBufferDelegate:self queue:queue];
+//    dispatch_release(queue);
     
     // get best output video format
     NSArray *outputPixelFormats = vidDataOutput.availableVideoCVPixelFormatTypes;
@@ -293,6 +307,8 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
         fourCCStringFromCode(code, fourCC);
         NSLog(@"available video output format: %s (code %d)", fourCC, code);
     }
+    
+    bestPixelFormatCode = kCVPixelFormatType_32BGRA;    // override
 
     // specify output video format
     NSDictionary *outputSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:bestPixelFormatCode]
@@ -314,6 +330,16 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 
 - (void)interfaceOrientationChanged:(UIInterfaceOrientation)o {
     [[(AVCaptureVideoPreviewLayer *)camView.layer connection] setVideoOrientation:(AVCaptureVideoOrientation)o];
+    
+    if (o == UIInterfaceOrientationLandscapeLeft) {
+        dispRenderOrientation = ogles_gpgpu::RenderOrientationStd;
+    } else {
+        dispRenderOrientation = ogles_gpgpu::RenderOrientationFlipped;
+    }
+    
+    if (prepared && outputDispRenderer) {
+        outputDispRenderer->setOutputRenderOrientation(dispRenderOrientation);
+    }
 }
 
 - (void)prepareForFramesOfSize:(CGSize)size {
@@ -327,14 +353,13 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     float viewYOff = (glView.frame.size.height - newViewH) / 2;
     
     CGRect correctedViewRect = CGRectMake(0, viewYOff, glView.frame.size.width, newViewH);
+
+    [glView setFrame:correctedViewRect];
+
+    gpgpuMngr->prepare(size.width, size.height, GL_NONE);
+    gpgpuInputHandler = gpgpuMngr->getInputMemTransfer();
     
-    // the following needs to be executed on the main thread
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [glView setFrame:correctedViewRect];
-        gpgpuMngr->prepare(size.width, size.height);
-        
-        prepared = YES;
-    });
+    prepared = YES;
 }
 
 @end

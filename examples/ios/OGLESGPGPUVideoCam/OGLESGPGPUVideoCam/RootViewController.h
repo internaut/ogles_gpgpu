@@ -18,7 +18,7 @@
  * Main view controller.
  * Handles UI initialization and interactions. Handles camera frame input.
  */
-@interface RootViewController : UIViewController<AVCaptureVideoDataOutputSampleBufferDelegate> {
+@interface RootViewController : UIViewController<AVCaptureVideoDataOutputSampleBufferDelegate , GLKViewDelegate> {
     AVCaptureSession *camSession;               // controlls the camera session
     AVCaptureDeviceInput *camDeviceInput;       // input device: camera
     AVCaptureVideoDataOutput *vidDataOutput;    // controlls the video output
@@ -37,11 +37,15 @@
     
     ogles_gpgpu::Core *gpgpuMngr;   // ogles_gpgpu manager
     
+    ogles_gpgpu::MemTransfer *gpgpuInputHandler;    // weak ref.
+    
     ogles_gpgpu::GrayscaleProc grayscaleProc;   // pipeline processor 1: convert input to grayscale image
     ogles_gpgpu::ThreshProc simpleThreshProc;   // pipeline processor 2 (alternative 1): simple thresholding
     ogles_gpgpu::ThreshProc adaptThreshProc[2]; // pipeline processor 2 (alternative 2): adaptive thresholding (two passes)
     
     ogles_gpgpu::Disp *outputDispRenderer;  // weak ref.
+    
+    ogles_gpgpu::RenderOrientation dispRenderOrientation;
 }
 
 @end

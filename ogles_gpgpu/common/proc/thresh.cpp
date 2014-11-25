@@ -74,14 +74,14 @@ ThreshProc::ThreshProc() {
     pxDx = pxDy = 0.0f;
 }
 
-void ThreshProc::init(int inW, int inH, unsigned int order) {
+void ThreshProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     cout << "ogles_gpgpu::ThreshProc - init" << endl;
     
     // create fbo
     ProcBase::createFBO();
     
     // parent init - set defaults
-    ProcBase::baseInit(inW, inH, order, procParamOutW, procParamOutH, procParamOutScale);
+    ProcBase::baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
     
     if (threshType == THRESH_ADAPTIVE_PASS_1 || threshType == THRESH_ADAPTIVE_PASS_2) {
         // calculate pixel delta values
@@ -118,11 +118,10 @@ void ThreshProc::init(int inW, int inH, unsigned int order) {
     
 	// set texture coordinates
     if (threshType == THRESH_SIMPLE) {
-        memcpy(texCoordBuf, ProcBase::quadTexCoordsStd,
-               OGLES_GPGPU_QUAD_TEX_BUFSIZE * sizeof(GLfloat));
+        // set texture coordinates
+        initTexCoordBuf(texCoordBuf, RenderOrientationStd);
     } else {
-        memcpy(texCoordBuf, ProcBase::quadTexCoordsDiagonal,
-               OGLES_GPGPU_QUAD_TEX_BUFSIZE * sizeof(GLfloat));
+        initTexCoordBuf(texCoordBuf, RenderOrientationDiagonal);
     }
 }
 

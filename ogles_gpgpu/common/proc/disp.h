@@ -20,12 +20,17 @@ public:
      * Init the processor for input frames of size <inW>x<inH> which is at
      * position <order> in the processing pipeline.
      */
-    virtual void init(int inW, int inH, unsigned int order);
+    virtual void init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
     
     /**
      * Render the output.
      */
     virtual void render();
+    
+    /**
+     * Immediately change the render orientation, also after init() has been called.
+     */
+    virtual void setOutputRenderOrientation(RenderOrientation o);
 
 private:
     static const char *fshaderDispSrc;         // fragment shader source

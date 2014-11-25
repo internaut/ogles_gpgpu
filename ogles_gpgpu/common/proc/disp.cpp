@@ -8,16 +8,16 @@ precision mediump float;
 varying vec2 vTexCoord;
 uniform sampler2D uInputTex;
 void main() {
-//    gl_FragColor = vec4(texture2D(uInputTex, vTexCoord).rgba);
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = vec4(texture2D(uInputTex, vTexCoord).rgba);
+//    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
 );
 
-void Disp::init(int inW, int inH, unsigned int order) {
+void Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     cout << "ogles_gpgpu::Disp - init" << endl;
     
     // parent init - set defaults
-    ProcBase::baseInit(inW, inH, order, procParamOutW, procParamOutH, procParamOutScale);
+    ProcBase::baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
     
     // create shader object
     ProcBase::createShader(ProcBase::vshaderDefault, fshaderDispSrc);
@@ -32,12 +32,11 @@ void Disp::init(int inW, int inH, unsigned int order) {
            OGLES_GPGPU_QUAD_VERTEX_BUFSIZE * sizeof(GLfloat));
     
 	// set texture coordinates
-	memcpy(texCoordBuf, ProcBase::quadTexCoordsStd,
-		   OGLES_GPGPU_QUAD_TEX_BUFSIZE * sizeof(GLfloat));
+    initTexCoordBuf(texCoordBuf);
 }
 
 void Disp::render() {
-    cout << "ogles_gpgpu::Disp - render to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
+    cout << "ogles_gpgpu::Disp - input tex " << texId << " / render to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
     
 	shader->use();
     
@@ -79,4 +78,11 @@ void Disp::render() {
 	// cleanup
 	glDisableVertexAttribArray(shParamAPos);
 	glDisableVertexAttribArray(shParamATexCoord);
+}
+
+void Disp::setOutputRenderOrientation(RenderOrientation o) {
+    renderOrientation = o;
+    
+	// set texture coordinates again
+    initTexCoordBuf(texCoordBuf);
 }

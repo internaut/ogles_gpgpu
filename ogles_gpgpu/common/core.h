@@ -54,7 +54,7 @@ public:
      * Note: Must be called after last addProcToPipeline() call and before
      * init() / prepare()!
      */
-    Disp *createRenderDisplay(int dispW = 0, int dispH = 0);
+    Disp *createRenderDisplay(int dispW = 0, int dispH = 0, RenderOrientation orientation = RenderOrientationStd);
     
     /**
      * Initialize OpenGL settings and the pipeline.
@@ -82,6 +82,16 @@ public:
     Disp *getRenderDisplay() const { return renderDisp; }
     
     /**
+     * Get pointer to input memory transfer handler
+     */
+    MemTransfer *getInputMemTransfer() const;
+    
+    /**
+     * Get pointer to output memory transfer handler
+     */
+    MemTransfer *getOutputMemTransfer() const;
+    
+    /**
      * Use mipmaps: <use>.
      * Note that some hardware only supports mipmapping for POT images.
      */
@@ -95,7 +105,7 @@ public:
     /**
      * Set input as OpenGL texture id.
      */
-    void setInputTexId(GLuint inTexId) { inputTexId = inTexId; }
+    void setInputTexId(GLuint inTexId);
     
     /**
      * Set input as RGBA byte data of size <w> x <h>.

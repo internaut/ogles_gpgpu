@@ -23,7 +23,7 @@ MemTransfer::~MemTransfer() {
 
 #pragma mark public methods
 
-GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat) {
+GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat, void *inputDataPtr) {
     assert(initialized && inTexW > 0 && inTexH > 0);
     
     if (inputW == inTexW && inputH == inTexH && inputPixelFormat == inputPxFormat) {
