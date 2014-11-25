@@ -1,0 +1,467 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		28193A3B1A2488730055834F /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A201A2488730055834F /* core.cpp */; };
+		28193A3C1A2488730055834F /* fbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A231A2488730055834F /* fbo.cpp */; };
+		28193A3D1A2488730055834F /* memtransfer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A251A2488730055834F /* memtransfer.cpp */; };
+		28193A3E1A2488730055834F /* memtransfer_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A271A2488730055834F /* memtransfer_factory.cpp */; };
+		28193A3F1A2488730055834F /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A291A2488730055834F /* shader.cpp */; };
+		28193A401A2488730055834F /* grayscale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A2C1A2488730055834F /* grayscale.cpp */; };
+		28193A411A2488730055834F /* procbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A2E1A2488730055834F /* procbase.cpp */; };
+		28193A421A2488730055834F /* thresh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A301A2488730055834F /* thresh.cpp */; };
+		28193A431A2488730055834F /* tools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A321A2488730055834F /* tools.cpp */; };
+		28193A441A2488730055834F /* memtransfer_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A391A2488730055834F /* memtransfer_ios.cpp */; };
+		28193A461A2488D60055834F /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28193A451A2488D60055834F /* CoreVideo.framework */; };
+		28193A481A2488DB0055834F /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28193A471A2488DB0055834F /* OpenGLES.framework */; };
+		28193A4A1A2488E00055834F /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28193A491A2488E00055834F /* GLKit.framework */; };
+		28193A4C1A2489DA0055834F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28193A4B1A2489DA0055834F /* AVFoundation.framework */; };
+		28193A4E1A2489EB0055834F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28193A4D1A2489EB0055834F /* CoreMedia.framework */; };
+		28579B071A23C06000B1710F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28579B061A23C06000B1710F /* Foundation.framework */; };
+		28579B091A23C06000B1710F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28579B081A23C06000B1710F /* CoreGraphics.framework */; };
+		28579B0B1A23C06000B1710F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28579B0A1A23C06000B1710F /* UIKit.framework */; };
+		28579B111A23C06000B1710F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 28579B0F1A23C06000B1710F /* InfoPlist.strings */; };
+		28579B131A23C06000B1710F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 28579B121A23C06000B1710F /* main.m */; };
+		28579B171A23C06100B1710F /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28579B161A23C06100B1710F /* AppDelegate.mm */; };
+		28579B191A23C06100B1710F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28579B181A23C06100B1710F /* Images.xcassets */; };
+		28579B371A23C0EC00B1710F /* CamView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28579B361A23C0EC00B1710F /* CamView.mm */; };
+		28579B3A1A23C24600B1710F /* RootViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28579B391A23C24600B1710F /* RootViewController.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		28193A1F1A2488730055834F /* common_includes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = common_includes.h; sourceTree = "<group>"; };
+		28193A201A2488730055834F /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = core.cpp; sourceTree = "<group>"; };
+		28193A211A2488730055834F /* core.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = core.h; sourceTree = "<group>"; };
+		28193A231A2488730055834F /* fbo.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fbo.cpp; sourceTree = "<group>"; };
+		28193A241A2488730055834F /* fbo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fbo.h; sourceTree = "<group>"; };
+		28193A251A2488730055834F /* memtransfer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memtransfer.cpp; sourceTree = "<group>"; };
+		28193A261A2488730055834F /* memtransfer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memtransfer.h; sourceTree = "<group>"; };
+		28193A271A2488730055834F /* memtransfer_factory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memtransfer_factory.cpp; sourceTree = "<group>"; };
+		28193A281A2488730055834F /* memtransfer_factory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memtransfer_factory.h; sourceTree = "<group>"; };
+		28193A291A2488730055834F /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
+		28193A2A1A2488730055834F /* shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shader.h; sourceTree = "<group>"; };
+		28193A2C1A2488730055834F /* grayscale.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = grayscale.cpp; sourceTree = "<group>"; };
+		28193A2D1A2488730055834F /* grayscale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = grayscale.h; sourceTree = "<group>"; };
+		28193A2E1A2488730055834F /* procbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = procbase.cpp; sourceTree = "<group>"; };
+		28193A2F1A2488730055834F /* procbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = procbase.h; sourceTree = "<group>"; };
+		28193A301A2488730055834F /* thresh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = thresh.cpp; sourceTree = "<group>"; };
+		28193A311A2488730055834F /* thresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thresh.h; sourceTree = "<group>"; };
+		28193A321A2488730055834F /* tools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tools.cpp; sourceTree = "<group>"; };
+		28193A331A2488730055834F /* tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tools.h; sourceTree = "<group>"; };
+		28193A341A2488730055834F /* ogles_gpgpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ogles_gpgpu.h; sourceTree = "<group>"; };
+		28193A381A2488730055834F /* gl_includes.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gl_includes.h; sourceTree = "<group>"; };
+		28193A391A2488730055834F /* memtransfer_ios.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memtransfer_ios.cpp; sourceTree = "<group>"; };
+		28193A3A1A2488730055834F /* memtransfer_ios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memtransfer_ios.h; sourceTree = "<group>"; };
+		28193A451A2488D60055834F /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		28193A471A2488DB0055834F /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		28193A491A2488E00055834F /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		28193A4B1A2489DA0055834F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		28193A4D1A2489EB0055834F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		28579B031A23C06000B1710F /* OGLESGPGPUVideoCam.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGLESGPGPUVideoCam.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		28579B061A23C06000B1710F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		28579B081A23C06000B1710F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		28579B0A1A23C06000B1710F /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		28579B0E1A23C06000B1710F /* OGLESGPGPUVideoCam-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OGLESGPGPUVideoCam-Info.plist"; sourceTree = "<group>"; };
+		28579B101A23C06000B1710F /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		28579B121A23C06000B1710F /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		28579B141A23C06000B1710F /* OGLESGPGPUVideoCam-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OGLESGPGPUVideoCam-Prefix.pch"; sourceTree = "<group>"; };
+		28579B151A23C06000B1710F /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		28579B161A23C06100B1710F /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
+		28579B181A23C06100B1710F /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		28579B1F1A23C06100B1710F /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		28579B351A23C0EC00B1710F /* CamView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CamView.h; sourceTree = "<group>"; };
+		28579B361A23C0EC00B1710F /* CamView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CamView.mm; sourceTree = "<group>"; };
+		28579B381A23C24600B1710F /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		28579B391A23C24600B1710F /* RootViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RootViewController.mm; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		28579B001A23C06000B1710F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28193A4E1A2489EB0055834F /* CoreMedia.framework in Frameworks */,
+				28193A4C1A2489DA0055834F /* AVFoundation.framework in Frameworks */,
+				28193A4A1A2488E00055834F /* GLKit.framework in Frameworks */,
+				28193A481A2488DB0055834F /* OpenGLES.framework in Frameworks */,
+				28193A461A2488D60055834F /* CoreVideo.framework in Frameworks */,
+				28579B091A23C06000B1710F /* CoreGraphics.framework in Frameworks */,
+				28579B0B1A23C06000B1710F /* UIKit.framework in Frameworks */,
+				28579B071A23C06000B1710F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		28193A1C1A2488370055834F /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				28193A1D1A2488730055834F /* ogles_gpgpu */,
+			);
+			name = lib;
+			sourceTree = "<group>";
+		};
+		28193A1D1A2488730055834F /* ogles_gpgpu */ = {
+			isa = PBXGroup;
+			children = (
+				28193A1E1A2488730055834F /* common */,
+				28193A341A2488730055834F /* ogles_gpgpu.h */,
+				28193A351A2488730055834F /* platform */,
+			);
+			name = ogles_gpgpu;
+			path = ../../../ogles_gpgpu;
+			sourceTree = "<group>";
+		};
+		28193A1E1A2488730055834F /* common */ = {
+			isa = PBXGroup;
+			children = (
+				28193A1F1A2488730055834F /* common_includes.h */,
+				28193A201A2488730055834F /* core.cpp */,
+				28193A211A2488730055834F /* core.h */,
+				28193A221A2488730055834F /* gl */,
+				28193A2B1A2488730055834F /* proc */,
+				28193A321A2488730055834F /* tools.cpp */,
+				28193A331A2488730055834F /* tools.h */,
+			);
+			path = common;
+			sourceTree = "<group>";
+		};
+		28193A221A2488730055834F /* gl */ = {
+			isa = PBXGroup;
+			children = (
+				28193A231A2488730055834F /* fbo.cpp */,
+				28193A241A2488730055834F /* fbo.h */,
+				28193A251A2488730055834F /* memtransfer.cpp */,
+				28193A261A2488730055834F /* memtransfer.h */,
+				28193A271A2488730055834F /* memtransfer_factory.cpp */,
+				28193A281A2488730055834F /* memtransfer_factory.h */,
+				28193A291A2488730055834F /* shader.cpp */,
+				28193A2A1A2488730055834F /* shader.h */,
+			);
+			path = gl;
+			sourceTree = "<group>";
+		};
+		28193A2B1A2488730055834F /* proc */ = {
+			isa = PBXGroup;
+			children = (
+				28193A2C1A2488730055834F /* grayscale.cpp */,
+				28193A2D1A2488730055834F /* grayscale.h */,
+				28193A2E1A2488730055834F /* procbase.cpp */,
+				28193A2F1A2488730055834F /* procbase.h */,
+				28193A301A2488730055834F /* thresh.cpp */,
+				28193A311A2488730055834F /* thresh.h */,
+			);
+			path = proc;
+			sourceTree = "<group>";
+		};
+		28193A351A2488730055834F /* platform */ = {
+			isa = PBXGroup;
+			children = (
+				28193A361A2488730055834F /* android */,
+				28193A371A2488730055834F /* ios */,
+			);
+			path = platform;
+			sourceTree = "<group>";
+		};
+		28193A361A2488730055834F /* android */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = android;
+			sourceTree = "<group>";
+		};
+		28193A371A2488730055834F /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				28193A381A2488730055834F /* gl_includes.h */,
+				28193A391A2488730055834F /* memtransfer_ios.cpp */,
+				28193A3A1A2488730055834F /* memtransfer_ios.h */,
+			);
+			path = ios;
+			sourceTree = "<group>";
+		};
+		28579AFA1A23C06000B1710F = {
+			isa = PBXGroup;
+			children = (
+				28193A1C1A2488370055834F /* lib */,
+				28579B0C1A23C06000B1710F /* OGLESGPGPUVideoCam */,
+				28579B051A23C06000B1710F /* Frameworks */,
+				28579B041A23C06000B1710F /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		28579B041A23C06000B1710F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				28579B031A23C06000B1710F /* OGLESGPGPUVideoCam.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		28579B051A23C06000B1710F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				28193A4D1A2489EB0055834F /* CoreMedia.framework */,
+				28193A4B1A2489DA0055834F /* AVFoundation.framework */,
+				28193A491A2488E00055834F /* GLKit.framework */,
+				28193A471A2488DB0055834F /* OpenGLES.framework */,
+				28193A451A2488D60055834F /* CoreVideo.framework */,
+				28579B061A23C06000B1710F /* Foundation.framework */,
+				28579B081A23C06000B1710F /* CoreGraphics.framework */,
+				28579B0A1A23C06000B1710F /* UIKit.framework */,
+				28579B1F1A23C06100B1710F /* XCTest.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		28579B0C1A23C06000B1710F /* OGLESGPGPUVideoCam */ = {
+			isa = PBXGroup;
+			children = (
+				28579B151A23C06000B1710F /* AppDelegate.h */,
+				28579B161A23C06100B1710F /* AppDelegate.mm */,
+				28579B351A23C0EC00B1710F /* CamView.h */,
+				28579B361A23C0EC00B1710F /* CamView.mm */,
+				28579B381A23C24600B1710F /* RootViewController.h */,
+				28579B391A23C24600B1710F /* RootViewController.mm */,
+				28579B181A23C06100B1710F /* Images.xcassets */,
+				28579B0D1A23C06000B1710F /* Supporting Files */,
+			);
+			path = OGLESGPGPUVideoCam;
+			sourceTree = "<group>";
+		};
+		28579B0D1A23C06000B1710F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				28579B0E1A23C06000B1710F /* OGLESGPGPUVideoCam-Info.plist */,
+				28579B0F1A23C06000B1710F /* InfoPlist.strings */,
+				28579B121A23C06000B1710F /* main.m */,
+				28579B141A23C06000B1710F /* OGLESGPGPUVideoCam-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		28579B021A23C06000B1710F /* OGLESGPGPUVideoCam */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 28579B2F1A23C06100B1710F /* Build configuration list for PBXNativeTarget "OGLESGPGPUVideoCam" */;
+			buildPhases = (
+				28579AFF1A23C06000B1710F /* Sources */,
+				28579B001A23C06000B1710F /* Frameworks */,
+				28579B011A23C06000B1710F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OGLESGPGPUVideoCam;
+			productName = VideoProciPad;
+			productReference = 28579B031A23C06000B1710F /* OGLESGPGPUVideoCam.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		28579AFB1A23C06000B1710F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0510;
+				ORGANIZATIONNAME = mkonrad.net;
+			};
+			buildConfigurationList = 28579AFE1A23C06000B1710F /* Build configuration list for PBXProject "OGLESGPGPUVideoCam" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 28579AFA1A23C06000B1710F;
+			productRefGroup = 28579B041A23C06000B1710F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				28579B021A23C06000B1710F /* OGLESGPGPUVideoCam */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		28579B011A23C06000B1710F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28579B111A23C06000B1710F /* InfoPlist.strings in Resources */,
+				28579B191A23C06100B1710F /* Images.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		28579AFF1A23C06000B1710F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				28193A441A2488730055834F /* memtransfer_ios.cpp in Sources */,
+				28579B171A23C06100B1710F /* AppDelegate.mm in Sources */,
+				28579B131A23C06000B1710F /* main.m in Sources */,
+				28193A431A2488730055834F /* tools.cpp in Sources */,
+				28579B3A1A23C24600B1710F /* RootViewController.mm in Sources */,
+				28193A3F1A2488730055834F /* shader.cpp in Sources */,
+				28193A3E1A2488730055834F /* memtransfer_factory.cpp in Sources */,
+				28193A411A2488730055834F /* procbase.cpp in Sources */,
+				28193A3D1A2488730055834F /* memtransfer.cpp in Sources */,
+				28193A3C1A2488730055834F /* fbo.cpp in Sources */,
+				28193A3B1A2488730055834F /* core.cpp in Sources */,
+				28193A421A2488730055834F /* thresh.cpp in Sources */,
+				28579B371A23C0EC00B1710F /* CamView.mm in Sources */,
+				28193A401A2488730055834F /* grayscale.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		28579B0F1A23C06000B1710F /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				28579B101A23C06000B1710F /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		28579B2D1A23C06100B1710F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		28579B2E1A23C06100B1710F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		28579B301A23C06100B1710F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OGLESGPGPUVideoCam/OGLESGPGPUVideoCam-Prefix.pch";
+				INFOPLIST_FILE = "OGLESGPGPUVideoCam/OGLESGPGPUVideoCam-Info.plist";
+				PRODUCT_NAME = OGLESGPGPUVideoCam;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		28579B311A23C06100B1710F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_OBJC_ARC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "OGLESGPGPUVideoCam/OGLESGPGPUVideoCam-Prefix.pch";
+				INFOPLIST_FILE = "OGLESGPGPUVideoCam/OGLESGPGPUVideoCam-Info.plist";
+				PRODUCT_NAME = OGLESGPGPUVideoCam;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		28579AFE1A23C06000B1710F /* Build configuration list for PBXProject "OGLESGPGPUVideoCam" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28579B2D1A23C06100B1710F /* Debug */,
+				28579B2E1A23C06100B1710F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28579B2F1A23C06100B1710F /* Build configuration list for PBXNativeTarget "OGLESGPGPUVideoCam" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28579B301A23C06100B1710F /* Debug */,
+				28579B311A23C06100B1710F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 28579AFB1A23C06000B1710F /* Project object */;
+}
