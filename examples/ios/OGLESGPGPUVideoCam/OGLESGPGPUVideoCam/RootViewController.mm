@@ -41,7 +41,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
  * force to redraw views. this method is only to display the intermediate
  * frame processing output for debugging
  */
-- (void)updateViews;
+- (void)updateView;
 
 - (void)prepareForFramesOfSize:(CGSize)size;
 
@@ -61,6 +61,13 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     if (self) {
         showCamPreview = YES;
         firstFrame = YES;
+        prepared = NO;
+        
+        // create an OpenGL context first of all
+        eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+        if (!eaglContext || ![EAGLContext setCurrentContext:eaglContext]) {
+            NSLog(@"failed setting current EAGL context");
+        }
     }
     
     return self;
@@ -113,12 +120,6 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     // set up camera
     [self initCam];
     
-    // create an OpenGL context
-    eaglContext = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-    if (![EAGLContext setCurrentContext:eaglContext]) {
-        NSLog(@"failed setting current EAGL context");
-    }
-    
     [self initOGLESGPGPU];
 }
 
@@ -132,9 +133,34 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
        fromConnection:(AVCaptureConnection *)connection
 {
     // note that this method does *not* run in the main thread!
+    
+    CVImageBufferRef imgBuf = CMSampleBufferGetImageBuffer(sampleBuffer);
+    if (!imgBuf) {
+        NSLog(@"Error obtaining image buffer from camera sample buffer");
+        
+        return;
+    }
+    
+    if (firstFrame) {
+        frameSize = CVImageBufferGetDisplaySize(imgBuf);
+        [self prepareForFramesOfSize:frameSize];
+        firstFrame = NO;
+    }
+    
+    [self performSelectorOnMainThread:@selector(updateView)
+                           withObject:nil
+                        waitUntilDone:NO];
 }
 
 #pragma mark private methods
+
+- (void)updateView {
+    if (!prepared) return;
+    
+    outputDispRenderer->render();
+    
+    [glView setNeedsDisplay];
+}
 
 - (void)initUI {
     const CGRect screenRect = [[UIScreen mainScreen] bounds];
@@ -148,6 +174,11 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     // create the image view for the camera frames
     camView = [[CamView alloc] initWithFrame:baseFrame];
     [baseView addSubview:camView];
+    
+    // create the GLKView to show the processed frames as textures
+    glView = [[GLKView alloc] initWithFrame:baseFrame context:eaglContext];
+    [glView setHidden:YES]; // initally hidden
+    [baseView addSubview:glView];
     
     // set a list of buttons for processing output display
     NSArray *btnTitles = [NSArray arrayWithObjects:
@@ -171,7 +202,6 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     
     // finally set the base view as view for this controller
     [self setView:baseView];
-
 }
 
 - (void)initOGLESGPGPU {
@@ -191,14 +221,16 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     grayscaleProc.setGrayscaleConvType(ogles_gpgpu::GRAYSCALE_INPUT_CONVERSION_BGR);    // needed, because we actually have BGRA input data when we use iOS optimized memory access
     
     // set up adaptive thresholding (two passes)
-    adaptThreshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
-    adaptThreshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
+//    adaptThreshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
+//    adaptThreshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
     
     // create the pipeline
     gpgpuMngr->addProcToPipeline(&grayscaleProc);
     //    gpgpuMngr->addProcToPipeline(&simpleThreshProc);
-    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
-    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
+//    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
+//    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
+    
+    outputDispRenderer = gpgpuMngr->createRenderDisplay(glView.frame.size.width, glView.frame.size.height);
     
     // initialize the pipeline
     gpgpuMngr->init(eaglContext);
@@ -276,8 +308,8 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
           [sender titleForState:UIControlStateNormal], (long)sender.tag);
     
     showCamPreview = (sender.tag < 0);
-    [camView setHidden:!showCamPreview];       // only show original camera frames in "normal" display mode
-//    [procFrameView setHidden:showCamPreview];  // only show processed frames for other than "normal" display mode
+    [camView setHidden:!showCamPreview];    // only show original camera frames in "normal" display mode
+    [glView setHidden:showCamPreview];      // only show processed frames for other than "normal" display mode
 }
 
 - (void)interfaceOrientationChanged:(UIInterfaceOrientation)o {
@@ -287,25 +319,22 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 - (void)prepareForFramesOfSize:(CGSize)size {
     // WARNING: this method will not be called from the main thead!
     
-//    float frameAspectRatio = size.width / size.height;
-//    NSLog(@"camera frames are of size %dx%d (aspect %f)", (int)size.width, (int)size.height, frameAspectRatio);
-//    
-//    // update proc frame view size
-//    float newViewH = procFrameView.frame.size.width / frameAspectRatio;   // calc new height
-//    float viewYOff = (procFrameView.frame.size.height - newViewH) / 2;
-//    
-//    CGRect correctedViewRect = CGRectMake(0, viewYOff, procFrameView.frame.size.width, newViewH);
-//    [self performSelectorOnMainThread:@selector(setCorrectedFrameForViews:)         // we need to execute this on the main thead
-//                           withObject:[NSValue valueWithCGRect:correctedViewRect]   // otherwise it will have no effect
-//                        waitUntilDone:NO];
-}
-
-- (void)setCorrectedFrameForViews:(NSValue *)newFrameRect {
-    // WARNING: this *must* be executed on the main thread
+    float frameAspectRatio = size.width / size.height;
+    NSLog(@"camera frames are of size %dx%d (aspect %f)", (int)size.width, (int)size.height, frameAspectRatio);
     
-//    // set the corrected frame for the proc frame view
-//    CGRect r = [newFrameRect CGRectValue];
-//    [procFrameView setFrame:r];
+    // update gl frame view size
+    float newViewH = glView.frame.size.width / frameAspectRatio;   // calc new height
+    float viewYOff = (glView.frame.size.height - newViewH) / 2;
+    
+    CGRect correctedViewRect = CGRectMake(0, viewYOff, glView.frame.size.width, newViewH);
+    
+    // the following needs to be executed on the main thread
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [glView setFrame:correctedViewRect];
+        gpgpuMngr->prepare(size.width, size.height);
+        
+        prepared = YES;
+    });
 }
 
 @end

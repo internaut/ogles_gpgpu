@@ -114,7 +114,6 @@ void ProcBase::reinit(int inW, int inH) {
 }
 
 void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH, float scaleFactor) {
-    assert(fbo != NULL);
     assert(inW > 0 && inH > 0);
     
     orderNum = order;
@@ -123,6 +122,7 @@ void ProcBase::baseInit(int inW, int inH, unsigned int order, int outW, int outH
     
     // prepare for external input data
     if (orderNum == 0) {
+        assert(fbo != NULL);
         useTexture(fbo->getMemTransfer()->prepareInput(inW, inH, inputDataFmt));
         cout << "ogles_gpgpu::ProcBase - init - prepared for external input data" << endl;
     }

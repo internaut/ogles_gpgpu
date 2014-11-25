@@ -1,5 +1,7 @@
 #include "core.h"
 
+#include "disp.h"
+
 #include <string>
 #include <algorithm>
 
@@ -41,11 +43,12 @@ Core::Core() {
     outputFrameW = outputFrameH = 0;
     inputTexId = outputTexId = 0;
     firstProc = lastProc = NULL;
+    renderDisp = NULL;
     glContextPtr = NULL;
 }
 
 Core::~Core() {
-
+    if (renderDisp) delete renderDisp;
 }
 
 void Core::addProcToPipeline(ProcBase *proc) {
@@ -58,6 +61,18 @@ void Core::addProcToPipeline(ProcBase *proc) {
     
     // add not processor to pipeline
     pipeline.push_back(proc);
+}
+
+Disp *Core::createRenderDisplay(int dispW, int dispH) {
+    assert(!renderDisp);
+    
+    renderDisp = new Disp();
+    
+    if (dispW > 0 && dispH > 0) {
+        renderDisp->setOutputSize(dispW, dispH);
+    }
+    
+    return renderDisp;
 }
 
 void Core::init(void *glContext) {
@@ -152,6 +167,17 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
     outputTexId = lastProc->getOutputTexId();
     outputFrameW = lastProc->getOutFrameW();
     outputFrameH = lastProc->getOutFrameH();
+    
+    // initialize render display if necessary
+    if (renderDisp) {
+        if (!prepared) {
+            renderDisp->init(outputFrameW, outputFrameH, num);
+        } else {
+            renderDisp->reinit(outputFrameW, outputFrameH);
+        }
+        
+        renderDisp->useTexture(outputTexId);
+    }
     
     cout << "ogles_gpgpu::Core - prepared (input tex "
          << inputTexId << " / output tex " << outputTexId << ")" << endl;

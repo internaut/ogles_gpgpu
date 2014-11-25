@@ -17,6 +17,7 @@ using namespace std;
 namespace ogles_gpgpu {
 
 class ProcBase;
+class Disp;
 
 /**
  * main processing handler. set up and initialize processing pipeline.
@@ -48,6 +49,14 @@ public:
     void addProcToPipeline(ProcBase *proc);
     
     /**
+     * Create an object that renders the last processor's output to the screen.
+     * Return it as weak ref.
+     * Note: Must be called after last addProcToPipeline() call and before
+     * init() / prepare()!
+     */
+    Disp *createRenderDisplay(int dispW = 0, int dispH = 0);
+    
+    /**
      * Initialize OpenGL settings and the pipeline.
      * Optionally pass the OpenGL context (needed for platform specific optimizations).
      * Needs to be called after addProcToPipeline().
@@ -66,6 +75,11 @@ public:
      * Note that init() must have been called before.
      */
     void prepare(int inW, int inH, GLenum inFmt = GL_RGBA);
+    
+    /**
+     * Return the render display object as weak ref.
+     */
+    Disp *getRenderDisplay() const { return renderDisp; }
     
     /**
      * Use mipmaps: <use>.
@@ -153,6 +167,8 @@ private:
     
     ProcBase *firstProc;    // pointer to first processor in pipeline
     ProcBase *lastProc;     // pointer to last processor in pipeline
+    
+    Disp *renderDisp;
     
     bool initialized;       // pipeline initialized?
     bool prepared;          // input prepared?

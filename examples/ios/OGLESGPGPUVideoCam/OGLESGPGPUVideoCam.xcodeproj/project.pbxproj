@@ -22,6 +22,7 @@
 		28193A4A1A2488E00055834F /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28193A491A2488E00055834F /* GLKit.framework */; };
 		28193A4C1A2489DA0055834F /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28193A4B1A2489DA0055834F /* AVFoundation.framework */; };
 		28193A4E1A2489EB0055834F /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28193A4D1A2489EB0055834F /* CoreMedia.framework */; };
+		28193A551A2491A10055834F /* disp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A531A2491A10055834F /* disp.cpp */; };
 		28579B071A23C06000B1710F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28579B061A23C06000B1710F /* Foundation.framework */; };
 		28579B091A23C06000B1710F /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28579B081A23C06000B1710F /* CoreGraphics.framework */; };
 		28579B0B1A23C06000B1710F /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28579B0A1A23C06000B1710F /* UIKit.framework */; };
@@ -62,6 +63,8 @@
 		28193A491A2488E00055834F /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		28193A4B1A2489DA0055834F /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		28193A4D1A2489EB0055834F /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		28193A531A2491A10055834F /* disp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = disp.cpp; sourceTree = "<group>"; };
+		28193A541A2491A10055834F /* disp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = disp.h; sourceTree = "<group>"; };
 		28579B031A23C06000B1710F /* OGLESGPGPUVideoCam.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGLESGPGPUVideoCam.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28579B061A23C06000B1710F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		28579B081A23C06000B1710F /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -122,12 +125,12 @@
 			isa = PBXGroup;
 			children = (
 				28193A1F1A2488730055834F /* common_includes.h */,
-				28193A201A2488730055834F /* core.cpp */,
 				28193A211A2488730055834F /* core.h */,
+				28193A201A2488730055834F /* core.cpp */,
 				28193A221A2488730055834F /* gl */,
 				28193A2B1A2488730055834F /* proc */,
-				28193A321A2488730055834F /* tools.cpp */,
 				28193A331A2488730055834F /* tools.h */,
+				28193A321A2488730055834F /* tools.cpp */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -135,14 +138,14 @@
 		28193A221A2488730055834F /* gl */ = {
 			isa = PBXGroup;
 			children = (
-				28193A231A2488730055834F /* fbo.cpp */,
 				28193A241A2488730055834F /* fbo.h */,
-				28193A251A2488730055834F /* memtransfer.cpp */,
+				28193A231A2488730055834F /* fbo.cpp */,
 				28193A261A2488730055834F /* memtransfer.h */,
-				28193A271A2488730055834F /* memtransfer_factory.cpp */,
+				28193A251A2488730055834F /* memtransfer.cpp */,
 				28193A281A2488730055834F /* memtransfer_factory.h */,
-				28193A291A2488730055834F /* shader.cpp */,
+				28193A271A2488730055834F /* memtransfer_factory.cpp */,
 				28193A2A1A2488730055834F /* shader.h */,
+				28193A291A2488730055834F /* shader.cpp */,
 			);
 			path = gl;
 			sourceTree = "<group>";
@@ -150,12 +153,14 @@
 		28193A2B1A2488730055834F /* proc */ = {
 			isa = PBXGroup;
 			children = (
-				28193A2C1A2488730055834F /* grayscale.cpp */,
+				28193A541A2491A10055834F /* disp.h */,
+				28193A531A2491A10055834F /* disp.cpp */,
 				28193A2D1A2488730055834F /* grayscale.h */,
-				28193A2E1A2488730055834F /* procbase.cpp */,
+				28193A2C1A2488730055834F /* grayscale.cpp */,
 				28193A2F1A2488730055834F /* procbase.h */,
-				28193A301A2488730055834F /* thresh.cpp */,
+				28193A2E1A2488730055834F /* procbase.cpp */,
 				28193A311A2488730055834F /* thresh.h */,
+				28193A301A2488730055834F /* thresh.cpp */,
 			);
 			path = proc;
 			sourceTree = "<group>";
@@ -317,6 +322,7 @@
 				28193A3F1A2488730055834F /* shader.cpp in Sources */,
 				28193A3E1A2488730055834F /* memtransfer_factory.cpp in Sources */,
 				28193A411A2488730055834F /* procbase.cpp in Sources */,
+				28193A551A2491A10055834F /* disp.cpp in Sources */,
 				28193A3D1A2488730055834F /* memtransfer.cpp in Sources */,
 				28193A3C1A2488730055834F /* fbo.cpp in Sources */,
 				28193A3B1A2488730055834F /* core.cpp in Sources */,

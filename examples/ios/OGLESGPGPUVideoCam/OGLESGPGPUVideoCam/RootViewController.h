@@ -2,6 +2,7 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <GLKit/GLKit.h>
 
 // include ogles_gpgpu main header
 #include "../../../../ogles_gpgpu/ogles_gpgpu.h"
@@ -24,11 +25,13 @@
 
     BOOL showCamPreview;
     BOOL firstFrame;
+    BOOL prepared;
     
     CGSize frameSize;                   // currently grabbed camera frame size
     
     UIView *baseView;           // root view
     CamView *camView;           // shows the grabbed video frames ("camera preview")
+    GLKView *glView;            // shows the processed video frames as textures in a GLKit view
     
     EAGLContext *eaglContext;   // OpenGL ES 2.0 context
     
@@ -37,6 +40,8 @@
     ogles_gpgpu::GrayscaleProc grayscaleProc;   // pipeline processor 1: convert input to grayscale image
     ogles_gpgpu::ThreshProc simpleThreshProc;   // pipeline processor 2 (alternative 1): simple thresholding
     ogles_gpgpu::ThreshProc adaptThreshProc[2]; // pipeline processor 2 (alternative 2): adaptive thresholding (two passes)
+    
+    ogles_gpgpu::Disp *outputDispRenderer;  // weak ref.
 }
 
 @end
