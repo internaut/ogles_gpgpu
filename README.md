@@ -20,11 +20,10 @@
 
 ### Milestone 1
 
-* new project: OGLESGPGPUCamera
-* MemTransfer -> MemMap (MemMngr) ?
 * ProcSimpleFilter base class
 * more filters
 
+* better logging (enable/disable via preproc defines)
 * time measurements as double not float
 
 * test ipad3 / ios 8
@@ -50,3 +49,4 @@
 ### Milestone 5
 
 * multipass proc base
+* more dynamic filters (-> shader code generator)

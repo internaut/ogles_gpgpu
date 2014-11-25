@@ -58,6 +58,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
         firstFrame = YES;
         prepared = NO;
         
+        // set default orientation
         [self interfaceOrientationChanged:self.interfaceOrientation];
         
         // create an OpenGL context first of all
@@ -96,18 +97,17 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 }
 
 - (void)loadView {
+    // create the UI elements
     [self initUI];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     NSLog(@"view will appear - start camera session");
-    
     [camSession startRunning];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     NSLog(@"view did disappear - stop camera session");
-    
     [camSession stopRunning];
 }
 
@@ -132,6 +132,8 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 {
     // note that this method does needs to run on the main thread! this is specified in the initCam method
     
+    // get a reference to the image buffer. A CVImageBufferRef is actually a CVPixelBufferRef, so we can
+    // use it later in the MemTransferIOS class of ogles_gpgpu for direct texture access.
     CVImageBufferRef imgBuf = CMSampleBufferGetImageBuffer(sampleBuffer);
     if (!imgBuf) {
         NSLog(@"Error obtaining image buffer from camera sample buffer");
@@ -139,20 +141,24 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
         return;
     }
     
+    // when we get the first frame, prepare the system for the size of the incoming frames
     if (firstFrame) {
         frameSize = CVImageBufferGetDisplaySize(imgBuf);
         [self prepareForFramesOfSize:frameSize];
         firstFrame = NO;
     }
     
+    // on each new frame, this will release the input buffers and textures, and prepare new ones
+    // texture format must be GL_BGRA because this is one of the native camera formats (see initCam)
     gpgpuInputHandler->prepareInput(frameSize.width, frameSize.height, GL_BGRA, imgBuf);
     
-    // set input
+    // set the input texture id - we do not copy any data, we use the camera frame directly as texture!
     gpgpuMngr->setInputTexId(gpgpuInputHandler->getInputTexId());
     
     // run processing pipeline
     gpgpuMngr->process();
     
+    // update the GL view to display the output directly
     [glView display];
 }
 
@@ -160,8 +166,6 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 
 - (void)glkView:(GLKView *)view drawInRect:(CGRect)rect {
     if (!prepared) return;
-    
-    NSLog(@"GLKView draw");
     
     // render output directly to screen
     outputDispRenderer->render();
@@ -230,18 +234,19 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 //    grayscaleProc.setGrayscaleConvType(ogles_gpgpu::GRAYSCALE_INPUT_CONVERSION_BGR);    // needed, because we actually have BGRA input data when we use iOS optimized memory access
     
     // set up adaptive thresholding (two passes)
-//    adaptThreshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
-//    adaptThreshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
+    adaptThreshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
+    adaptThreshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
     
     // create the pipeline
     gpgpuMngr->addProcToPipeline(&grayscaleProc);
-    //    gpgpuMngr->addProcToPipeline(&simpleThreshProc);
-//    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
-//    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
+//    gpgpuMngr->addProcToPipeline(&simpleThreshProc);
+    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
+    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
     
+    // create the display renderer with which we can directly render the output
+    // to the screen via OpenGL
     outputDispRenderer = gpgpuMngr->createRenderDisplay();
     outputDispRenderer->setOutputRenderOrientation(dispRenderOrientation);
-//    outputDispRenderer = gpgpuMngr->createRenderDisplay();
     
     // initialize the pipeline
     gpgpuMngr->init(eaglContext);
@@ -289,34 +294,34 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     vidDataOutput = [[AVCaptureVideoDataOutput alloc] init];
     [camSession addOutput:vidDataOutput];
     
-    // Set dispatch to be on the main thread so OpenGL can do things with the data
+    // set dispatch to be on the main thread so OpenGL can do things with the data
+    // THIS IS CRUCIAL!
     [vidDataOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
-    
-    // set output delegate to self
-//    dispatch_queue_t queue = dispatch_queue_create("vid_output_queue", NULL);
-//    [vidDataOutput setSampleBufferDelegate:self queue:queue];
-//    dispatch_release(queue);
     
     // get best output video format
     NSArray *outputPixelFormats = vidDataOutput.availableVideoCVPixelFormatTypes;
-    int bestPixelFormatCode = -1;
+    int neededPxFmtCode = kCVPixelFormatType_32BGRA;
+    int foundPxFmtCode = -1;
     for (NSNumber *format in outputPixelFormats) {
         int code = [format intValue];
-        if (bestPixelFormatCode == -1) bestPixelFormatCode = code;  // choose the first as best
+        if (code == neededPxFmtCode) {
+            foundPxFmtCode = code;
+        }
+        
         char fourCC[5];
         fourCCStringFromCode(code, fourCC);
         NSLog(@"available video output format: %s (code %d)", fourCC, code);
     }
     
-    bestPixelFormatCode = kCVPixelFormatType_32BGRA;    // override
+    if (foundPxFmtCode < 0) {
+        NSLog(@"could not find the needed pixel format for the camera frames!");
+        return;
+    }
 
     // specify output video format
-    NSDictionary *outputSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:bestPixelFormatCode]
+    NSDictionary *outputSettings = [NSDictionary dictionaryWithObject:[NSNumber numberWithInt:foundPxFmtCode]
                                                                forKey:(id)kCVPixelBufferPixelFormatTypeKey];
     [vidDataOutput setVideoSettings:outputSettings];
-    
-//    // cap to 15 fps
-//    [vidDataOutput setMinFrameDuration:CMTimeMake(1, 15)];
 }
 
 - (void)procOutputSelectBtnAction:(UIButton *)sender {
@@ -331,6 +336,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 - (void)interfaceOrientationChanged:(UIInterfaceOrientation)o {
     [[(AVCaptureVideoPreviewLayer *)camView.layer connection] setVideoOrientation:(AVCaptureVideoOrientation)o];
     
+    // update the display renderer, too
     if (o == UIInterfaceOrientationLandscapeLeft) {
         dispRenderOrientation = ogles_gpgpu::RenderOrientationStdMirrored;
     } else {
@@ -346,6 +352,10 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     float frameAspectRatio = size.width / size.height;
     NSLog(@"camera frames are of size %dx%d (aspect %f)", (int)size.width, (int)size.height, frameAspectRatio);
     
+    float uiScaling = [[UIScreen mainScreen] scale];
+    
+    NSLog(@"device's UI scaling factor is %f", uiScaling);
+    
     // update gl frame view size
     float newViewH = glView.frame.size.width / frameAspectRatio;   // calc new height
     float viewYOff = (glView.frame.size.height - newViewH) / 2;
@@ -354,11 +364,16 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 
     [glView setFrame:correctedViewRect];
 
-    outputDispRenderer->setOutputSize(glView.frame.size.width, newViewH);
+    // update output the display renderer's output size
+    outputDispRenderer->setOutputSize(glView.frame.size.width * uiScaling, newViewH * uiScaling);
     
+    // prepare ogles_gpgpu for the incoming frame size
+    // GL_NONE means that the input memory transfer object is NOT prepared
+    // this will be done in captureOutput: on each new frame
     gpgpuMngr->prepare(size.width, size.height, GL_NONE);
     gpgpuInputHandler = gpgpuMngr->getInputMemTransfer();
     
+    // everything prepared
     prepared = YES;
 }
 

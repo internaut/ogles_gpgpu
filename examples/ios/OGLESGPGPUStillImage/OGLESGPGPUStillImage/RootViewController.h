@@ -9,6 +9,8 @@
 
 /**
  * Main application logic: Initialize application, set up the view and handle user input.
+ * With this application, a series of selectable example images can be processed by the
+ * means of GPGPU. The output will be displayed directly.
  */
 @interface RootViewController : UIViewController {
     UIView *baseView;       // view fundament on which all other views are added

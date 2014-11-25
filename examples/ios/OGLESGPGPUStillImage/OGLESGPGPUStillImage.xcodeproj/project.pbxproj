@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28193A591A24E2C80055834F /* disp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A571A24E2C80055834F /* disp.cpp */; };
 		28396F351A1CDE9D006AECF7 /* memtransfer_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28396F331A1CDE9D006AECF7 /* memtransfer_ios.cpp */; };
 		28396F381A1CE58A006AECF7 /* memtransfer_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28396F361A1CE58A006AECF7 /* memtransfer_factory.cpp */; };
 		28396F3A1A1CE760006AECF7 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28396F391A1CE760006AECF7 /* CoreVideo.framework */; };
@@ -35,6 +36,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		28193A571A24E2C80055834F /* disp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = disp.cpp; sourceTree = "<group>"; };
+		28193A581A24E2C80055834F /* disp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = disp.h; sourceTree = "<group>"; };
+		28193A5A1A24E2D60055834F /* types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = types.h; sourceTree = "<group>"; };
 		283735C51A124B7300CE5628 /* building_2048x1536.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = building_2048x1536.jpg; sourceTree = "<group>"; };
 		28396F331A1CDE9D006AECF7 /* memtransfer_ios.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = memtransfer_ios.cpp; sourceTree = "<group>"; };
 		28396F341A1CDE9D006AECF7 /* memtransfer_ios.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memtransfer_ios.h; sourceTree = "<group>"; };
@@ -115,7 +119,7 @@
 			children = (
 				283EBFF31A0287D9007102C3 /* assets */,
 				28DA90BF19EFEE7A0030CC98 /* lib */,
-				28DA909619EFEDA00030CC98 /* OGLESGPGPUGrayscale */,
+				28DA909619EFEDA00030CC98 /* OGLESGPGPUStillImage */,
 				28DA908F19EFEDA00030CC98 /* Frameworks */,
 				28DA908E19EFEDA00030CC98 /* Products */,
 			);
@@ -143,7 +147,7 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		28DA909619EFEDA00030CC98 /* OGLESGPGPUGrayscale */ = {
+		28DA909619EFEDA00030CC98 /* OGLESGPGPUStillImage */ = {
 			isa = PBXGroup;
 			children = (
 				28DA909F19EFEDA00030CC98 /* AppDelegate.h */,
@@ -153,7 +157,6 @@
 				28DA90A219EFEDA00030CC98 /* Images.xcassets */,
 				28DA909719EFEDA00030CC98 /* Supporting Files */,
 			);
-			name = OGLESGPGPUGrayscale;
 			path = OGLESGPGPUStillImage;
 			sourceTree = "<group>";
 		};
@@ -197,6 +200,7 @@
 				28DA90C819EFEE950030CC98 /* proc */,
 				28DA90CB19EFEE950030CC98 /* tools.h */,
 				28DA90DA19F0013D0030CC98 /* tools.cpp */,
+				28193A5A1A24E2D60055834F /* types.h */,
 			);
 			path = common;
 			sourceTree = "<group>";
@@ -219,6 +223,8 @@
 		28DA90C819EFEE950030CC98 /* proc */ = {
 			isa = PBXGroup;
 			children = (
+				28193A581A24E2C80055834F /* disp.h */,
+				28193A571A24E2C80055834F /* disp.cpp */,
 				28DA90C919EFEE950030CC98 /* grayscale.h */,
 				283EBFEB1A024279007102C3 /* grayscale.cpp */,
 				28DA90DD19F002D10030CC98 /* procbase.h */,
@@ -327,6 +333,7 @@
 				28396F351A1CDE9D006AECF7 /* memtransfer_ios.cpp in Sources */,
 				28DA90A119EFEDA00030CC98 /* AppDelegate.mm in Sources */,
 				283EBFEE1A024FA9007102C3 /* core.cpp in Sources */,
+				28193A591A24E2C80055834F /* disp.cpp in Sources */,
 				28DA90DE19F002D10030CC98 /* procbase.cpp in Sources */,
 				283EBFEC1A024279007102C3 /* grayscale.cpp in Sources */,
 				283EBFF11A026D34007102C3 /* RootViewController.mm in Sources */,
