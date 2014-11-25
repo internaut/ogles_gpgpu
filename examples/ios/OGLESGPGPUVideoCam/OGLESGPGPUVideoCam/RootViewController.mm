@@ -130,7 +130,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection
 {
-    // note that this method does *not* run in the main thread!
+    // note that this method does needs to run on the main thread! this is specified in the initCam method
     
     CVImageBufferRef imgBuf = CMSampleBufferGetImageBuffer(sampleBuffer);
     if (!imgBuf) {
@@ -239,7 +239,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 //    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
 //    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
     
-    outputDispRenderer = gpgpuMngr->createRenderDisplay(glView.frame.size.width, glView.frame.size.height);
+    outputDispRenderer = gpgpuMngr->createRenderDisplay();
     outputDispRenderer->setOutputRenderOrientation(dispRenderOrientation);
 //    outputDispRenderer = gpgpuMngr->createRenderDisplay();
     
@@ -343,8 +343,6 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 }
 
 - (void)prepareForFramesOfSize:(CGSize)size {
-    // WARNING: this method will not be called from the main thead!
-    
     float frameAspectRatio = size.width / size.height;
     NSLog(@"camera frames are of size %dx%d (aspect %f)", (int)size.width, (int)size.height, frameAspectRatio);
     
@@ -356,6 +354,8 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 
     [glView setFrame:correctedViewRect];
 
+    outputDispRenderer->setOutputSize(glView.frame.size.width, newViewH);
+    
     gpgpuMngr->prepare(size.width, size.height, GL_NONE);
     gpgpuInputHandler = gpgpuMngr->getInputMemTransfer();
     
