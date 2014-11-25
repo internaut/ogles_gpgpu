@@ -8,6 +8,7 @@
 #include "../../common/gl/memtransfer.h"
 
 #import <CoreFoundation/CoreFoundation.h>
+#import <CoreVideo/CoreVideo.h>
 
 namespace ogles_gpgpu {
     

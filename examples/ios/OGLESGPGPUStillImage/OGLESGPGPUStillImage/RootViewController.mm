@@ -1,11 +1,3 @@
-//
-//  RootViewController.m
-//  OGLESGPGPUGrayscale
-//
-//  Created by Markus Konrad on 30.10.14.
-//  Copyright (c) 2014 INKA Research Group. All rights reserved.
-//
-
 #import "RootViewController.h"
 
 // array with available test images
@@ -185,6 +177,7 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
 - (void)testImgBtnPressedAction:(id)sender {
     UIButton *btn = sender;
     [self presentTestImg:btn.tag forceDisplay:displayingOutput];
+    displayingOutput = NO;
 }
 
 - (void)presentTestImg:(int)num forceDisplay:(BOOL)forceDisplay {

@@ -2,6 +2,8 @@
 
 #include "common_includes.h"
 
+#include <cmath>
+
 using namespace ogles_gpgpu;
 using namespace std;
 
