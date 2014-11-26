@@ -35,20 +35,40 @@ void Core::destroy() {
 Core::Core() {
     // set defaults
     initialized = false;
-    prepared = false;
     useMipmaps = false;
     glExtNPOTMipmaps = false;
+    renderDisp = NULL;
+    glContextPtr = NULL;
+    
+    // reset to defaults
+    reset();
+}
+
+Core::~Core() {
+    cleanup();
+}
+
+void Core::reset() {
+    cleanup();
+    
+    // call cleanup() on processors
+    for (list<ProcInterface *>::iterator it = pipeline.begin();
+         it != pipeline.end();
+         ++it)
+    {
+        (*it)->cleanup();
+    }
+    
+    pipeline.clear();
+    
+    // reset defaults
+    prepared = false;
+    
     inputSizeIsPOT = false;
     inputFrameW = inputFrameH = 0;
     outputFrameW = outputFrameH = 0;
     inputTexId = outputTexId = 0;
     firstProc = lastProc = NULL;
-    renderDisp = NULL;
-    glContextPtr = NULL;
-}
-
-Core::~Core() {
-    if (renderDisp) delete renderDisp;
 }
 
 void Core::addProcToPipeline(ProcInterface *proc) {
@@ -339,4 +359,11 @@ void Core::checkGLExtensions() {
     }
     
     cout << "ogles_gpgpu::Core - checkGLExtensions - NPOT mipmaps: " << glExtNPOTMipmaps << endl;
+}
+
+void Core::cleanup() {
+    if (renderDisp) {
+        delete renderDisp;
+        renderDisp = NULL;
+    }
 }

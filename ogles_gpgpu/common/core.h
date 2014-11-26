@@ -41,6 +41,11 @@ public:
     ~Core();
     
     /**
+     * Reset the complete processing pipeline.
+     */
+    void reset();
+    
+    /**
      * Add a weak ref pointer to a GPGPU processor object to the pipeline.
      * Note: OpenGL context must be initialized before a ProcInterface object
      * was created!
@@ -166,6 +171,11 @@ private:
      * Check which OpenGL extensions are available.
      */
     void checkGLExtensions();
+    
+    /**
+     * Free owned objects.
+     */
+    void cleanup();
     
     
     static Core *instance;  // singleton instance

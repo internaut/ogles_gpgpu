@@ -27,6 +27,8 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
  */
 - (void)initOGLESGPGPU;
 
+- (void)initGPUPipeline:(int)selectedType;
+
 /**
  * Notify the video session about the interface orientation change
  */
@@ -54,7 +56,8 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        showCamPreview = NO;
+        selectedProcType = -1;
+        showCamPreview = (selectedProcType == 0);
         firstFrame = YES;
         prepared = NO;
         
@@ -179,7 +182,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     NSLog(@"loading view of size %dx%d", (int)screenRect.size.width, (int)screenRect.size.height);
     
     // create an empty base view
-    CGRect baseFrame = CGRectMake(0, 0, screenRect.size.height, screenRect.size.width);
+    baseFrame = CGRectMake(0, 0, screenRect.size.height, screenRect.size.width);
     baseView = [[UIView alloc] initWithFrame:baseFrame];
     
     // create the image view for the camera frames
@@ -196,7 +199,8 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     // set a list of buttons for processing output display
     NSArray *btnTitles = [NSArray arrayWithObjects:
                           @"Normal",
-                          @"Processed",
+                          @"Adapt. Thresholding",
+                          @"Simple Thresholding",
                           nil];
     for (int btnIdx = 0; btnIdx < btnTitles.count; btnIdx++) {
         UIButton *procOutputSelectBtn = [UIButton buttonWithType:UIButtonTypeSystem];
@@ -234,18 +238,41 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 //    grayscaleProc.setGrayscaleConvType(ogles_gpgpu::GRAYSCALE_INPUT_CONVERSION_BGR);    // needed, because we actually have BGRA input data when we use iOS optimized memory access
     
     // create the pipeline
+    [self initGPUPipeline:1];
+    
+    // initialize the pipeline
+    gpgpuMngr->init(eaglContext);
+
+}
+
+- (void)initGPUPipeline:(int)type {
+    if (selectedProcType == type) return;   // no change
+    
+    // reset the pipeline
+    gpgpuMngr->reset();
+    
+    // create the pipeline
     gpgpuMngr->addProcToPipeline(&grayscaleProc);
-//    gpgpuMngr->addProcToPipeline(&simpleThreshProc);
-    gpgpuMngr->addProcToPipeline(&adaptThreshProc);
+    
+    if (type == 1) {
+        gpgpuMngr->addProcToPipeline(&adaptThreshProc);
+    } else if (type == 2) {
+        gpgpuMngr->addProcToPipeline(&simpleThreshProc);
+    } else {
+        NSLog(@"GPU pipeline definition #%d not supported", type);
+    }
     
     // create the display renderer with which we can directly render the output
     // to the screen via OpenGL
     outputDispRenderer = gpgpuMngr->createRenderDisplay();
     outputDispRenderer->setOutputRenderOrientation(dispRenderOrientation);
     
-    // initialize the pipeline
-    gpgpuMngr->init(eaglContext);
-
+    // reset this to call prepareForFramesOfSize again
+    firstFrame = YES;
+    if (prepared) {
+        prepared = NO;
+        [glView setFrame:baseFrame];
+    }
 }
 
 - (void)initCam {
@@ -326,6 +353,8 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     showCamPreview = (sender.tag < 0);
     [camView setHidden:!showCamPreview];    // only show original camera frames in "normal" display mode
     [glView setHidden:showCamPreview];      // only show processed frames for other than "normal" display mode
+    
+    [self initGPUPipeline:sender.tag + 1];
 }
 
 - (void)interfaceOrientationChanged:(UIInterfaceOrientation)o {

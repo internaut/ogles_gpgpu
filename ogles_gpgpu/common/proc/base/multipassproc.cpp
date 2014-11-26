@@ -86,6 +86,15 @@ int MultiPassProc::reinit(int inW, int inH, bool prepareForExternalInput) {
     return num;
 }
 
+void MultiPassProc::cleanup() {
+    for (list<ProcInterface *>::iterator it = procPasses.begin();
+         it != procPasses.end();
+         ++it)
+    {
+        (*it)->cleanup();
+    }
+}
+
 void MultiPassProc::setExternalInputDataFormat(GLenum fmt) {
     assert(firstProc);
     firstProc->setExternalInputDataFormat(fmt);

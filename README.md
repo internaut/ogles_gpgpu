@@ -20,7 +20,8 @@
 
 ### Milestone 1
 
-* more filters
+* recreate pipeline
+* more filters: gauss
 
 * better logging (enable/disable via preproc defines)
 * time measurements as double not float
@@ -48,6 +49,7 @@
 ### Milestone 5
 
 * more dynamic filters (-> shader code generator)
+* create own multipass filter (multiple gauss filters?)
 
 ### Milestone 6
 

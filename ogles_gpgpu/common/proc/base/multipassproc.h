@@ -30,6 +30,11 @@ public:
     virtual int reinit(int inW, int inH, bool prepareForExternalInput = false);
     
     /**
+     * Cleanup processor's resources.
+     */
+    virtual void cleanup();
+    
+    /**
      * Set pixel data format for input data to <fmt>. Must be set before init() / reinit().
      */
     virtual void setExternalInputDataFormat(GLenum fmt);

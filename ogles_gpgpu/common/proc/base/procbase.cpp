@@ -54,12 +54,19 @@ ProcBase::ProcBase() {
 }
 
 ProcBase::~ProcBase() {
-	if (fbo) {
-		delete fbo;
-	}
+    cleanup();
     
 	if (shader) {
 		delete shader;
+	}
+}
+
+void ProcBase::cleanup() {
+	if (fbo) {
+		delete fbo;
+        fbo = NULL;
+        
+        outFrameW = outFrameH = 0;
 	}
 }
 
@@ -177,7 +184,7 @@ void ProcBase::createFBO() {
 }
 
 void ProcBase::createShader(const char *vShSrc, const char *fShSrc) {
-    assert(shader == NULL);
+    if (shader) return; // already compiled
     
     shader = new Shader();
     bool compiled = shader->buildFromSrc(vShSrc, fShSrc);
