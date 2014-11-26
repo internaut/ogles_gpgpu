@@ -20,8 +20,6 @@
 
 ### Milestone 1
 
-* more filters: gauss
-
 * better logging (enable/disable via preproc defines)
 * time measurements as double not float
 
