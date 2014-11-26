@@ -4,11 +4,12 @@
 #ifndef OGLES_GPGPU_COMMON_PROC_BASE
 #define OGLES_GPGPU_COMMON_PROC_BASE
 
-#include "../common_includes.h"
+#include "../../common_includes.h"
+#include "procinterface.h"
 
-#include "../gl/fbo.h"
-#include "../gl/shader.h"
-#include "../gl/memtransfer.h"
+#include "../../gl/fbo.h"
+#include "../../gl/shader.h"
+#include "../../gl/memtransfer.h"
 
 #define OGLES_GPGPU_QUAD_VERTICES 				4
 #define OGLES_GPGPU_QUAD_COORDS_PER_VERTEX      3
@@ -21,10 +22,9 @@ namespace ogles_gpgpu {
 class FBO;
 
 /**
- * ProcBase implements a GPGPU processor base class for a common interface and with some
- * helper methods.
+ * ProcBase implements an abstract GPGPU processor base class with some helper methods.
  */
-class ProcBase {
+class ProcBase : public ProcInterface {
 public:
     /**
      * Constructor.
@@ -37,16 +37,9 @@ public:
     virtual ~ProcBase();
     
     /**
-     * Init the processor for input frames of size <inW>x<inH> which is at
-     * position <order> in the processing pipeline.
-     * Abstract method.
-     */
-    virtual void init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false) = 0;
-    
-    /**
      * Reinitialize the proc for a different input frame size of <inW>x<inH>.
      */
-    virtual void reinit(int inW, int inH, bool prepareForExternalInput = false);
+    virtual int reinit(int inW, int inH, bool prepareForExternalInput = false);
     
     /**
      * Set pixel data format for input data to <fmt>. Must be set before init() / reinit().
@@ -66,12 +59,6 @@ public:
     virtual void createFBOTex(bool genMipmap);
     
     /**
-     * Render a result, i.e. run the shader on the input texture.
-     * Abstract method.
-     */
-    virtual void render() = 0;
-    
-    /**
      * Print some information about the processor's setup.
      */
     virtual void printInfo();
@@ -80,6 +67,11 @@ public:
      * Use texture id <id> as input texture at texture <useTexUnit>.
      */
     virtual void useTexture(GLuint id, GLuint useTexUnit = 1) { texId = id; texUnit = useTexUnit; }
+    
+    /**
+     * Return used texture unit.
+     */
+    virtual GLuint getTextureUnit() const { return texUnit; }
     
     /**
      * Set output size by scaling down or up the input frame size by factor <scaleFactor>.
@@ -99,22 +91,22 @@ public:
     /**
      * Get the render orientation.
      */
-    RenderOrientation getOutputRenderOrientation() const { return renderOrientation; }
+    virtual RenderOrientation getOutputRenderOrientation() const { return renderOrientation; }
     
     /**
      * Get the output frame width.
      */
-    int getOutFrameW() const { return outFrameW; }
+    virtual int getOutFrameW() const { return outFrameW; }
     
     /**
      * Get the output frame height.
      */
-    int getOutFrameH() const { return outFrameH; }
+    virtual int getOutFrameH() const { return outFrameH; }
     
     /**
      * Returns true if output size < input size.
      */
-    bool getWillDownscale() const { return willDownscale; }
+    virtual bool getWillDownscale() const { return willDownscale; }
     
     /**
      * Return the result data from the FBO.
@@ -129,12 +121,12 @@ public:
     /**
      * Return input texture id.
      */
-    GLuint getInputTexId() const { return texId; }
+    virtual GLuint getInputTexId() const { return texId; }
     
     /**
      * Return the output texture id (= texture that is attached to the FBO).
      */
-    GLuint getOutputTexId() const;
+    virtual GLuint getOutputTexId() const;
     
 protected:
     /**

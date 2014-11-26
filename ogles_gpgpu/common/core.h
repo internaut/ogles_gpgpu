@@ -6,7 +6,7 @@
 #define OGLES_GPGPU_COMMON_CORE
 
 #include "common_includes.h"
-#include "proc/procbase.h"
+#include "proc/base/procinterface.h"
 #include "gl/memtransfer.h"
 
 #include <list>
@@ -16,7 +16,6 @@ using namespace std;
 
 namespace ogles_gpgpu {
 
-class ProcBase;
 class Disp;
 
 /**
@@ -43,10 +42,10 @@ public:
     
     /**
      * Add a weak ref pointer to a GPGPU processor object to the pipeline.
-     * Note: OpenGL context must be initialized before a ProcBase object
+     * Note: OpenGL context must be initialized before a ProcInterface object
      * was created!
      */
-    void addProcToPipeline(ProcBase *proc);
+    void addProcToPipeline(ProcInterface *proc);
     
     /**
      * Create an object that renders the last processor's output to the screen.
@@ -173,10 +172,10 @@ private:
     
     void *glContextPtr;     // pointer to OpenGL context (platform specific type), weak ref.
     
-    list<ProcBase *> pipeline;  // contains weak refs to ProcBase objects
+    list<ProcInterface *> pipeline;  // contains weak refs to ProcBase objects
     
-    ProcBase *firstProc;    // pointer to first processor in pipeline
-    ProcBase *lastProc;     // pointer to last processor in pipeline
+    ProcInterface *firstProc;    // pointer to first processor in pipeline
+    ProcInterface *lastProc;     // pointer to last processor in pipeline
     
     Disp *renderDisp;
     

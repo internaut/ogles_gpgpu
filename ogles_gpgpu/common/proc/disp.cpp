@@ -13,7 +13,7 @@ void main() {
 }
 );
 
-void Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
+int Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     cout << "ogles_gpgpu::Disp - init" << endl;
     
     // ProcBase init - set defaults
@@ -21,6 +21,8 @@ void Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInp
     
     // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
     filterInit(fshaderDispSrc);
+    
+    return 1;
 }
 
 void Disp::render() {

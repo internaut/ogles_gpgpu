@@ -47,7 +47,6 @@
 
 ### Milestone 5
 
-* multipass proc base
 * more dynamic filters (-> shader code generator)
 
 ### Milestone 6

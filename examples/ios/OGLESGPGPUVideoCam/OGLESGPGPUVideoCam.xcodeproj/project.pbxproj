@@ -13,7 +13,6 @@
 		28193A3E1A2488730055834F /* memtransfer_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A271A2488730055834F /* memtransfer_factory.cpp */; };
 		28193A3F1A2488730055834F /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A291A2488730055834F /* shader.cpp */; };
 		28193A401A2488730055834F /* grayscale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A2C1A2488730055834F /* grayscale.cpp */; };
-		28193A411A2488730055834F /* procbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A2E1A2488730055834F /* procbase.cpp */; };
 		28193A421A2488730055834F /* thresh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A301A2488730055834F /* thresh.cpp */; };
 		28193A431A2488730055834F /* tools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A321A2488730055834F /* tools.cpp */; };
 		28193A441A2488730055834F /* memtransfer_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28193A391A2488730055834F /* memtransfer_ios.cpp */; };
@@ -32,7 +31,10 @@
 		28579B191A23C06100B1710F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28579B181A23C06100B1710F /* Images.xcassets */; };
 		28579B371A23C0EC00B1710F /* CamView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28579B361A23C0EC00B1710F /* CamView.mm */; };
 		28579B3A1A23C24600B1710F /* RootViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28579B391A23C24600B1710F /* RootViewController.mm */; };
-		28FCE45F1A25D79700811A7D /* filterprocbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE45D1A25D79700811A7D /* filterprocbase.cpp */; };
+		28FCE4741A26020300811A7D /* filterprocbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE46D1A26020300811A7D /* filterprocbase.cpp */; };
+		28FCE4751A26020300811A7D /* multipassproc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE46F1A26020300811A7D /* multipassproc.cpp */; };
+		28FCE4761A26020300811A7D /* procbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE4711A26020300811A7D /* procbase.cpp */; };
+		28FCE4801A26108800811A7D /* adapt_thresh_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE47E1A26108800811A7D /* adapt_thresh_pass.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,8 +51,6 @@
 		28193A2A1A2488730055834F /* shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shader.h; sourceTree = "<group>"; };
 		28193A2C1A2488730055834F /* grayscale.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = grayscale.cpp; sourceTree = "<group>"; };
 		28193A2D1A2488730055834F /* grayscale.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = grayscale.h; sourceTree = "<group>"; };
-		28193A2E1A2488730055834F /* procbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = procbase.cpp; sourceTree = "<group>"; };
-		28193A2F1A2488730055834F /* procbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = procbase.h; sourceTree = "<group>"; };
 		28193A301A2488730055834F /* thresh.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = thresh.cpp; sourceTree = "<group>"; };
 		28193A311A2488730055834F /* thresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = thresh.h; sourceTree = "<group>"; };
 		28193A321A2488730055834F /* tools.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tools.cpp; sourceTree = "<group>"; };
@@ -83,8 +83,16 @@
 		28579B361A23C0EC00B1710F /* CamView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CamView.mm; sourceTree = "<group>"; };
 		28579B381A23C24600B1710F /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		28579B391A23C24600B1710F /* RootViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RootViewController.mm; sourceTree = "<group>"; };
-		28FCE45D1A25D79700811A7D /* filterprocbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filterprocbase.cpp; sourceTree = "<group>"; };
-		28FCE45E1A25D79700811A7D /* filterprocbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filterprocbase.h; sourceTree = "<group>"; };
+		28FCE46D1A26020300811A7D /* filterprocbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filterprocbase.cpp; sourceTree = "<group>"; };
+		28FCE46E1A26020300811A7D /* filterprocbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filterprocbase.h; sourceTree = "<group>"; };
+		28FCE46F1A26020300811A7D /* multipassproc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = multipassproc.cpp; sourceTree = "<group>"; };
+		28FCE4701A26020300811A7D /* multipassproc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = multipassproc.h; sourceTree = "<group>"; };
+		28FCE4711A26020300811A7D /* procbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = procbase.cpp; sourceTree = "<group>"; };
+		28FCE4721A26020300811A7D /* procbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = procbase.h; sourceTree = "<group>"; };
+		28FCE4731A26020300811A7D /* procinterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = procinterface.h; sourceTree = "<group>"; };
+		28FCE4781A260FAE00811A7D /* adapt_thresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = adapt_thresh.h; sourceTree = "<group>"; };
+		28FCE47E1A26108800811A7D /* adapt_thresh_pass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = adapt_thresh_pass.cpp; sourceTree = "<group>"; };
+		28FCE47F1A26108800811A7D /* adapt_thresh_pass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = adapt_thresh_pass.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,14 +166,13 @@
 		28193A2B1A2488730055834F /* proc */ = {
 			isa = PBXGroup;
 			children = (
+				28FCE46C1A26020300811A7D /* base */,
+				28FCE47A1A26103900811A7D /* multipass */,
+				28FCE4781A260FAE00811A7D /* adapt_thresh.h */,
 				28193A541A2491A10055834F /* disp.h */,
 				28193A531A2491A10055834F /* disp.cpp */,
-				28FCE45E1A25D79700811A7D /* filterprocbase.h */,
-				28FCE45D1A25D79700811A7D /* filterprocbase.cpp */,
 				28193A2D1A2488730055834F /* grayscale.h */,
 				28193A2C1A2488730055834F /* grayscale.cpp */,
-				28193A2F1A2488730055834F /* procbase.h */,
-				28193A2E1A2488730055834F /* procbase.cpp */,
 				28193A311A2488730055834F /* thresh.h */,
 				28193A301A2488730055834F /* thresh.cpp */,
 			);
@@ -258,6 +265,29 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		28FCE46C1A26020300811A7D /* base */ = {
+			isa = PBXGroup;
+			children = (
+				28FCE46E1A26020300811A7D /* filterprocbase.h */,
+				28FCE46D1A26020300811A7D /* filterprocbase.cpp */,
+				28FCE4701A26020300811A7D /* multipassproc.h */,
+				28FCE46F1A26020300811A7D /* multipassproc.cpp */,
+				28FCE4721A26020300811A7D /* procbase.h */,
+				28FCE4711A26020300811A7D /* procbase.cpp */,
+				28FCE4731A26020300811A7D /* procinterface.h */,
+			);
+			path = base;
+			sourceTree = "<group>";
+		};
+		28FCE47A1A26103900811A7D /* multipass */ = {
+			isa = PBXGroup;
+			children = (
+				28FCE47F1A26108800811A7D /* adapt_thresh_pass.h */,
+				28FCE47E1A26108800811A7D /* adapt_thresh_pass.cpp */,
+			);
+			path = multipass;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -322,18 +352,20 @@
 			buildActionMask = 2147483647;
 			files = (
 				28193A441A2488730055834F /* memtransfer_ios.cpp in Sources */,
+				28FCE4761A26020300811A7D /* procbase.cpp in Sources */,
 				28579B171A23C06100B1710F /* AppDelegate.mm in Sources */,
 				28579B131A23C06000B1710F /* main.m in Sources */,
 				28193A431A2488730055834F /* tools.cpp in Sources */,
 				28579B3A1A23C24600B1710F /* RootViewController.mm in Sources */,
 				28193A3F1A2488730055834F /* shader.cpp in Sources */,
 				28193A3E1A2488730055834F /* memtransfer_factory.cpp in Sources */,
-				28193A411A2488730055834F /* procbase.cpp in Sources */,
-				28FCE45F1A25D79700811A7D /* filterprocbase.cpp in Sources */,
 				28193A551A2491A10055834F /* disp.cpp in Sources */,
+				28FCE4751A26020300811A7D /* multipassproc.cpp in Sources */,
+				28FCE4741A26020300811A7D /* filterprocbase.cpp in Sources */,
 				28193A3D1A2488730055834F /* memtransfer.cpp in Sources */,
 				28193A3C1A2488730055834F /* fbo.cpp in Sources */,
 				28193A3B1A2488730055834F /* core.cpp in Sources */,
+				28FCE4801A26108800811A7D /* adapt_thresh_pass.cpp in Sources */,
 				28193A421A2488730055834F /* thresh.cpp in Sources */,
 				28579B371A23C0EC00B1710F /* CamView.mm in Sources */,
 				28193A401A2488730055834F /* grayscale.cpp in Sources */,

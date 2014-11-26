@@ -28,7 +28,7 @@ GrayscaleProc::GrayscaleProc() {
     setGrayscaleConvType(GRAYSCALE_INPUT_CONVERSION_RGB);
 }
 
-void GrayscaleProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
+int GrayscaleProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     cout << "ogles_gpgpu::GrayscaleProc - init" << endl;
     
     // create fbo for output
@@ -42,6 +42,8 @@ void GrayscaleProc::init(int inW, int inH, unsigned int order, bool prepareForEx
     
     // get additional shader params
     shParamUInputConvVec = shader->getParam(UNIF, "uInputConvVec");
+    
+    return 1;
 }
 
 void GrayscaleProc::render() {

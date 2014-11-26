@@ -6,7 +6,7 @@
 
 #include "../common_includes.h"
 
-#include "filterprocbase.h"
+#include "base/filterprocbase.h"
 
 namespace ogles_gpgpu {
     
@@ -35,7 +35,7 @@ public:
      * Init the processor for input frames of size <inW>x<inH> which is at
      * position <order> in the processing pipeline.
      */
-    virtual void init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
+    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
     
     /**
      * Render the output.

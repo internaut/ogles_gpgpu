@@ -103,7 +103,7 @@ void ProcBase::createFBOTex(bool genMipmap) {
     outFrameH = fbo->getTexHeight();
 }
 
-void ProcBase::reinit(int inW, int inH, bool prepareForExternalInput) {
+int ProcBase::reinit(int inW, int inH, bool prepareForExternalInput) {
     assert(fbo != NULL);
     
     setInOutFrameSizes(inW, inH, procParamOutW, procParamOutH, procParamOutScale);
@@ -119,6 +119,8 @@ void ProcBase::reinit(int inW, int inH, bool prepareForExternalInput) {
          << ", output tex size " << outFrameW << "x" << outFrameH
          << ", will downscale: " << willDownscale
          << endl;
+    
+    return 1;
 }
 
 void ProcBase::baseInit(int inW, int inH, unsigned int order, bool prepareForExternalInput, int outW, int outH, float scaleFactor) {

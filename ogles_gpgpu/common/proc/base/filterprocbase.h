@@ -4,7 +4,7 @@
 #ifndef OGLES_GPGPU_COMMON_PROC_FILTERPROCBASE
 #define OGLES_GPGPU_COMMON_PROC_FILTERPROCBASE
 
-#include "../common_includes.h"
+#include "../../common_includes.h"
 
 #include "procbase.h"
 

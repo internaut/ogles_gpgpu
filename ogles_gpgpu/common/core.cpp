@@ -51,7 +51,7 @@ Core::~Core() {
     if (renderDisp) delete renderDisp;
 }
 
-void Core::addProcToPipeline(ProcBase *proc) {
+void Core::addProcToPipeline(ProcInterface *proc) {
     // pipeline needs to be set up before calling init()
     if (initialized) {
         cerr << "ogles_gpgpu::Core - adding processor failed: pipeline already initialized" << endl;
@@ -109,9 +109,10 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
          << " (POT: " <<  inputSizeIsPOT << ")" << endl;
 
     // initialize the pipeline
-    ProcBase *prevProc = NULL;
+    ProcInterface *prevProc = NULL;
     unsigned int num = 0;
-    for (list<ProcBase *>::iterator it = pipeline.begin();
+    int numInitialized = 0;
+    for (list<ProcInterface *>::iterator it = pipeline.begin();
          it != pipeline.end();
          ++it)
     {
@@ -135,28 +136,40 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
         
         if (!prepared) {    // for first time preparation
             // initialize current proc
-            (*it)->init(pipelineFrameW, pipelineFrameH, num, num == 0 && inFmt != GL_NONE);
+            numInitialized = (*it)->init(pipelineFrameW, pipelineFrameH, num, num == 0 && inFmt != GL_NONE);
         } else {    // for reinitialization with different frame size
-            (*it)->reinit(pipelineFrameW, pipelineFrameH, num == 0 && inFmt != GL_NONE);
+            numInitialized = (*it)->reinit(pipelineFrameW, pipelineFrameH, num == 0 && inFmt != GL_NONE);
         }
         
         // if this proc will downscale, we should generate a mipmap for the previous output
         if (num > 0) {
             // create a texture that is attached to an FBO for the output
             prevProc->createFBOTex(useMipmaps && (*it)->getWillDownscale());
-            
-            // set input texture id
-            (*it)->useTexture(prevProc->getOutputTexId());  // chain together
         }
         
         // set pointer to previous proc
         prevProc = *it;
         
-        num++;
+        num += numInitialized;
     }
     
     // create the FBO texture for the last processor, too
     prevProc->createFBOTex(false);
+    
+    // concatenate all processors
+    prevProc = NULL;
+    for (list<ProcInterface *>::iterator it = pipeline.begin();
+         it != pipeline.end();
+         ++it)
+    {
+        if (prevProc) {
+            // set input texture id
+            (*it)->useTexture(prevProc->getOutputTexId());  // previous output is this proc's input
+        }
+        
+        // set pointer to previous proc
+        prevProc = *it;
+    }
     
     // set last processor
     lastProc = prevProc;
@@ -184,7 +197,7 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
          << inputTexId << " / output tex " << outputTexId << ")" << endl;
     
     // print report (to spot errors in the pipeline)
-    for (list<ProcBase *>::iterator it = pipeline.begin();
+    for (list<ProcInterface *>::iterator it = pipeline.begin();
          it != pipeline.end();
          ++it)
     {
@@ -267,7 +280,7 @@ void Core::process() {
     outputTexId = lastProc->getOutputTexId();
     
     // run the processors in the pipeline
-    for (list<ProcBase *>::iterator it = pipeline.begin();
+    for (list<ProcInterface *>::iterator it = pipeline.begin();
          it != pipeline.end();
          ++it)
     {
