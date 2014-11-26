@@ -259,16 +259,11 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
     // set up grayscale processor
     grayscaleProc.setOutputSize(0.5f);  // downscale to half size
     grayscaleProc.setGrayscaleConvType(ogles_gpgpu::GRAYSCALE_INPUT_CONVERSION_BGR);    // needed, because we actually have BGRA input data when we use iOS optimized memory access
-
-    // set up adaptive thresholding (two passes)
-    adaptThreshProc[0].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_1);
-    adaptThreshProc[1].setThreshType(ogles_gpgpu::THRESH_ADAPTIVE_PASS_2);
     
     // create the pipeline
     gpgpuMngr->addProcToPipeline(&grayscaleProc);
 //    gpgpuMngr->addProcToPipeline(&simpleThreshProc);
-    gpgpuMngr->addProcToPipeline(&adaptThreshProc[0]);
-    gpgpuMngr->addProcToPipeline(&adaptThreshProc[1]);
+    gpgpuMngr->addProcToPipeline(&adaptThreshProc);
 
     // initialize the pipeline
     gpgpuMngr->init(eaglContext);

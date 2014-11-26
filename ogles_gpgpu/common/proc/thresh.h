@@ -43,13 +43,6 @@ public:
     virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
     
     /**
-     * Create a texture that is attached to the FBO and will contain the processing result.
-     * Set <genMipmap> to true to generate a mipmap (usually only works with POT textures).
-     * Overrides ProcBase's method.
-     */
-    virtual void createFBOTex(bool genMipmap);
-    
-    /**
      * Render the output.
      */
     virtual void render();
