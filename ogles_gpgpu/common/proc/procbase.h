@@ -49,13 +49,13 @@ public:
     virtual void reinit(int inW, int inH, bool prepareForExternalInput = false);
     
     /**
-     * Set pixel data format for input data to <fmt>.
+     * Set pixel data format for input data to <fmt>. Must be set before init() / reinit().
      */
     virtual void setExternalInputDataFormat(GLenum fmt) { inputDataFmt = fmt; }
     
     /**
      * Insert external data into this processor. It will be used as input texture.
-     * Note: orderNum must be 0 for that (first processor in pipeline).
+     * Note: init() must have been called with prepareForExternalInput = true for that.
      */
     virtual void setExternalInputData(const unsigned char *data);
     
@@ -91,8 +91,14 @@ public:
      */
     virtual void setOutputSize(int outW, int outH) { procParamOutW = outW; procParamOutH = outH; }
     
+    /**
+     * Set the render orientation to <o>. This will set the order of the output texture coordinates.
+     */
     virtual void setOutputRenderOrientation(RenderOrientation o) { renderOrientation = o; }
     
+    /**
+     * Get the render orientation.
+     */
     RenderOrientation getOutputRenderOrientation() const { return renderOrientation; }
     
     /**
@@ -138,8 +144,6 @@ protected:
      */
     virtual void baseInit(int inW, int inH, unsigned int order, bool prepareForExternalInput = false, int outW = 0, int outH = 0, float scaleFactor = 1.0f);
     
-    virtual void initTexCoordBuf(GLfloat *buf, RenderOrientation overrideRenderOrientation = RenderOrientationNone);
-    
     /**
      * Common frame size setter for input size <inW>x<inH> and output size <outW>x<outH> and scaling factor
      * <scaleFactor>. If output size is 0x0, the output size will be calculated by input size * scaling factor.
@@ -158,14 +162,12 @@ protected:
     virtual void createShader(const char *vShSrc, const char *fShSrc);
     
     
-    static const char *vshaderDefault;  // default vertex shader to render a fullscreen quad
-    
-	static const GLfloat quadTexCoordsStd[];        // default quad texture coordinates
+	static const GLfloat quadTexCoordsStd[];                // default quad texture coordinates
     static const GLfloat quadTexCoordsStdMirrored[];        // default quad texture coordinates (mirrored)
-	static const GLfloat quadTexCoordsFlipped[];    // flipped quad texture coordinates
+	static const GLfloat quadTexCoordsFlipped[];            // flipped quad texture coordinates
 	static const GLfloat quadTexCoordsFlippedMirrored[];    // flipped, mirrored quad texture coordinates
-	static const GLfloat quadTexCoordsDiagonal[];   // diagonal quad texture coordinates
-	static const GLfloat quadVertices[];            // default quad vertices
+	static const GLfloat quadTexCoordsDiagonal[];           // diagonal quad texture coordinates
+	static const GLfloat quadVertices[];                    // default quad vertices
     
     FBO *fbo;       // strong ref.!
 	Shader *shader;	// strong ref.!
@@ -175,11 +177,13 @@ protected:
 	GLuint texId;   // input texture id
     GLuint texUnit; // input texture unit (glActiveTexture())
     
+    GLint shParamUInputTex;     // shader uniform input texture sampler
+    
     int procParamOutW;          // output frame width parameter
     int procParamOutH;          // output frame height parameter
     float procParamOutScale;    // output frame scaling parameter
     
-    RenderOrientation renderOrientation;
+    RenderOrientation renderOrientation;    // output render orientation
     
     bool willDownscale; // is true if output size < input size.
     

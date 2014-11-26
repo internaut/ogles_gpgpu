@@ -6,7 +6,7 @@
 
 #include "../common_includes.h"
 
-#include "procbase.h"
+#include "filterprocbase.h"
 
 namespace ogles_gpgpu {
     
@@ -24,7 +24,7 @@ typedef enum {
  * GPGPU grayscale processor will convert a RGB or BGR input image to grayscale
  * output image using a weighted channel conversion vector.
  */
-class GrayscaleProc : public ProcBase {
+class GrayscaleProc : public FilterProcBase {
 public:
     /**
      * Constructor.
@@ -67,16 +67,10 @@ private:
     static const GLfloat grayscaleConvVecRGB[3];    // weighted channel grayscale conversion for RGB input (default)
     static const GLfloat grayscaleConvVecBGR[3];    // weighted channel grayscale conversion for BGR input
     
-	GLint shParamAPos;          // shader attribute vertex positions
-	GLint shParamATexCoord;     // shader attribute texture coordinates
-    GLint shParamUInputTex;     // shader uniform input texture sampler
     GLint shParamUInputConvVec; // shader uniform weighted channel grayscale conversion vector
     
     GLfloat grayscaleConvVec[3];                // currently set weighted channel grayscale conversion vector
     GrayscaleInputConversionType inputConvType; // grayscale conversion type
-    
-	GLfloat vertexBuf[OGLES_GPGPU_QUAD_VERTEX_BUFSIZE]; // vertex data buffer for a quad
-	GLfloat texCoordBuf[OGLES_GPGPU_QUAD_TEX_BUFSIZE];  // texture coordinate data buffer for a quad
 };
 }
 

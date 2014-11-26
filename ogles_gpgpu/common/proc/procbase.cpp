@@ -3,17 +3,6 @@
 using namespace ogles_gpgpu;
 using namespace std;
 
-const char *ProcBase::vshaderDefault = TO_STR
-(
-attribute vec4 aPos;
-attribute vec2 aTexCoord;
-varying vec2 vTexCoord;
-void main() {
-    gl_Position = aPos;
-    vTexCoord = aTexCoord;
-}
-);
-
 const GLfloat ProcBase::quadTexCoordsStd[] = {
     0, 0,
     1, 0,
@@ -156,34 +145,6 @@ void ProcBase::baseInit(int inW, int inH, unsigned int order, bool prepareForExt
 
 void ProcBase::setExternalInputData(const unsigned char *data) {
     fbo->getMemTransfer()->toGPU(data);
-}
-
-void ProcBase::initTexCoordBuf(GLfloat *buf, RenderOrientation overrideRenderOrientation) {
-    RenderOrientation o = overrideRenderOrientation == RenderOrientationNone ?
-                          renderOrientation : overrideRenderOrientation;
-    
-    const GLfloat *coordsPtr;
-    
-    switch (o) {
-        default:
-        case RenderOrientationStd:
-            coordsPtr = ProcBase::quadTexCoordsStd;
-            break;
-        case RenderOrientationStdMirrored:
-            coordsPtr = ProcBase::quadTexCoordsStdMirrored;
-            break;
-        case RenderOrientationFlipped:
-            coordsPtr = ProcBase::quadTexCoordsFlipped;
-            break;
-        case RenderOrientationFlippedMirrored:
-            coordsPtr = ProcBase::quadTexCoordsFlippedMirrored;
-            break;
-        case RenderOrientationDiagonal:
-            coordsPtr = ProcBase::quadTexCoordsDiagonal;
-            break;
-    }
-    
-	memcpy(buf, coordsPtr, OGLES_GPGPU_QUAD_TEX_BUFSIZE * sizeof(GLfloat));
 }
 
 void ProcBase::setInOutFrameSizes(int inW, int inH, int outW, int outH, float scaleFactor) {

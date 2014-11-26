@@ -6,7 +6,7 @@
 
 #include "../common_includes.h"
 
-#include "procbase.h"
+#include "filterprocbase.h"
 
 namespace ogles_gpgpu {
     
@@ -14,7 +14,7 @@ namespace ogles_gpgpu {
  * Helper class to simply display an output.
  * Render an input texture to a fullscreen quad.
  */
-class Disp : public ProcBase {
+class Disp : public FilterProcBase {
 public:
     /**
      * Init the processor for input frames of size <inW>x<inH> which is at
@@ -28,19 +28,22 @@ public:
     virtual void render();
     
     /**
-     * Immediately change the render orientation, also after init() has been called.
+     * Not implemented - no output texture needed because Disp renders on screen.
      */
-    virtual void setOutputRenderOrientation(RenderOrientation o);
+    virtual void createFBOTex(bool genMipmap) { assert(false); }
+
+    /**
+     * Not implemented - no output is returned because Disp renders on screen.
+     */
+    virtual void getResultData(unsigned char *data) const { assert(false); }
+    
+    /**
+     * Not implemented - no MemTransferObj for output is set because Disp renders on screen.
+     */
+    virtual MemTransfer *getMemTransferObj() const { assert(false); return NULL; }
 
 private:
     static const char *fshaderDispSrc;         // fragment shader source
-
-	GLint shParamAPos;          // shader attribute vertex positions
-	GLint shParamATexCoord;     // shader attribute texture coordinates
-    GLint shParamUInputTex;     // shader uniform input texture sampler
-    
-	GLfloat vertexBuf[OGLES_GPGPU_QUAD_VERTEX_BUFSIZE]; // vertex data buffer for a quad
-	GLfloat texCoordBuf[OGLES_GPGPU_QUAD_TEX_BUFSIZE];  // texture coordinate data buffer for a quad
 };
     
 }

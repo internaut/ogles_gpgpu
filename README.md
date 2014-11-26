@@ -20,7 +20,6 @@
 
 ### Milestone 1
 
-* ProcSimpleFilter base class
 * more filters
 
 * better logging (enable/disable via preproc defines)
@@ -39,14 +38,18 @@
 
 ### Milestone 3
 
-* comparisons with openCV
-* AR support (include into ocv_ar)
+* rasp pi port
 
 ### Milestone 4
 
-* rasp pi port
+* comparisons with openCV
+* AR support (include into ocv_ar)
 
 ### Milestone 5
 
 * multipass proc base
 * more dynamic filters (-> shader code generator)
+
+### Milestone 6
+
+* native iOS YUV input support

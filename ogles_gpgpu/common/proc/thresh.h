@@ -6,7 +6,7 @@
 
 #include "../common_includes.h"
 
-#include "procbase.h"
+#include "filterprocbase.h"
 
 namespace ogles_gpgpu {
 
@@ -23,7 +23,7 @@ typedef enum {
  * GPGPU thresholding processor uses a simple or adaptive threshold to binarize
  * a grayscale input image.
  */
-class ThreshProc : public ProcBase {
+class ThreshProc : public FilterProcBase {
 public:
     /**
      * Constructor.
@@ -77,14 +77,8 @@ private:
     ThreshProcType threshType;  // thresholding type
     float threshVal;            // only used for simple thresholding [0.0 .. 1.0]
     
-    GLint shParamAPos;      // shader attribute vertex positions
-    GLint shParamATexCoord; // shader attribute texture coordinates
-    GLint shParamUInputTex; // shader uniform input texture sampler
 	GLint shParamUPxD;		// pixel delta values for texture lookup in the fragment shader. only used for adapt. thresholding
 	GLint shParamUThresh;	// fixed threshold value. only used for simple thresholding
-    
-    GLfloat vertexBuf[OGLES_GPGPU_QUAD_VERTEX_BUFSIZE]; // vertex data buffer for a quad
-    GLfloat texCoordBuf[OGLES_GPGPU_QUAD_TEX_BUFSIZE];  // texture coordinate data buffer for a quad
     
 	float pxDx;	// pixel delta value for texture access. only used for adapt. thresholding
 	float pxDy;	// pixel delta value for texture access. only used for adapt. thresholding

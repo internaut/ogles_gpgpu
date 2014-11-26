@@ -77,11 +77,11 @@ ThreshProc::ThreshProc() {
 void ThreshProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     cout << "ogles_gpgpu::ThreshProc - init" << endl;
     
-    // create fbo
-    ProcBase::createFBO();
+    // create fbo for output
+    createFBO();
     
     // parent init - set defaults
-    ProcBase::baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
+    baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
     
     if (threshType == THRESH_ADAPTIVE_PASS_1 || threshType == THRESH_ADAPTIVE_PASS_2) {
         // calculate pixel delta values
@@ -89,7 +89,7 @@ void ThreshProc::init(int inW, int inH, unsigned int order, bool prepareForExter
         pxDy = 1.0f / (float)outFrameH;
     }
 
-    // create shader object
+    // get necessary fragment shader source
     const char *shSrc = NULL;
     if (threshType == THRESH_SIMPLE) {
         shSrc = fshaderSimpleThreshSrc;
@@ -99,34 +99,19 @@ void ThreshProc::init(int inW, int inH, unsigned int order, bool prepareForExter
         shSrc = fshaderAdaptThreshPass2Src;
     }
     
-    ProcBase::createShader(ProcBase::vshaderDefault, shSrc);
+    // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
+    filterInit(shSrc, threshType == THRESH_SIMPLE ? RenderOrientationStd : RenderOrientationDiagonal);
     
-    // get shader params
-    shParamAPos = shader->getParam(ATTR, "aPos");
-	shParamATexCoord = shader->getParam(ATTR, "aTexCoord");
-    shParamUInputTex = shader->getParam(UNIF, "uInputTex");
-    
+    // get additional shader params
     if (threshType == THRESH_SIMPLE) {
         shParamUThresh = shader->getParam(UNIF, "uThresh");
     } else {
         shParamUPxD = shader->getParam(UNIF, "uPxD");
     }
-    
-	// set geometry
-	memcpy(vertexBuf, ProcBase::quadVertices,
-           OGLES_GPGPU_QUAD_VERTEX_BUFSIZE * sizeof(GLfloat));
-    
-	// set texture coordinates
-    if (threshType == THRESH_SIMPLE) {
-        // set texture coordinates
-        initTexCoordBuf(texCoordBuf, RenderOrientationStd);
-    } else {
-        initTexCoordBuf(texCoordBuf, RenderOrientationDiagonal);
-    }
 }
 
 void ThreshProc::createFBOTex(bool genMipmap) {
-    assert(fbo != NULL);
+    assert(fbo);
     
     if (threshType == THRESH_ADAPTIVE_PASS_1) {
         fbo->createAttachedTex(outFrameH, outFrameW, genMipmap);   // swapped
@@ -142,55 +127,22 @@ void ThreshProc::createFBOTex(bool genMipmap) {
 void ThreshProc::render() {
     cout << "ogles_gpgpu::ThreshProc - render (thresh type " << threshType << ") to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
     
-	shader->use();
-    
-	// set texture
-    glActiveTexture(GL_TEXTURE0 + texUnit);
-	glBindTexture(GL_TEXTURE_2D, texId);	// bind input texture
-    
-	// set uniforms
-    glUniform1i(shParamUInputTex, texUnit);
-    
-	if (threshType == THRESH_SIMPLE) {
+    filterRenderPrepare();
+	
+    if (threshType == THRESH_SIMPLE) {
 		glUniform1f(shParamUThresh, threshVal);	// thresholding value for simple thresholding
 	} else {
 		glUniform2f(shParamUPxD, pxDx, pxDy);	// texture pixel delta values
 	}
     
-	// render to FBO
-	fbo->bind();
+    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render prepare");
     
-	// set the viewport
-    glViewport(0, 0, outFrameW, outFrameH); // w and h will already be swapped in case of adapt.thresh. pass 1
-
+    filterRenderSetCoords();
+    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render set coords");
     
-	glClear(GL_COLOR_BUFFER_BIT);
+    filterRenderDraw();
+    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render draw");
     
-	// set geometry
-	glEnableVertexAttribArray(shParamAPos);
-	glVertexAttribPointer(shParamAPos,
-						  OGLES_GPGPU_QUAD_COORDS_PER_VERTEX,
-						  GL_FLOAT,
-						  GL_FALSE,
-						  0,
-						  vertexBuf);
-    
-    glVertexAttribPointer(shParamATexCoord,
-    					  OGLES_GPGPU_QUAD_TEXCOORDS_PER_VERTEX,
-    					  GL_FLOAT,
-    					  GL_FALSE,
-    					  0,
-    					  texCoordBuf);
-    glEnableVertexAttribArray(shParamATexCoord);
-    
-	// draw
-	glDrawArrays(GL_TRIANGLE_STRIP, 0, OGLES_GPGPU_QUAD_VERTICES);
-    
-    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render");
-    
-	// cleanup
-	glDisableVertexAttribArray(shParamAPos);
-	glDisableVertexAttribArray(shParamATexCoord);
-    
-	fbo->unbind();
+    filterRenderCleanup();
+    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render cleanup");
 }

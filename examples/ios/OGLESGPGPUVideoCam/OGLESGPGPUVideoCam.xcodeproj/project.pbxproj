@@ -32,6 +32,7 @@
 		28579B191A23C06100B1710F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 28579B181A23C06100B1710F /* Images.xcassets */; };
 		28579B371A23C0EC00B1710F /* CamView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28579B361A23C0EC00B1710F /* CamView.mm */; };
 		28579B3A1A23C24600B1710F /* RootViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28579B391A23C24600B1710F /* RootViewController.mm */; };
+		28FCE45F1A25D79700811A7D /* filterprocbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE45D1A25D79700811A7D /* filterprocbase.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -82,6 +83,8 @@
 		28579B361A23C0EC00B1710F /* CamView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CamView.mm; sourceTree = "<group>"; };
 		28579B381A23C24600B1710F /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		28579B391A23C24600B1710F /* RootViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RootViewController.mm; sourceTree = "<group>"; };
+		28FCE45D1A25D79700811A7D /* filterprocbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filterprocbase.cpp; sourceTree = "<group>"; };
+		28FCE45E1A25D79700811A7D /* filterprocbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filterprocbase.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,6 +160,8 @@
 			children = (
 				28193A541A2491A10055834F /* disp.h */,
 				28193A531A2491A10055834F /* disp.cpp */,
+				28FCE45E1A25D79700811A7D /* filterprocbase.h */,
+				28FCE45D1A25D79700811A7D /* filterprocbase.cpp */,
 				28193A2D1A2488730055834F /* grayscale.h */,
 				28193A2C1A2488730055834F /* grayscale.cpp */,
 				28193A2F1A2488730055834F /* procbase.h */,
@@ -324,6 +329,7 @@
 				28193A3F1A2488730055834F /* shader.cpp in Sources */,
 				28193A3E1A2488730055834F /* memtransfer_factory.cpp in Sources */,
 				28193A411A2488730055834F /* procbase.cpp in Sources */,
+				28FCE45F1A25D79700811A7D /* filterprocbase.cpp in Sources */,
 				28193A551A2491A10055834F /* disp.cpp in Sources */,
 				28193A3D1A2488730055834F /* memtransfer.cpp in Sources */,
 				28193A3C1A2488730055834F /* fbo.cpp in Sources */,
