@@ -1,5 +1,7 @@
 #import "RootViewController.h"
 
+#define INITIAL_PROC_TYPE 3
+
 /**
  * Small helper function to convert a fourCC <code> to
  * a character string <fourCC> for printf and the like
@@ -199,15 +201,16 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     // set a list of buttons for processing output display
     NSArray *btnTitles = [NSArray arrayWithObjects:
                           @"Normal",
-                          @"Adapt. Thresholding",
-                          @"Simple Thresholding",
+                          @"Adapt. Thresh.",
+                          @"Simple Thresh.",
+                          @"Gauss",
                           nil];
     for (int btnIdx = 0; btnIdx < btnTitles.count; btnIdx++) {
         UIButton *procOutputSelectBtn = [UIButton buttonWithType:UIButtonTypeSystem];
         [procOutputSelectBtn setTag:btnIdx - 1];
         [procOutputSelectBtn setTitle:[btnTitles objectAtIndex:btnIdx]
                              forState:UIControlStateNormal];
-        int btnW = 120;
+        int btnW = 140;
         [procOutputSelectBtn setFrame:CGRectMake(10 + (btnW + 20) * btnIdx, 10, btnW, 35)];
         [procOutputSelectBtn setOpaque:YES];
         [procOutputSelectBtn addTarget:self
@@ -238,7 +241,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 //    grayscaleProc.setGrayscaleConvType(ogles_gpgpu::GRAYSCALE_INPUT_CONVERSION_BGR);    // needed, because we actually have BGRA input data when we use iOS optimized memory access
     
     // create the pipeline
-    [self initGPUPipeline:1];
+    [self initGPUPipeline:INITIAL_PROC_TYPE];
     
     // initialize the pipeline
     gpgpuMngr->init(eaglContext);
@@ -252,12 +255,14 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     gpgpuMngr->reset();
     
     // create the pipeline
-    gpgpuMngr->addProcToPipeline(&grayscaleProc);
-    
     if (type == 1) {
+        gpgpuMngr->addProcToPipeline(&grayscaleProc);
         gpgpuMngr->addProcToPipeline(&adaptThreshProc);
     } else if (type == 2) {
+        gpgpuMngr->addProcToPipeline(&grayscaleProc);
         gpgpuMngr->addProcToPipeline(&simpleThreshProc);
+    } else if (type == 3) {
+        gpgpuMngr->addProcToPipeline(&gaussProc);
     } else {
         NSLog(@"GPU pipeline definition #%d not supported", type);
     }
@@ -354,7 +359,9 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     [camView setHidden:!showCamPreview];    // only show original camera frames in "normal" display mode
     [glView setHidden:showCamPreview];      // only show processed frames for other than "normal" display mode
     
-    [self initGPUPipeline:sender.tag + 1];
+    if (!showCamPreview) {
+        [self initGPUPipeline:sender.tag + 1];
+    }
 }
 
 - (void)interfaceOrientationChanged:(UIInterfaceOrientation)o {

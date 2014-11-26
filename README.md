@@ -20,7 +20,6 @@
 
 ### Milestone 1
 
-* recreate pipeline
 * more filters: gauss
 
 * better logging (enable/disable via preproc defines)

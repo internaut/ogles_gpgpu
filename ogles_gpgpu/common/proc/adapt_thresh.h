@@ -1,5 +1,5 @@
 /**
- * GPGPU adaptive thresholding processor.
+ * GPGPU adaptive thresholding processor (two-pass).
  */
 #ifndef OGLES_GPGPU_COMMON_PROC_ADAPT_THRESH
 #define OGLES_GPGPU_COMMON_PROC_ADAPT_THRESH
@@ -18,6 +18,8 @@ public:
         
         procPasses.push_back(adaptThreshPass1);
         procPasses.push_back(adaptThreshPass2);
+        
+        multiPassInit();
     }
 };
 }

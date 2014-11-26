@@ -48,9 +48,10 @@
     
     ogles_gpgpu::MemTransfer *gpgpuInputHandler;    // input handler for direct access to the camera frames. weak ref!
     
-    ogles_gpgpu::GrayscaleProc grayscaleProc;   // pipeline processor 1: convert input to grayscale image
-    ogles_gpgpu::ThreshProc simpleThreshProc;   // pipeline processor 2 (alternative 1): simple thresholding
-    ogles_gpgpu::AdaptThreshProc adaptThreshProc; // pipeline processor 2 (alternative 2): adaptive thresholding (two passes)
+    ogles_gpgpu::GrayscaleProc grayscaleProc;       // pipeline processor 1: convert input to grayscale image
+    ogles_gpgpu::ThreshProc simpleThreshProc;       // pipeline processor 2 (alternative 1): simple thresholding
+    ogles_gpgpu::AdaptThreshProc adaptThreshProc;   // pipeline processor 2 (alternative 2): adaptive thresholding (two passes)
+    ogles_gpgpu::GaussProc gaussProc;               // pipeline processor 2 (alternative 3): gaussian smoothing (two passes)
     
     ogles_gpgpu::Disp *outputDispRenderer;  // display renderer to directly display the output in the GL view. weak ref!
     

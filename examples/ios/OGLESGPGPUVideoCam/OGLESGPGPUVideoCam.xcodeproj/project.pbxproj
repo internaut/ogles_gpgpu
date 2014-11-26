@@ -35,6 +35,7 @@
 		28FCE4751A26020300811A7D /* multipassproc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE46F1A26020300811A7D /* multipassproc.cpp */; };
 		28FCE4761A26020300811A7D /* procbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE4711A26020300811A7D /* procbase.cpp */; };
 		28FCE4801A26108800811A7D /* adapt_thresh_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE47E1A26108800811A7D /* adapt_thresh_pass.cpp */; };
+		28FCE4A01A262C0200811A7D /* gauss_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 28FCE49E1A262C0200811A7D /* gauss_pass.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +94,9 @@
 		28FCE4781A260FAE00811A7D /* adapt_thresh.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = adapt_thresh.h; sourceTree = "<group>"; };
 		28FCE47E1A26108800811A7D /* adapt_thresh_pass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = adapt_thresh_pass.cpp; sourceTree = "<group>"; };
 		28FCE47F1A26108800811A7D /* adapt_thresh_pass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = adapt_thresh_pass.h; sourceTree = "<group>"; };
+		28FCE49E1A262C0200811A7D /* gauss_pass.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gauss_pass.cpp; sourceTree = "<group>"; };
+		28FCE49F1A262C0200811A7D /* gauss_pass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gauss_pass.h; sourceTree = "<group>"; };
+		28FCE4A11A262F7F00811A7D /* gauss.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = gauss.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +175,7 @@
 				28FCE4781A260FAE00811A7D /* adapt_thresh.h */,
 				28193A541A2491A10055834F /* disp.h */,
 				28193A531A2491A10055834F /* disp.cpp */,
+				28FCE4A11A262F7F00811A7D /* gauss.h */,
 				28193A2D1A2488730055834F /* grayscale.h */,
 				28193A2C1A2488730055834F /* grayscale.cpp */,
 				28193A311A2488730055834F /* thresh.h */,
@@ -284,6 +289,8 @@
 			children = (
 				28FCE47F1A26108800811A7D /* adapt_thresh_pass.h */,
 				28FCE47E1A26108800811A7D /* adapt_thresh_pass.cpp */,
+				28FCE49F1A262C0200811A7D /* gauss_pass.h */,
+				28FCE49E1A262C0200811A7D /* gauss_pass.cpp */,
 			);
 			path = multipass;
 			sourceTree = "<group>";
@@ -351,6 +358,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28FCE4A01A262C0200811A7D /* gauss_pass.cpp in Sources */,
 				28193A441A2488730055834F /* memtransfer_ios.cpp in Sources */,
 				28FCE4761A26020300811A7D /* procbase.cpp in Sources */,
 				28579B171A23C06100B1710F /* AppDelegate.mm in Sources */,

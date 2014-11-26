@@ -15,6 +15,10 @@ namespace ogles_gpgpu {
 
 class MultiPassProc : public ProcInterface {
 public:
+    /**
+     * Deconstructor.
+     * Removes all pass instances.
+     */
     virtual ~MultiPassProc();
     
     /**
@@ -140,6 +144,12 @@ public:
     list<ProcInterface *> getProcPasses() const { return procPasses; }
     
 protected:
+    /**
+     * This method should be called whenever <procPasses> changed.
+     */
+    void multiPassInit();
+    
+    
     list<ProcInterface *> procPasses;   // holds all instances to the single processing passes. strong ref!
     
     ProcInterface *firstProc;

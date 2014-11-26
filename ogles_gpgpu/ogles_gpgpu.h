@@ -14,6 +14,7 @@
 
 #include "common/proc/adapt_thresh.h"
 #include "common/proc/disp.h"
+#include "common/proc/gauss.h"
 #include "common/proc/grayscale.h"
 #include "common/proc/thresh.h"
 

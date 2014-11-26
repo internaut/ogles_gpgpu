@@ -29,9 +29,7 @@ int MultiPassProc::init(int inW, int inH, unsigned int order, bool prepareForExt
         // find out the input frame size for the proc
         int pipelineFrameW, pipelineFrameH;
         
-        if (num == 0) { // special set up for first pipeline processor
-            firstProc = *it;
-            
+        if (num == 0) {
             // first pipeline's frame size is the input frame size
             pipelineFrameW = inW;
             pipelineFrameH = inH;
@@ -48,8 +46,6 @@ int MultiPassProc::init(int inW, int inH, unsigned int order, bool prepareForExt
         
         num += numInitialized;
     }
-    
-    lastProc = prevProc;
     
     return num;
 }
@@ -207,4 +203,11 @@ GLuint MultiPassProc::getInputTexId() const {
 GLuint MultiPassProc::getOutputTexId() const {
     assert(lastProc);
     return lastProc->getOutputTexId();
+}
+
+#pragma mark protected methods
+
+void MultiPassProc::multiPassInit() {
+    firstProc = procPasses.front();
+    lastProc = procPasses.back();
 }

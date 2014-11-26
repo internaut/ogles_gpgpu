@@ -66,12 +66,7 @@ int AdaptThreshProcPass::init(int inW, int inH, unsigned int order, bool prepare
     pxDy = 1.0f / (float)outFrameH;
     
     // get necessary fragment shader source
-    const char *shSrc = NULL;
-    if (renderPass == 1) {
-        shSrc = fshaderAdaptThreshPass1Src;
-    } else if (renderPass == 2) {
-        shSrc = fshaderAdaptThreshPass2Src;
-    }
+    const char *shSrc = renderPass == 1 ? fshaderAdaptThreshPass1Src : fshaderAdaptThreshPass2Src;
     
     // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
     filterInit(shSrc, RenderOrientationDiagonal);
@@ -103,14 +98,14 @@ void AdaptThreshProcPass::render() {
 	
 	glUniform2f(shParamUPxD, pxDx, pxDy);	// texture pixel delta values
     
-    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render prepare");
+    Tools::checkGLErr("ogles_gpgpu::AdaptThreshProcPass - render prepare");
     
     filterRenderSetCoords();
-    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render set coords");
+    Tools::checkGLErr("ogles_gpgpu::AdaptThreshProcPass - render set coords");
     
     filterRenderDraw();
-    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render draw");
+    Tools::checkGLErr("ogles_gpgpu::AdaptThreshProcPass - render draw");
     
     filterRenderCleanup();
-    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render cleanup");
+    Tools::checkGLErr("ogles_gpgpu::AdaptThreshProcPass - render cleanup");
 }

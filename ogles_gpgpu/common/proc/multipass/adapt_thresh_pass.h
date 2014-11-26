@@ -9,6 +9,11 @@
 #include "../base/filterprocbase.h"
 
 namespace ogles_gpgpu {
+    
+/**
+ * GPGPU adaptive thresholding processor (two-pass). Binarizes a grayscale input
+ * image.
+ */
 class AdaptThreshProcPass : public FilterProcBase {
 public:
     /**
