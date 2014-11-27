@@ -20,8 +20,6 @@
 
 ### Milestone 1
 
-* time measurements as double not float
-
 * test ipad3 / ios 8
 
 * add notice: touch the image...

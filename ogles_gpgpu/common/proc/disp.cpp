@@ -3,7 +3,7 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-const char *Disp::fshaderDispSrc = TO_STR(
+const char *Disp::fshaderDispSrc = OG_TO_STR(
 precision mediump float;
 varying vec2 vTexCoord;
 uniform sampler2D uInputTex;

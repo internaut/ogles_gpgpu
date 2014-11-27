@@ -3,7 +3,7 @@
 using namespace ogles_gpgpu;
 using namespace std;
 
-const char *FilterProcBase::vshaderDefault = TO_STR (
+const char *FilterProcBase::vshaderDefault = OG_TO_STR (
 attribute vec4 aPos;
 attribute vec2 aTexCoord;
 varying vec2 vTexCoord;

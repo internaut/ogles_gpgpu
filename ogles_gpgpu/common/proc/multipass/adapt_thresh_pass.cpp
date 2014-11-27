@@ -5,7 +5,7 @@ using namespace ogles_gpgpu;
 // Adaptive thresholding - Pass 1 fragment shader
 // Perform a vertical 5x1 average gray pixel value calculation
 // Requires a grayscale image as input!
-const char *AdaptThreshProcPass::fshaderAdaptThreshPass1Src = TO_STR(
+const char *AdaptThreshProcPass::fshaderAdaptThreshPass1Src = OG_TO_STR(
 precision mediump float;
 varying vec2 vTexCoord;
 uniform vec2 uPxD;
@@ -29,7 +29,7 @@ void main() {
 // Adaptive thresholding - Pass 2
 // Perform a horizontal 7x1 or 5x1 average gray pixel value calculation and
 // the final binarization
-const char *AdaptThreshProcPass::fshaderAdaptThreshPass2Src = TO_STR(
+const char *AdaptThreshProcPass::fshaderAdaptThreshPass2Src = OG_TO_STR(
 precision mediump float;
 varying vec2 vTexCoord;
 uniform vec2 uPxD;

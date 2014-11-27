@@ -11,7 +11,7 @@ const GLfloat GrayscaleProc::grayscaleConvVecBGR[3] = {
     0.114, 0.587, 0.299
 };
 
-const char *GrayscaleProc::fshaderGrayscaleSrc = TO_STR(
+const char *GrayscaleProc::fshaderGrayscaleSrc = OG_TO_STR(
 precision mediump float;
 varying vec2 vTexCoord;
 uniform sampler2D uInputTex;

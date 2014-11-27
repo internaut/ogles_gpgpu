@@ -148,7 +148,7 @@ public:
     void *getGLContextPtr() const { return glContextPtr; }
     
 #ifdef OGLES_GPGPU_BENCHMARK
-    vector<float> getTimeMeasurements() const {  return Tools::getTimeMeasurements(); }
+    vector<double> getTimeMeasurements() const {  return Tools::getTimeMeasurements(); }
 #endif
     
     /**

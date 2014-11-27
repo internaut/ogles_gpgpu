@@ -10,8 +10,8 @@
 #include <ctime>
 #include <cstdio>
 
-#define TO_STR_(x) #x
-#define TO_STR(x) TO_STR_(x)
+#define OG_TO_STR_(x) #x
+#define OG_TO_STR(x) OG_TO_STR_(x)
 
 #ifdef DEBUG
 #define OG_LOGINF(class, args...) fprintf(stdout, "ogles_gpgpu::%s - %s - ", class, __FUNCTION__); fprintf(stdout, args); fprintf(stdout, "\n")
@@ -57,15 +57,15 @@ public:
     static void startTimeMeasurement();
     static void stopTimeMeasurement();
     
-    static float getTicksDiffInMs(clock_t t1, clock_t t2);
-    static vector<float> getTimeMeasurements() { return timeMeasurements; }
+    static double getTicksDiffInMs(clock_t t1, clock_t t2);
+    static vector<double> getTimeMeasurements() { return timeMeasurements; }
 #endif
     
 private:
     
 #ifdef OGLES_GPGPU_BENCHMARK
     static clock_t startTick;
-    static vector<float> timeMeasurements;
+    static vector<double> timeMeasurements;
 #endif
 };
     

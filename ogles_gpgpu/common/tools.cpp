@@ -9,7 +9,7 @@ using namespace std;
 
 #ifdef OGLES_GPGPU_BENCHMARK
 clock_t Tools::startTick = 0;
-vector<float> Tools::timeMeasurements;
+vector<double> Tools::timeMeasurements;
 #endif
 
 void Tools::checkGLErr(const char *cls, const char *msg) {
@@ -51,11 +51,11 @@ void Tools::startTimeMeasurement() {
 }
 
 void Tools::stopTimeMeasurement() {
-    float ms = getTicksDiffInMs(startTick, clock());
+    double ms = getTicksDiffInMs(startTick, clock());
     timeMeasurements.push_back(ms);
 }
 
-float Tools::getTicksDiffInMs(clock_t t1, clock_t t2) {
-    return (float)(((double)(t2 - t1) / CLOCKS_PER_SEC) * 1000.0);
+double Tools::getTicksDiffInMs(clock_t t1, clock_t t2) {
+    return (((double)(t2 - t1) / CLOCKS_PER_SEC) * 1000.0);
 }
 #endif

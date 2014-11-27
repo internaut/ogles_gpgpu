@@ -5,7 +5,7 @@ using namespace ogles_gpgpu;
 
 // Simple thresholding fragment shader
 // Requires a grayscale image as input!
-const char *ThreshProc::fshaderSimpleThreshSrc = TO_STR(
+const char *ThreshProc::fshaderSimpleThreshSrc = OG_TO_STR(
 precision mediump float;
 varying vec2 vTexCoord;
 uniform float uThresh;
