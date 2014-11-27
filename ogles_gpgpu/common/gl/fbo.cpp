@@ -37,7 +37,7 @@ void FBO::unbind() {
 }
 
 void FBO::destroyFramebuffer() {
-    cout << "ogles_gpgpu::FBO - " << id << " freeing framebuffer" << endl;
+    OG_LOGINF("FBO", "freeing FBO with ID %d", id);
     
 	glDeleteFramebuffers(1, &id);
 }
@@ -73,7 +73,7 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 		glGenerateMipmap(GL_TEXTURE_2D);
-        Tools::checkGLErr("ogles_gpgpu::FBO - fbo texture mipmap generation");
+        Tools::checkGLErr("FBO" , "fbo texture mipmap generation");
 	} else {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -88,13 +88,11 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
-        cerr << "ogles_gpgpu::FBO - " << id
-             << " - Framebuffer incomplete - error " << fboStatus << endl;
+        OG_LOGERR("FBO", "Framebuffer incomplete (error %d)", fboStatus);
         attachedTexId = 0;
 	} else {
-        cout << "ogles_gpgpu::FBO - " << id
-             << " - Created attached texture " << attachedTexId
-             << " of size " << w << "x" << h << " (gen. mipmap: " << genMipmap << ")" << endl;
+        OG_LOGINF("FBO", "FBO with ID %d: created attached texture %d of size %dx%d (mipmap: %d)",
+                  id, attachedTexId, w, h, genMipmap);
     }
     
     // unbind FBO

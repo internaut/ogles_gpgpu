@@ -14,7 +14,7 @@ void main() {
 );
 
 int Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
-    cout << "ogles_gpgpu::Disp - init" << endl;
+    OG_LOGINF(getProcName(), "");
     
     // ProcBase init - set defaults
     baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
@@ -26,17 +26,17 @@ int Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInpu
 }
 
 void Disp::render() {
-    cout << "ogles_gpgpu::Disp - input tex " << texId << " / render to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
+    OG_LOGINF(getProcName(), "input tex %d, framebuffer of size %dx%d", texId, outFrameW, outFrameH);
     
     filterRenderPrepare();
-    Tools::checkGLErr("ogles_gpgpu::Disp - render prepare");
+    Tools::checkGLErr(getProcName(), "render prepare");
     
     filterRenderSetCoords();
-    Tools::checkGLErr("ogles_gpgpu::Disp - render set coords");
+    Tools::checkGLErr(getProcName(), "render set coords");
     
     filterRenderDraw();
-    Tools::checkGLErr("ogles_gpgpu::Disp - render draw");
+    Tools::checkGLErr(getProcName(), "render draw");
     
     filterRenderCleanup();
-    Tools::checkGLErr("ogles_gpgpu::Disp - render cleanup");
+    Tools::checkGLErr(getProcName(), "render cleanup");
 }

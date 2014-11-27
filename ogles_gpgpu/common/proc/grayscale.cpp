@@ -29,7 +29,7 @@ GrayscaleProc::GrayscaleProc() {
 }
 
 int GrayscaleProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
-    cout << "ogles_gpgpu::GrayscaleProc - init" << endl;
+    OG_LOGINF(getProcName(), "");
     
     // create fbo for output
     createFBO();
@@ -47,20 +47,20 @@ int GrayscaleProc::init(int inW, int inH, unsigned int order, bool prepareForExt
 }
 
 void GrayscaleProc::render() {
-    cout << "ogles_gpgpu::GrayscaleProc - input tex " << texId << " / render to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
+    OG_LOGINF(getProcName(), "input tex %d, framebuffer of size %dx%d", texId, outFrameW, outFrameH);
     
     filterRenderPrepare();
     glUniform3fv(shParamUInputConvVec, 1, grayscaleConvVec);        // set additional uniforms
-    Tools::checkGLErr("ogles_gpgpu::GrayscaleProc - render prepare");
+    Tools::checkGLErr(getProcName(), "render prepare");
     
     filterRenderSetCoords();
-    Tools::checkGLErr("ogles_gpgpu::GrayscaleProc - render set coords");
+    Tools::checkGLErr(getProcName(), "render set coords");
     
     filterRenderDraw();
-    Tools::checkGLErr("ogles_gpgpu::GrayscaleProc - render draw");
+    Tools::checkGLErr(getProcName(), "render draw");
     
     filterRenderCleanup();
-    Tools::checkGLErr("ogles_gpgpu::GrayscaleProc - render cleanup");
+    Tools::checkGLErr(getProcName(), "render cleanup");
 }
 
 void GrayscaleProc::setGrayscaleConvVec(const GLfloat v[3]) {
@@ -78,7 +78,7 @@ void GrayscaleProc::setGrayscaleConvType(GrayscaleInputConversionType type) {
     } else if (type == GRAYSCALE_INPUT_CONVERSION_BGR) {
         v = &grayscaleConvVecBGR[0];
     } else {
-        cerr << "ogles_gpgpu::GrayscaleProc - unknown grayscale input conversion type " << type << endl;
+        OG_LOGERR(getProcName(), "unknown grayscale input conversion type %d", type);
         v = &grayscaleConvVecRGB[0];    // set default
     }
     

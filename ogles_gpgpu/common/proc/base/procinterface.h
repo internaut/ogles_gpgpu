@@ -61,6 +61,11 @@ public:
     virtual void render() = 0;
     
     /**
+     * Return the processors name.
+     */
+    virtual const char *getProcName() = 0;
+    
+    /**
      * Print some information about the processor's setup.
      */
     virtual void printInfo() = 0;

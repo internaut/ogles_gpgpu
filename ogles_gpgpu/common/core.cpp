@@ -74,10 +74,10 @@ void Core::reset() {
 void Core::addProcToPipeline(ProcInterface *proc) {
     // pipeline needs to be set up before calling init()
     if (initialized) {
-        cerr << "ogles_gpgpu::Core - adding processor failed: pipeline already initialized" << endl;
+        OG_LOGERR("Core", "adding processor failed: pipeline already initialized");
     }
     
-    cout << "ogles_gpgpu::Core - adding processor #" << (pipeline.size() + 1) << " to pipeline" << endl;
+    OG_LOGINF("Core", "adding processor #%lu to pipeline", (pipeline.size() + 1));
     
     // add not processor to pipeline
     pipeline.push_back(proc);
@@ -109,7 +109,7 @@ void Core::init(void *glContext) {
     glDisable(GL_DEPTH_TEST);
     glActiveTexture(GL_TEXTURE1);
     
-    Tools::checkGLErr("ogles_gpgpu::Core - init");
+    Tools::checkGLErr("Core", "init OpenGL");
     
     initialized = true;
 }
@@ -124,9 +124,8 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
     inputFrameW = inW;
     inputFrameH = inH;
 
-    cout << "ogles_gpgpu::Core - prepare with input frame size "
-         << inputFrameW << "x" << inputFrameH
-         << " (POT: " <<  inputSizeIsPOT << ")" << endl;
+    OG_LOGINF("Core", "prepare with input frame size %dx%d (POT: %d)",
+              inputFrameW, inputFrameH, inputSizeIsPOT);
 
     // initialize the pipeline
     ProcInterface *prevProc = NULL;
@@ -213,8 +212,7 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
         renderDisp->useTexture(outputTexId);
     }
     
-    cout << "ogles_gpgpu::Core - prepared (input tex "
-         << inputTexId << " / output tex " << outputTexId << ")" << endl;
+    OG_LOGINF("Core", "prepared (input tex %d, output tex %d)", inputTexId, outputTexId);
     
     // print report (to spot errors in the pipeline)
     for (list<ProcInterface *>::iterator it = pipeline.begin();
@@ -253,8 +251,8 @@ void Core::setInputData(const unsigned char *data) {
     
     // check set up and input data
     if (useMipmaps && !inputSizeIsPOT && !glExtNPOTMipmaps) {
-        cout << "ogles_gpgpu::Core - setInputData - WARNING: NPOT input image provided but NPOT mipmapping not supported!" << endl
-             << "ogles_gpgpu::Core - setInputData - mipmapping disabled!" << endl;
+        OG_LOGINF("Core", "WARNING: NPOT input image provided but NPOT mipmapping not supported!");
+        OG_LOGINF("Core", "mipmapping disabled!");
         useMipmaps = false;
     }
     
@@ -266,7 +264,7 @@ void Core::setInputData(const unsigned char *data) {
     
     // mipmapping
     if (firstProc->getWillDownscale() && useMipmaps) {
-        cout << "ogles_gpgpu::Core - setInputData - generating mipmap for input image" << endl;
+        OG_LOGINF("Core", "generating mipmap for input image");
         // enabled
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
@@ -277,7 +275,7 @@ void Core::setInputData(const unsigned char *data) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     }
 	
-    Tools::checkGLErr("ogles_gpgpu::Core - setInputData");
+    Tools::checkGLErr("Core", "set texture parameters for input data");
     
     glFinish();
     
@@ -339,7 +337,7 @@ void Core::checkGLExtensions() {
     vector<string> glExt = Tools::split(glExtString);
     
     // check extensions
-//    cout << "ogles_gpgpu::Core - checkGLExtensions - list of extensions:" << endl;
+//    OG_LOGINF("Core", "list of extensions:");
     for (vector<string>::iterator it = glExt.begin();
          it != glExt.end();
          ++it)
@@ -348,7 +346,7 @@ void Core::checkGLExtensions() {
         string extName = *it;
         transform(extName.begin(), extName.end(), extName.begin(), ::tolower);
         
-//        cout << "> " << extName << endl;
+//        OG_LOGINF("Core", "> %s", extName.c_str());
         
         // check for NPOT mipmapping support
         if (it->compare("gl_arb_texture_non_power_of_two") == 0
@@ -358,7 +356,7 @@ void Core::checkGLExtensions() {
         }
     }
     
-    cout << "ogles_gpgpu::Core - checkGLExtensions - NPOT mipmaps: " << glExtNPOTMipmaps << endl;
+    OG_LOGINF("Core", "NPOT mipmaps support: %d", glExtNPOTMipmaps);
 }
 
 void Core::cleanup() {

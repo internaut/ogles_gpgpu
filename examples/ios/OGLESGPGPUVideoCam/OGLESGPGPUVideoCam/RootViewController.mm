@@ -1,6 +1,6 @@
 #import "RootViewController.h"
 
-#define INITIAL_PROC_TYPE 3
+#define INITIAL_PROC_TYPE 1
 
 /**
  * Small helper function to convert a fourCC <code> to
@@ -217,6 +217,11 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
                                 action:@selector(procOutputSelectBtnAction:)
                       forControlEvents:UIControlEventTouchUpInside];
         
+        if (btnIdx == INITIAL_PROC_TYPE) {
+            [procOutputSelectBtn setSelected:YES];
+            prevSelBtn = procOutputSelectBtn;
+        }
+        
         [baseView addSubview:procOutputSelectBtn];
     }
     
@@ -362,6 +367,10 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     if (!showCamPreview) {
         [self initGPUPipeline:sender.tag + 1];
     }
+    
+    [prevSelBtn setSelected:NO];
+    [sender setSelected:YES];
+    prevSelBtn = sender;
 }
 
 - (void)interfaceOrientationChanged:(UIInterfaceOrientation)o {

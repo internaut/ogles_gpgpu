@@ -30,7 +30,7 @@ GLint Shader::getParam(ShaderParamType type, const char *name) const {
         glGetUniformLocation(programId, name);
     
 	if (id < 0) {
-        cerr << "ogles_gpgpu::Shader - Could not get parameter id for param " << name << endl;
+        OG_LOGERR("Shader", "could not get parameter id for param %s", name);
 	}
     
 	return id;
@@ -45,7 +45,7 @@ GLuint Shader::create(const char *vshSrc, const char *fshSrc, GLuint *vshId, GLu
 	GLuint programId = glCreateProgram();
     
 	if (programId == 0) {
-		cerr << "ogles_gpgpu::Shader - Could not create shader program" << endl;
+        OG_LOGERR("Shader", "could not create shader program");
 		return 0;
 	}
     
@@ -57,11 +57,11 @@ GLuint Shader::create(const char *vshSrc, const char *fshSrc, GLuint *vshId, GLu
 	GLint linkStatus;
 	glGetProgramiv(programId, GL_LINK_STATUS, &linkStatus);
 	if (linkStatus != GL_TRUE) {
-		cerr << "ogles_gpgpu::Shader - Could not link shader program:" << endl;
+        OG_LOGERR("Shader", "could not link shader program. error log:");
 		GLchar infoLogBuf[1024];
 		GLsizei infoLogLen;
 		glGetProgramInfoLog(programId, 1024, &infoLogLen, infoLogBuf);
-        cerr << infoLogBuf << endl;
+        cerr << infoLogBuf << endl << endl;
         
 		glDeleteProgram(programId);
         
@@ -76,7 +76,7 @@ GLuint Shader::compile(GLenum type, const char *src) {
 	GLuint shId = glCreateShader(type);
     
 	if (shId == 0) {
-        cerr << "ogles_gpgpu::Shader -  Could not create shader." << endl;
+        OG_LOGERR("Shader", "could not create shader");
 		return 0;
 	}
     
@@ -91,12 +91,13 @@ GLuint Shader::compile(GLenum type, const char *src) {
     glGetShaderiv(shId, GL_COMPILE_STATUS, &compileStatus);
     
 	if (compileStatus != GL_TRUE) {
-		cerr << "ogles_gpgpu::Shader - Could not compile shader:" << endl;
+        OG_LOGERR("Shader", "could not compile shader program. error log:");
 		GLchar infoLogBuf[1024];
 		GLsizei infoLogLen;
 		glGetShaderInfoLog(shId, 1024, &infoLogLen, infoLogBuf);
         cerr << infoLogBuf << endl << endl;
-        cerr << "shader source:" << endl << src << endl;
+        OG_LOGERR("Shader", "could not compile shader program. shader source:");
+        cerr << src << endl << endl;
         
 		glDeleteShader(shId);
         

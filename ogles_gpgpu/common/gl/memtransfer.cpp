@@ -43,7 +43,7 @@ GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat, v
     glGenTextures(1, &inputTexId);
     
     if (inputTexId == 0) {
-        cerr << "ogles_gpgpu::MemTransfer - prepareInput - no valid input texture generated" << endl;
+        OG_LOGERR("MemTransfer", "no valid input texture generated");
         return 0;
     }
     
@@ -72,14 +72,14 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
     glGenTextures(1, &outputTexId);
     
     if (outputTexId == 0) {
-        cerr << "ogles_gpgpu::MemTransfer - prepareInput - no valid output texture generated" << endl;
+        OG_LOGERR("MemTransfer", "no valid output texture generated");
         return 0;
     }
     
     // will bind the texture, too:
     setCommonTextureParams(outputTexId);
     
-    Tools::checkGLErr("ogles_gpgpu::MemTransfer - prepareInput - fbo texture parameters");
+    Tools::checkGLErr("MemTransfer", "fbo texture parameters");
     
     // create empty texture space on GPU
 	glTexImage2D(GL_TEXTURE_2D, 0,
@@ -88,7 +88,7 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
 			     inputPixelFormat, GL_UNSIGNED_BYTE,
 			     NULL);	// we do not need to pass texture data -> it will be generated!
     
-    Tools::checkGLErr("ogles_gpgpu::MemTransfer - prepareInput - fbo texture creation");
+    Tools::checkGLErr("MemTransfer", "fbo texture creation");
     
     // done
     preparedOutput = true;
@@ -119,7 +119,7 @@ void MemTransfer::toGPU(const unsigned char *buf) {
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputW, inputH, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
     
     // check for error
-    Tools::checkGLErr("ogles_gpgpu::MemTransfer - toGPU");
+    Tools::checkGLErr("MemTransfer", "toGPU (glTexImage2D)");
     
     setCommonTextureParams(0);
 }
@@ -133,7 +133,7 @@ void MemTransfer::fromGPU(unsigned char *buf) {
     glReadPixels(0, 0, outputW, outputH, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
     // check for error
-    Tools::checkGLErr("ogles_gpgpu::MemTransfer - fromGPU");
+    Tools::checkGLErr("MemTransfer", "fromGPU (glReadPixels)");
 }
 
 #pragma mark protected methods

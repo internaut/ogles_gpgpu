@@ -76,7 +76,7 @@ void MemTransferIOS::init() {
     
     // create texture cache
     void *glCtxPtr = Core::getInstance()->getGLContextPtr();
-    cout << "ogles_gpgpu::MemTransferIOS - init with OpenGL ES context " << glCtxPtr << endl;
+    OG_LOGINF("MemTransferIOS", "OpenGL ES context at %p", glCtxPtr);
     assert(glCtxPtr);
     CVReturn res = CVOpenGLESTextureCacheCreate(kCFAllocatorDefault,
                                                 NULL,
@@ -85,7 +85,7 @@ void MemTransferIOS::init() {
                                                 &textureCache);
     
     if (res != kCVReturnSuccess) {
-        cerr << "ogles_gpgpu::MemTransferIOS - toGPU - error at CVOpenGLESTextureCacheCreate - " << res << endl;
+        OG_LOGERR("MemTransferIOS", "CVOpenGLESTextureCacheCreate error %d", res);
     }
     
     // call parent init
@@ -118,7 +118,7 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
     if (inputPixelFormat == GL_BGRA) {
         pxBufFmt = kCVPixelFormatType_32BGRA;
     } else {
-        cerr << "ogles_gpgpu::MemTransferIOS - prepareInput - unsupported input pixel format " << inputPixelFormat << endl;
+        OG_LOGERR("MemTransferIOS", "unsupported input pixel format %d", inputPixelFormat);
         preparedInput = false;
         return 0;
     }
@@ -132,7 +132,7 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
                                   &bufRef);
         
         if (res != kCVReturnSuccess) {
-            cerr << "ogles_gpgpu::MemTransferIOS - prepareInput - error at CVPixelBufferCreate - " << res << endl;
+            OG_LOGERR("MemTransferIOS", "CVPixelBufferCreate error %d (input)", res);
             preparedInput = false;
             return 0;
         }
@@ -155,7 +155,7 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
                                                        &texRef);
     
     if (res != kCVReturnSuccess) {
-        cerr << "ogles_gpgpu::MemTransferIOS - prepareInput - error at CVOpenGLESTextureCacheCreateTextureFromImage - " << res << endl;
+        OG_LOGERR("MemTransferIOS", "CVOpenGLESTextureCacheCreateTextureFromImage error %d (input)", res);
         preparedInput = false;
         return 0;
     }
@@ -163,7 +163,7 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
     // get created texture id
     inputTexId = CVOpenGLESTextureGetName(texRef);
     
-    cout << "ogles_gpgpu::MemTransferIOS - prepareInput - created input tex with id " << inputTexId << endl;
+    OG_LOGINF("MemTransferIOS", "created input tex with id %d", inputTexId);
     
     // set texture parameters
     setCommonTextureParams(inputTexId);
@@ -206,7 +206,7 @@ GLuint MemTransferIOS::prepareOutput(int outTexW, int outTexH) {
                               &bufRef);
     
     if (res != kCVReturnSuccess) {
-        cerr << "ogles_gpgpu::MemTransferIOS - prepareOutput - error at CVPixelBufferCreate - " << res << endl;
+        OG_LOGERR("MemTransferIOS", "CVPixelBufferCreate error %d (output)", res);
         preparedOutput = false;
         return 0;
     }
@@ -228,7 +228,7 @@ GLuint MemTransferIOS::prepareOutput(int outTexW, int outTexH) {
                                                        &texRef);
     
     if (res != kCVReturnSuccess) {
-        cerr << "ogles_gpgpu::MemTransferIOS - prepareOutput - error at CVOpenGLESTextureCacheCreateTextureFromImage - " << res << endl;
+        OG_LOGERR("MemTransferIOS", "CVOpenGLESTextureCacheCreateTextureFromImage error %d (output)", res);
         preparedOutput = false;
         return 0;
     }
@@ -236,7 +236,7 @@ GLuint MemTransferIOS::prepareOutput(int outTexW, int outTexH) {
     // get created texture id
     outputTexId = CVOpenGLESTextureGetName(texRef);
     
-    cout << "ogles_gpgpu::MemTransferIOS - prepareOutput - created output tex with id " << outputTexId << endl;
+    OG_LOGINF("MemTransferIOS", "created output tex with id %d", outputTexId);
     
     // set texture parameters
     setCommonTextureParams(outputTexId);
@@ -284,7 +284,7 @@ void *MemTransferIOS::lockBufferAndGetPtr(BufType bufType) {
     CVReturn res = CVPixelBufferLockBaseAddress(buf, lockOpt);
     
     if (res != kCVReturnSuccess) {
-        cerr << "ogles_gpgpu::MemTransferIOS - lockBufferAndGetPtr - error " << res << endl;
+        OG_LOGERR("MemTransferIOS", "CVPixelBufferLockBaseAddress error %d", res);
         return NULL;
     }
     
@@ -302,7 +302,7 @@ void MemTransferIOS::unlockBuffer(BufType bufType) {
     CVReturn res = CVPixelBufferUnlockBaseAddress(buf, lockOpt);
     
     if (res != kCVReturnSuccess) {
-        cerr << "ogles_gpgpu::MemTransferIOS - unlockBuffer - error " << res << endl;
+        OG_LOGERR("MemTransferIOS", "CVPixelBufferUnlockBaseAddress error %d", res);
     }
 }
 

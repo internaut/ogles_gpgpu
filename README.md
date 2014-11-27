@@ -20,7 +20,6 @@
 
 ### Milestone 1
 
-* better logging (enable/disable via preproc defines)
 * time measurements as double not float
 
 * test ipad3 / ios 8

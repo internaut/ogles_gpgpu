@@ -32,6 +32,11 @@ public:
     GrayscaleProc();
     
     /**
+     * Return the processors name.
+     */
+    virtual const char *getProcName() { return "GrayscaleProc"; }
+    
+    /**
      * Init the processor for input frames of size <inW>x<inH> which is at
      * position <order> in the processing pipeline.
      */

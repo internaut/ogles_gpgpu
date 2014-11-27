@@ -25,7 +25,7 @@ void main() {
 );
 
 int GaussProcPass::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
-    cout << "ogles_gpgpu::GaussProcPass " << renderPass << " - init" << endl;
+    OG_LOGINF(getProcName(), "render pass %d", renderPass);
     
     // create fbo for output
     createFBO();
@@ -61,20 +61,20 @@ void GaussProcPass::createFBOTex(bool genMipmap) {
 }
 
 void GaussProcPass::render() {
-    cout << "ogles_gpgpu::GaussProcPass " << renderPass << " - to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
+    OG_LOGINF(getProcName(), "render pass %d, framebuffer of size %dx%d", renderPass, outFrameW, outFrameH);
     
     filterRenderPrepare();
 	
 	glUniform1f(shParamUPxD, renderPass == 1 ? pxDy : pxDx);	// texture pixel delta values
     
-    Tools::checkGLErr("ogles_gpgpu::GaussProcPass - render prepare");
+    Tools::checkGLErr(getProcName(), "render prepare");
     
     filterRenderSetCoords();
-    Tools::checkGLErr("ogles_gpgpu::GaussProcPass - render set coords");
+    Tools::checkGLErr(getProcName(), "render set coords");
     
     filterRenderDraw();
-    Tools::checkGLErr("ogles_gpgpu::GaussProcPass - render draw");
+    Tools::checkGLErr(getProcName(),  "render draw");
     
     filterRenderCleanup();
-    Tools::checkGLErr("ogles_gpgpu::GaussProcPass - render cleanup");
+    Tools::checkGLErr(getProcName(), "render cleanup");
 }

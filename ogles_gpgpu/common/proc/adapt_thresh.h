@@ -21,6 +21,11 @@ public:
         
         multiPassInit();
     }
+    
+    /**
+     * Return the processors name.
+     */
+    virtual const char *getProcName() { return "AdaptThreshProc"; }
 };
 }
 

@@ -23,7 +23,7 @@ ThreshProc::ThreshProc() {
 }
 
 int ThreshProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
-    cout << "ogles_gpgpu::ThreshProc - init" << endl;
+    OG_LOGINF(getProcName(), "");
     
     // create fbo for output
     createFBO();
@@ -41,20 +41,20 @@ int ThreshProc::init(int inW, int inH, unsigned int order, bool prepareForExtern
 }
 
 void ThreshProc::render() {
-    cout << "ogles_gpgpu::ThreshProc - render to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
+    OG_LOGINF(getProcName(), "input tex id %d, framebuffer of size %dx%d", texId, outFrameW, outFrameH);
     
     filterRenderPrepare();
 	
 	glUniform1f(shParamUThresh, threshVal);	// thresholding value for simple thresholding
     
-    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render prepare");
+    Tools::checkGLErr("ThreshProc", "render prepare");
     
     filterRenderSetCoords();
-    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render set coords");
+    Tools::checkGLErr("ThreshProc", "render set coords");
     
     filterRenderDraw();
-    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render draw");
+    Tools::checkGLErr("ThreshProc", "render draw");
     
     filterRenderCleanup();
-    Tools::checkGLErr("ogles_gpgpu::ThreshProc - render cleanup");
+    Tools::checkGLErr("ThreshProc", "render cleanup");
 }

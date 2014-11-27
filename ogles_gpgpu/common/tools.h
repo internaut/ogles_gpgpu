@@ -8,9 +8,19 @@
 #include <string>
 #include <sstream>
 #include <ctime>
+#include <cstdio>
 
 #define TO_STR_(x) #x
 #define TO_STR(x) TO_STR_(x)
+
+#ifdef DEBUG
+#define OG_LOGINF(class, args...) fprintf(stdout, "ogles_gpgpu::%s - %s - ", class, __FUNCTION__); fprintf(stdout, args); fprintf(stdout, "\n")
+#else
+#define OG_LOGINF(class, args...)
+#endif
+
+#define OG_LOGERR(class, args...) fprintf(stderr, "ogles_gpgpu::%s - %s - ", class, __FUNCTION__); fprintf(stderr, args); fprintf(stderr, "\n")
+
 
 using namespace std;
 
@@ -23,9 +33,9 @@ class Tools {
 public:
     /**
      * Check for an OpenGL error in the previous call(s). Produce error
-     * message with prefix <msg>.
+     * message in class <cls> with prefix <msg>.
      */
-    static void checkGLErr(const char *msg);
+    static void checkGLErr(const char *cls, const char *msg);
     
     /**
      * Check if <v> is a power-of-two (POT) value.

@@ -53,7 +53,7 @@ void main() {
 );
 
 int AdaptThreshProcPass::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
-    cout << "ogles_gpgpu::AdaptThreshProcPass " << renderPass << " - init" << endl;
+    OG_LOGINF(getProcName(), "render pass %d", renderPass);
     
     // create fbo for output
     createFBO();
@@ -92,20 +92,20 @@ void AdaptThreshProcPass::createFBOTex(bool genMipmap) {
 }
 
 void AdaptThreshProcPass::render() {
-    cout << "ogles_gpgpu::AdaptThreshProcPass " << renderPass << " - to framebuffer of size " << outFrameW << "x" << outFrameH << endl;
+    OG_LOGINF(getProcName(), "render pass %d, framebuffer of size %dx%d", renderPass, outFrameW, outFrameH);
     
     filterRenderPrepare();
 	
 	glUniform2f(shParamUPxD, pxDx, pxDy);	// texture pixel delta values
     
-    Tools::checkGLErr("ogles_gpgpu::AdaptThreshProcPass - render prepare");
+    Tools::checkGLErr(getProcName(), "render prepare");
     
     filterRenderSetCoords();
-    Tools::checkGLErr("ogles_gpgpu::AdaptThreshProcPass - render set coords");
+    Tools::checkGLErr(getProcName(), "render set coords");
     
     filterRenderDraw();
-    Tools::checkGLErr("ogles_gpgpu::AdaptThreshProcPass - render draw");
+    Tools::checkGLErr(getProcName(), "render draw");
     
     filterRenderCleanup();
-    Tools::checkGLErr("ogles_gpgpu::AdaptThreshProcPass - render cleanup");
+    Tools::checkGLErr(getProcName(), "render cleanup");
 }

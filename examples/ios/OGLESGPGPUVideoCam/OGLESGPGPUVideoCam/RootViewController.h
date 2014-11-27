@@ -41,6 +41,7 @@
     CamView *camView;           // shows the grabbed video frames ("camera preview")
     GLKView *glView;            // shows the processed video frames as textures in a GLKit view
     CGRect baseFrame;           // base UI frame
+    UIButton *prevSelBtn;       // previously selected button
     
     EAGLContext *eaglContext;   // OpenGL ES 2.0 context
     

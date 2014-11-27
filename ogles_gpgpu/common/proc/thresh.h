@@ -22,6 +22,11 @@ public:
     ThreshProc();
     
     /**
+     * Return the processors name.
+     */
+    virtual const char *getProcName() { return "ThreshProc"; }
+    
+    /**
      * Set threshold as 8 bit value [0..255] <v> for simple thresholding.
      */
     void setThreshVal8Bit(int v) { threshVal = (float)v  / 255.0f; }

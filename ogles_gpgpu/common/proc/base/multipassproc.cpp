@@ -120,7 +120,7 @@ void MultiPassProc::render() {
 }
 
 void MultiPassProc::printInfo() {
-    cout << "ogles_gpgpu::MultiPassProc - printInfo begin" << endl;
+    OG_LOGINF(getProcName(), "begin info for %lu passes", procPasses.size());
     
     for (list<ProcInterface *>::iterator it = procPasses.begin();
          it != procPasses.end();
@@ -129,7 +129,7 @@ void MultiPassProc::printInfo() {
         (*it)->printInfo();
     }
     
-    cout << "ogles_gpgpu::MultiPassProc - printInfo end" << endl;
+    OG_LOGINF(getProcName(), "end info");
 }
 
 void MultiPassProc::useTexture(GLuint id, GLuint useTexUnit) {

@@ -12,10 +12,10 @@ clock_t Tools::startTick = 0;
 vector<float> Tools::timeMeasurements;
 #endif
 
-void Tools::checkGLErr(const char *msg) {
+void Tools::checkGLErr(const char *cls, const char *msg) {
 	GLenum err = glGetError();
 	if (err != GL_NO_ERROR) {
-        cerr << msg << " - GL error " << err << " occurred" << endl;
+        OG_LOGERR(cls, "%s - GL error '%d' occured", msg, err);
 	}
 }
 

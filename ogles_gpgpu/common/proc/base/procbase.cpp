@@ -73,14 +73,11 @@ void ProcBase::cleanup() {
 void ProcBase::printInfo() {
     assert(fbo);
     
-    cout << "ogles_gpgpu::ProcBase - info: "
-         << "order num " << orderNum
-         << ", input tex id " << texId
-         << ", input tex size " << inFrameW << "x" << inFrameH
-         << ", output tex id " << fbo->getAttachedTexId()
-         << ", output tex size " << outFrameW << "x" << outFrameH
-         << ", will downscale: " << willDownscale
-         << endl;
+    OG_LOGINF(getProcName(), "info: order num %d, input tex %d (%dx%d), output tex %d (%dx%d), downscale %d",
+              orderNum,
+              texId, inFrameW, inFrameH,
+              fbo->getAttachedTexId(), outFrameW, outFrameH,
+              willDownscale);
 }
 
 void ProcBase::getResultData(unsigned char *data) const {
@@ -121,11 +118,8 @@ int ProcBase::reinit(int inW, int inH, bool prepareForExternalInput) {
         useTexture(fbo->getMemTransfer()->prepareInput(inFrameW, inFrameH, inputDataFmt));
     }
     
-    cout << "ogles_gpgpu::ProcBase - reinit with "
-         << "input tex size " << inFrameW << "x" << inFrameH
-         << ", output tex size " << outFrameW << "x" << outFrameH
-         << ", will downscale: " << willDownscale
-         << endl;
+    OG_LOGINF(getProcName(), "reinit with input size %dx%d, output size %dx%d, downscale %d",
+              inFrameW, inFrameH, outFrameW, outFrameH, willDownscale);
     
     return 1;
 }
@@ -141,15 +135,11 @@ void ProcBase::baseInit(int inW, int inH, unsigned int order, bool prepareForExt
     if (prepareForExternalInput) {
         assert(fbo != NULL);
         useTexture(fbo->getMemTransfer()->prepareInput(inW, inH, inputDataFmt));
-        cout << "ogles_gpgpu::ProcBase - init - prepared for external input data" << endl;
+        OG_LOGINF(getProcName(), "prepared for external input");
     }
     
-//    cout << "ogles_gpgpu::ProcBase - init with "
-//         << "order num " << orderNum
-//         << ", input tex size " << inFrameW << "x" << inFrameH
-//         << ", output tex size " << outFrameW << "x" << outFrameH
-//         << ", will downscale: " << willDownscale
-//         << endl;
+    OG_LOGINF(getProcName(), "init with input size %dx%d, output size %dx%d, downscale %d",
+              inFrameW, inFrameH, outFrameW, outFrameH, willDownscale);
 }
 
 void ProcBase::setExternalInputData(const unsigned char *data) {
