@@ -2,7 +2,7 @@
 
 using namespace ogles_gpgpu;
 
-const char *GaussProcPass::fshaderGaussSrc = TO_STR(
+const char *GaussProcPass::fshaderGaussSrc = OG_TO_STR(
 precision mediump float;
 
 uniform sampler2D uInputTex;

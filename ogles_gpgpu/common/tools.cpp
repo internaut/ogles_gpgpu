@@ -4,6 +4,10 @@
 
 #include <cmath>
 
+#ifndef log2f
+#define log2f(v) logf((v)) / log(2)
+#endif
+
 using namespace ogles_gpgpu;
 using namespace std;
 

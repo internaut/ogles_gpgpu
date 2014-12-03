@@ -6,7 +6,7 @@
 
 #include "../../common_includes.h"
 
-#include "filterprocbase.h"
+#include "../base/filterprocbase.h"
 
 namespace ogles_gpgpu {
 

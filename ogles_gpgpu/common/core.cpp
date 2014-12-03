@@ -1,6 +1,6 @@
 #include "core.h"
 
-#include "disp.h"
+#include "proc/disp.h"
 
 #include <string>
 #include <algorithm>
