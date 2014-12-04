@@ -9,6 +9,10 @@ OG_SRC_PATH=../../../../ogles_gpgpu
 # Identify the module/library's name
 LOCAL_MODULE := og_jni_wrapper
 
+LOCAL_C_INCLUDES += $(OG_SRC_PATH)
+
+LOCAL_CFLAGS    += -DDEBUG
+
 # Specify the source files
 LOCAL_SRC_FILES := og_jni_wrapper.cpp \
 	$(OG_SRC_PATH)/common/core.cpp \

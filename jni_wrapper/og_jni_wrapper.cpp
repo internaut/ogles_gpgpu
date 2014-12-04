@@ -1,7 +1,17 @@
 #include "og_jni_wrapper.h"
 
-JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject obj) {
+#include "ogles_gpgpu/ogles_gpgpu.h"
 
+#include <cstdlib>
+#include <cassert>
+
+static ogles_gpgpu::Core *ogCore = NULL;
+
+JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject obj) {
+	assert(ogCore == NULL);
+	OG_LOGINF("OGJNIWrapper", "creating instance of ogles_gpgpu::Core");
+
+	ogCore = ogles_gpgpu::Core::getInstance();
 }
 
 /*
@@ -10,7 +20,12 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject 
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup(JNIEnv *env, jobject obj) {
+	assert(ogCore);
 
+	OG_LOGINF("OGJNIWrapper", "destroying instance of ogles_gpgpu::Core");
+
+	ogles_gpgpu::Core::destroy();
+	ogCore = NULL;
 }
 
 /*
@@ -19,7 +34,8 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup(JNIEnv *env, jobje
  * Signature: (II)V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobject obj, jint w, jint h) {
-
+	assert(ogCore);
+	ogCore->prepare(w, h);
 }
 
 /*
@@ -28,7 +44,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobje
  * Signature: ([I)V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env, jobject obj, jintArray pxData) {
-
+	assert(ogCore);
 }
 
 /*
@@ -37,6 +53,8 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env
  * Signature: ()[I
  */
 JNIEXPORT jintArray JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEnv *env, jobject obj) {
+	assert(ogCore);
+
     jintArray dummy = env->NewIntArray(10);
     
     return dummy;
@@ -48,7 +66,7 @@ JNIEXPORT jintArray JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEn
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_process(JNIEnv *env, jobject obj) {
-
+	assert(ogCore);
 }
 
 /*
@@ -57,7 +75,9 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_process(JNIEnv *env, jobje
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameW(JNIEnv *env, jobject obj) {
-    return 0;
+	assert(ogCore);
+
+    return ogCore->getOutputFrameW();
 }
 
 /*
@@ -66,5 +86,7 @@ JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameW(JNIEnv *en
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameH(JNIEnv *env, jobject obj) {
-    return 0;
+	assert(ogCore);
+
+    return ogCore->getOutputFrameH();
 }

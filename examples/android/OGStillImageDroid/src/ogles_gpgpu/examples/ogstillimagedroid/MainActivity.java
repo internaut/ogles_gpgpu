@@ -1,5 +1,6 @@
 package ogles_gpgpu.examples.ogstillimagedroid;
 
+import ogles_gpgpu.OGJNIWrapper;
 import ogles_gpgpu.examples.ogstillimagedroid.R;
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 public class MainActivity extends Activity {
 	private final String TAG = this.getClass().getSimpleName();
 	
+	private OGJNIWrapper ogWrapper;
 	private ImageView imgView;
 	private Bitmap origImgBm;
 	private BitmapDrawable origImgBmDr;
@@ -40,20 +42,28 @@ public class MainActivity extends Activity {
 		
 		// set the "on click" event listener
 		imgView.setOnClickListener(new ImageViewClickListener(origImgBm));
+		
+		// create ogles_gpgpu native interface
+		ogWrapper = new OGJNIWrapper();	// native interface
+		ogWrapper.init();
+    }
+    
+    @Override
+    protected void onDestroy() {
+    	ogWrapper.cleanup();
+    	
+    	super.onDestroy();
     }
 
     
 	private class ImageViewClickListener implements View.OnClickListener {
-		private JNIImgProc imgProc;
 		private boolean filtered;
 		private Bitmap bitmap;
 		private int bitmapW;
 		private int bitmapH;
 		private int bitmapData[];	// pixel data if <bitmap> as ARGB int values
 		
-		public ImageViewClickListener(Bitmap bitmap) {
-			imgProc = new JNIImgProc();	// native interface
-			
+		public ImageViewClickListener(Bitmap bitmap) {			
 			bitmapW = bitmap.getWidth();
 			bitmapH = bitmap.getHeight();
 			
@@ -79,7 +89,7 @@ public class MainActivity extends Activity {
 				
 				// run the native image processing function. data will be modified in-place
 				Log.i(TAG, "will run native image processing function...");
-				imgProc.grayscale(bitmapData);
+//				imgProc.grayscale(bitmapData);
 				
 				// set the processed image data for the result bitmap
 				processedBm.setPixels(bitmapData, 0, bitmapW, 0, 0, bitmapW, bitmapH);

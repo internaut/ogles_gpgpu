@@ -1,6 +1,10 @@
 package ogles_gpgpu;
 
 public class OGJNIWrapper {
+	static {
+		System.loadLibrary("og_jni_wrapper");
+	}
+	
     public native void init();
     
     public native void cleanup();
