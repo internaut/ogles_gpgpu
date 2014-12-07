@@ -30,7 +30,7 @@
 									<listOptionValue builtIn="false" value="/Applications/AndroidDevKit/ndk/platforms/android-21/arch-arm/usr/include"/>
 									<listOptionValue builtIn="false" value="../../../../../ogles_gpgpu"/>
 								</option>
-								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1632169225" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
+								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1632169225" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__ANDROID__"/>
 									<listOptionValue builtIn="false" value="ANDROID"/>
 								</option>

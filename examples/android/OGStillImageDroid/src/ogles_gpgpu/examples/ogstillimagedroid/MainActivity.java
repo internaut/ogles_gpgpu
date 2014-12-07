@@ -2,22 +2,14 @@ package ogles_gpgpu.examples.ogstillimagedroid;
 
 import java.nio.ByteBuffer;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import ogles_gpgpu.OGJNIWrapper;
 import ogles_gpgpu.examples.ogstillimagedroid.R;
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.opengl.GLSurfaceView;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -31,9 +23,8 @@ import android.widget.ImageView;
 public class MainActivity extends Activity /* implements SurfaceHolder.Callback */ {
 	private final String TAG = this.getClass().getSimpleName();
 	
-	private OGJNIWrapper ogWrapper;
-		
-//	private GLThread glThread;
+	private OGJNIWrapper ogWrapper;	// ogles_gpgpu native interface object
+
 	private ImageView imgView;
 	private Bitmap origImgBm;
 	private BitmapDrawable origImgBmDr;
@@ -43,8 +34,8 @@ public class MainActivity extends Activity /* implements SurfaceHolder.Callback 
 	private int outputW;
 	private int outputH;
 	
-	private int[] inputPixels;		// pixel data of <origImgBm> as ARGB int values
-	private ByteBuffer outputPixels;		// output pixel data as ARGB int values
+	private int[] inputPixels;			// pixel data of <origImgBm> as ARGB int values
+	private ByteBuffer outputPixels;	// output pixel data as ARGB bytes values
 	
 	
     @Override
@@ -53,13 +44,9 @@ public class MainActivity extends Activity /* implements SurfaceHolder.Callback 
         
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
-		// reset content view to main view with image view
+		// set the content view to main view with image view
         setContentView(R.layout.activity_main);
-        
 		imgView = (ImageView)findViewById(R.id.img_view);
-		
-//	    SurfaceView surfaceView = (SurfaceView)findViewById(R.id.surface_view);
-//	    surfaceView.getHolder().addCallback(this);
 		
 		// create a bitmap of the input image
 		origImgBm = BitmapFactory.decodeResource(getResources(), R.drawable.leafs_1024x786);
@@ -76,9 +63,11 @@ public class MainActivity extends Activity /* implements SurfaceHolder.Callback 
 		// the output pixel buffer will be directly delivered by ogWrapper.
 		// it is managed on the native side.
 		
+		// create the native ogles_gpgpu wrapper object
 		ogWrapper = new OGJNIWrapper();
 		ogWrapper.init();
 		
+		// prepare for the input image size
     	ogWrapper.prepare(inputW, inputH);
     	outputW = ogWrapper.getOutputFrameW();
     	outputH = ogWrapper.getOutputFrameH();
@@ -93,22 +82,6 @@ public class MainActivity extends Activity /* implements SurfaceHolder.Callback 
     	
     	super.onDestroy();
     }
-    
-/*    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-    	Log.i(TAG, "surface changed");
-    	
-    	ogWrapper.prepare(inputW, inputH);
-    	outputW = ogWrapper.getOutputFrameW();
-    	outputH = ogWrapper.getOutputFrameH();
-    }
-
-    public void surfaceCreated(SurfaceHolder holder) {
-    	Log.i(TAG, "surface created");
-    }
-
-    public void surfaceDestroyed(SurfaceHolder holder) {
-    	Log.i(TAG, "surface destroyed");
-    }*/
     
 	private class ImageViewClickListener implements View.OnClickListener {
 		private boolean filtered;
@@ -143,12 +116,11 @@ public class MainActivity extends Activity /* implements SurfaceHolder.Callback 
 				
 				// get the processed image data
 				outputPixels = ogWrapper.getOutputPixels();
+				
+				// set it to the bitmap
 				outputPixels.rewind();
 				processedBm.copyPixelsFromBuffer(outputPixels);
 				outputPixels.rewind();
-				
-				// set the processed image data for the result bitmap
-//				processedBm.setPixels(outputPixels, 0, outputW, 0, 0, outputW, outputH);
 				
 				filtered = true;
 			} else {
@@ -161,35 +133,4 @@ public class MainActivity extends Activity /* implements SurfaceHolder.Callback 
 			imgView.setImageDrawable(filteredBitmapDrawable);
 		}
 	}
-	
-//	private class GLThread extends Thread {
-//		private OGManager ogMngr;
-//		private boolean running;
-//
-//		public GLThread() {
-//			ogMngr = new OGManager();
-//		}
-//
-//		public void stopRunning() {
-//			ogMngr.destroy();
-//			this.running = false;
-//		}
-//		
-//		@Override
-//		public void run() {
-//			running = true;
-//			
-//			ogMngr.init(inputW, inputH);
-//			outputW = ogMngr.getOutputFrameW();
-//			outputH = ogMngr.getOutputFrameH();
-//			
-//			while (running) {
-//				
-//			}
-//		}
-//		
-//		public OGManager getOGManager() {
-//			return ogMngr;
-//		}
-//	}
 }

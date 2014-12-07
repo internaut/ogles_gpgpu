@@ -20,23 +20,27 @@ static EGLSurface eglSurface;
 static EGLContext eglCtx;
 static EGLDisplay eglDisp;
 
-bool ogEGLSetupHelper(int w, int h) {
+bool ogEGLSetup(int w, int h) {
+	// EGL config attributes
 	const EGLint confAttr[] = {
-			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,	// important!
-	        EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
-	        EGL_RED_SIZE, 8,
+			EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,	// very important!
+	        EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,			// we will create a pixelbuffer surface
+	        EGL_RED_SIZE, 	8,
 	        EGL_GREEN_SIZE, 8,
-	        EGL_BLUE_SIZE, 8,
-	        EGL_ALPHA_SIZE, 8,
+	        EGL_BLUE_SIZE, 	8,
+	        EGL_ALPHA_SIZE, 8,		// we will need the alpha channel
 	        EGL_DEPTH_SIZE, 16,
 	        EGL_NONE
 	};
 
+	// EGL context attributes
 	const EGLint ctxAttr[] = {
-			EGL_CONTEXT_CLIENT_VERSION, 2,				// important!
+			EGL_CONTEXT_CLIENT_VERSION, 2,				// very important!
 			EGL_NONE
 	};
 
+	// surface attributes
+	// the surface size is set to the input frame size
 	const EGLint surfaceAttr[] = {
 			 EGL_WIDTH, w,
 			 EGL_HEIGHT, h,
@@ -59,7 +63,7 @@ bool ogEGLSetupHelper(int w, int h) {
 
 	OG_LOGINF("OGJNIWrapper", "EGL init with version %d.%d", eglMajVers, eglMinVers);
 
-	if (!eglChooseConfig(eglDisp, confAttr, &eglConf, 1, &numConfigs)) {
+	if (!eglChooseConfig(eglDisp, confAttr, &eglConf, 1, &numConfigs)) {	// choose the first config
 		OG_LOGERR("OGJNIWrapper", "eglChooseConfig failed: %d", eglGetError());
 		return false;
 	}
@@ -70,7 +74,7 @@ bool ogEGLSetupHelper(int w, int h) {
 		return false;
 	}
 
-	eglSurface = eglCreatePbufferSurface(eglDisp, eglConf, surfaceAttr);
+	eglSurface = eglCreatePbufferSurface(eglDisp, eglConf, surfaceAttr);	// create a pixelbuffer surface
 	if (eglSurface == NULL) {
 		OG_LOGERR("OGJNIWrapper", "eglCreatePbufferSurface failed: %d", eglGetError());
 		return false;
@@ -82,6 +86,17 @@ bool ogEGLSetupHelper(int w, int h) {
 	}
 
 	return true;
+}
+
+void ogEGLTeardown() {
+    eglMakeCurrent(eglDisp, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglDestroyContext(eglDisp, eglCtx);
+    eglDestroySurface(eglDisp, eglSurface);
+    eglTerminate(eglDisp);
+
+    eglDisp = EGL_NO_DISPLAY;
+    eglSurface = EGL_NO_SURFACE;
+    eglCtx = EGL_NO_CONTEXT;
 }
 
 void ogCleanupHelper(JNIEnv *env) {
@@ -100,6 +115,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject 
 
 	ogCore = ogles_gpgpu::Core::getInstance();
 
+	// this method is user-defined and sets up the processing pipeline
 	ogPipelineSetup(ogCore);
 }
 
@@ -117,6 +133,8 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup(JNIEnv *env, jobje
 	ogCore = NULL;
 
 	ogCleanupHelper(env);
+
+	ogEGLTeardown();
 }
 
 /*
@@ -127,11 +145,13 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup(JNIEnv *env, jobje
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobject obj, jint w, jint h) {
 	assert(ogCore);
 
-	if (!ogEGLSetupHelper(w, h)) {
+	// set up EGL display, context and pixelbuffer surface
+	if (!ogEGLSetup(w, h)) {
 		OG_LOGERR("OGJNIWrapper", "EGL setup failed. Aborting!");
 		return;
 	}
 
+	// prepare for frames of size w by h
 	ogCore->prepare(w, h);
 
 	ogCleanupHelper(env);
@@ -140,11 +160,11 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobje
 	outputFrameSize[0] = ogCore->getOutputFrameW();
 	outputFrameSize[1] = ogCore->getOutputFrameH();
 
-	// create the output buffer
+	// create the output buffer as NIO direct byte buffer
 	outputPxBufNumBytes = outputFrameSize[0] * outputFrameSize[1] * 4;
 	outputPxBufData = new unsigned char[outputPxBufNumBytes];
 	outputPxBuf = env->NewDirectByteBuffer(outputPxBufData, outputPxBufNumBytes);
-	outputPxBuf = env->NewGlobalRef(outputPxBuf);
+	outputPxBuf = env->NewGlobalRef(outputPxBuf);	// we will hold a reference on this global variable until cleanup is called
 
 	OG_LOGINF("OGJNIWrapper", "preparation successful. input size is %dx%d, output size is %dx%d",
 			w, h, outputFrameSize[0], outputFrameSize[1]);
@@ -162,6 +182,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env
 
 	assert(pxInts);
 
+	// cast to bytes and set as input data
 	ogCore->setInputData((const unsigned char *)pxInts);
 
 	env->ReleaseIntArrayElements(pxData, pxInts, 0);
@@ -175,7 +196,8 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env
 JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEnv *env, jobject obj) {
 	assert(ogCore);
 
-	ogCore->getOutputData((unsigned char *)outputPxBufData);
+	// write to the output buffer
+	ogCore->getOutputData(outputPxBufData);
     
     return outputPxBuf;
 }
@@ -188,6 +210,7 @@ JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEnv 
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_process(JNIEnv *env, jobject obj) {
 	assert(ogCore);
 
+	// run the processing operations
 	ogCore->process();
 }
 

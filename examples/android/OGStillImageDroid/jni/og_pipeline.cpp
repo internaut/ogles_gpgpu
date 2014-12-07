@@ -10,7 +10,7 @@ void ogPipelineSetup(ogles_gpgpu::Core *core) {
 	grayscaleProc.setOutputSize(0.5f);
 
 	// set up adaptive thresholding processor
-	// ...
+	// (nothing to set up here ...)
 
 	// add the processors to the processing pipeline
 	core->addProcToPipeline(&grayscaleProc);
