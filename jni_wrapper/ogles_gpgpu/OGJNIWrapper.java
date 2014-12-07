@@ -1,6 +1,8 @@
 package ogles_gpgpu;
 
 
+import java.nio.ByteBuffer;
+
 import android.opengl.GLSurfaceView;
 import android.util.Log;
 
@@ -33,5 +35,5 @@ public class OGJNIWrapper {
     /**
      * @return pixel data with ARGB integers
      */
-    public native int[] getOutputPixels();
+    public native ByteBuffer getOutputPixels();
 }

@@ -10,8 +10,9 @@
 #include <EGL/egl.h>
 
 static ogles_gpgpu::Core *ogCore = NULL;
-static jintArray outputPxBufArr = NULL;
-static jint *outputPxBufInts = NULL;
+static jlong outputPxBufNumBytes = 0;
+static jobject outputPxBuf = NULL;
+static unsigned char *outputPxBufData = NULL;
 static jint outputFrameSize[] = { 0, 0 };	// width x height
 
 static EGLConfig eglConf;
@@ -84,11 +85,12 @@ bool ogEGLSetupHelper(int w, int h) {
 }
 
 void ogCleanupHelper(JNIEnv *env) {
-	if (outputPxBufArr && outputPxBufInts) {	// buffer is already set, release it first
-		env->ReleaseIntArrayElements(outputPxBufArr, outputPxBufInts, 0);
+	if (outputPxBuf && outputPxBufData) {	// buffer is already set, release it first
+		env->DeleteGlobalRef(outputPxBuf);
+		delete outputPxBufData;
 
-		outputPxBufArr = NULL;
-		outputPxBufInts = NULL;
+		outputPxBuf = NULL;
+		outputPxBufData = NULL;
 	}
 }
 
@@ -139,8 +141,10 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobje
 	outputFrameSize[1] = ogCore->getOutputFrameH();
 
 	// create the output buffer
-	outputPxBufArr = env->NewIntArray(outputFrameSize[0] * outputFrameSize[1]);
-	outputPxBufInts = env->GetIntArrayElements(outputPxBufArr, 0);
+	outputPxBufNumBytes = outputFrameSize[0] * outputFrameSize[1] * 4;
+	outputPxBufData = new unsigned char[outputPxBufNumBytes];
+	outputPxBuf = env->NewDirectByteBuffer(outputPxBufData, outputPxBufNumBytes);
+	outputPxBuf = env->NewGlobalRef(outputPxBuf);
 
 	OG_LOGINF("OGJNIWrapper", "preparation successful. input size is %dx%d, output size is %dx%d",
 			w, h, outputFrameSize[0], outputFrameSize[1]);
@@ -168,12 +172,12 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env
  * Method:    getOutputPixels
  * Signature: ()[I
  */
-JNIEXPORT jintArray JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEnv *env, jobject obj) {
+JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEnv *env, jobject obj) {
 	assert(ogCore);
 
-	ogCore->getOutputData((unsigned char *)outputPxBufInts);
+	ogCore->getOutputData((unsigned char *)outputPxBufData);
     
-    return outputPxBufArr;
+    return outputPxBuf;
 }
 
 /*

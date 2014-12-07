@@ -1,5 +1,7 @@
 package ogles_gpgpu.examples.ogstillimagedroid;
 
+import java.nio.ByteBuffer;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -26,7 +28,7 @@ import android.widget.ImageView;
  * MainActivity implements the simple user interaction: Touching the input image will run
  * the native image processing function (grayscale conversion).
  */
-public class MainActivity extends Activity implements SurfaceHolder.Callback {
+public class MainActivity extends Activity /* implements SurfaceHolder.Callback */ {
 	private final String TAG = this.getClass().getSimpleName();
 	
 	private OGJNIWrapper ogWrapper;
@@ -42,7 +44,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 	private int outputH;
 	
 	private int[] inputPixels;		// pixel data of <origImgBm> as ARGB int values
-	private int[] outputPixels;		// output pixel data as ARGB int values
+	private ByteBuffer outputPixels;		// output pixel data as ARGB int values
 	
 	
     @Override
@@ -56,8 +58,8 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
         
 		imgView = (ImageView)findViewById(R.id.img_view);
 		
-	    SurfaceView surfaceView = (SurfaceView)findViewById(R.id.surface_view);
-	    surfaceView.getHolder().addCallback(this);
+//	    SurfaceView surfaceView = (SurfaceView)findViewById(R.id.surface_view);
+//	    surfaceView.getHolder().addCallback(this);
 		
 		// create a bitmap of the input image
 		origImgBm = BitmapFactory.decodeResource(getResources(), R.drawable.leafs_1024x786);
@@ -77,6 +79,10 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 		ogWrapper = new OGJNIWrapper();
 		ogWrapper.init();
 		
+    	ogWrapper.prepare(inputW, inputH);
+    	outputW = ogWrapper.getOutputFrameW();
+    	outputH = ogWrapper.getOutputFrameH();
+		
 		// set the "on click" event listener
 		imgView.setOnClickListener(new ImageViewClickListener(origImgBm));
     }
@@ -85,17 +91,10 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
     protected void onDestroy() {
     	ogWrapper.cleanup();
     	
-//    	try {
-//    		glThread.stopRunning();
-//			glThread.join();
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-    	
     	super.onDestroy();
     }
     
-    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+/*    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
     	Log.i(TAG, "surface changed");
     	
     	ogWrapper.prepare(inputW, inputH);
@@ -109,7 +108,7 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 
     public void surfaceDestroyed(SurfaceHolder holder) {
     	Log.i(TAG, "surface destroyed");
-    }
+    }*/
     
 	private class ImageViewClickListener implements View.OnClickListener {
 		private boolean filtered;
@@ -144,9 +143,12 @@ public class MainActivity extends Activity implements SurfaceHolder.Callback {
 				
 				// get the processed image data
 				outputPixels = ogWrapper.getOutputPixels();
+				outputPixels.rewind();
+				processedBm.copyPixelsFromBuffer(outputPixels);
+				outputPixels.rewind();
 				
 				// set the processed image data for the result bitmap
-				processedBm.setPixels(outputPixels, 0, outputW, 0, 0, outputW, outputH);
+//				processedBm.setPixels(outputPixels, 0, outputW, 0, 0, outputW, outputH);
 				
 				filtered = true;
 			} else {
