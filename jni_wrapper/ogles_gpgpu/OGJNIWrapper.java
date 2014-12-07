@@ -8,26 +8,9 @@ import javax.microedition.khronos.egl.*;
 import javax.microedition.khronos.opengles.GL10;
 
 
-public class OGJNIWrapper implements GLSurfaceView.Renderer {
-//	private final String TAG = this.getClass().getSimpleName();
-	
+public class OGJNIWrapper {	
 	static {
 		System.loadLibrary("og_jni_wrapper");
-	}
-	
-	@Override
-	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-		init();
-	}
-	
-	@Override
-	public void onSurfaceChanged(GL10 gl, int width, int height) {
-		prepare(width, height);
-	}
-	
-	@Override
-	public void onDrawFrame(GL10 gl) {
-		process();
 	}
 
     

@@ -4,7 +4,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import ogles_gpgpu.OGJNIWrapper;
-import ogles_gpgpu.OGManager;
 import ogles_gpgpu.examples.ogstillimagedroid.R;
 import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
@@ -15,6 +14,8 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -25,10 +26,9 @@ import android.widget.ImageView;
  * MainActivity implements the simple user interaction: Touching the input image will run
  * the native image processing function (grayscale conversion).
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SurfaceHolder.Callback {
 	private final String TAG = this.getClass().getSimpleName();
 	
-	private OGManager ogMngr;
 	private OGJNIWrapper ogWrapper;
 		
 //	private GLThread glThread;
@@ -56,6 +56,9 @@ public class MainActivity extends Activity {
         
 		imgView = (ImageView)findViewById(R.id.img_view);
 		
+	    SurfaceView surfaceView = (SurfaceView)findViewById(R.id.surface_view);
+	    surfaceView.getHolder().addCallback(this);
+		
 		// create a bitmap of the input image
 		origImgBm = BitmapFactory.decodeResource(getResources(), R.drawable.leafs_1024x786);
 		inputW = origImgBm.getWidth();
@@ -71,13 +74,8 @@ public class MainActivity extends Activity {
 		// the output pixel buffer will be directly delivered by ogWrapper.
 		// it is managed on the native side.
 		
-//		glThread = new GLThread();
-//		glThread.start();
-		
-		ogMngr = new OGManager();
-		ogMngr.init(inputW, inputH);
 		ogWrapper = new OGJNIWrapper();
-		ogMngr.setRenderer(ogWrapper);
+		ogWrapper.init();
 		
 		// set the "on click" event listener
 		imgView.setOnClickListener(new ImageViewClickListener(origImgBm));
@@ -95,6 +93,22 @@ public class MainActivity extends Activity {
 //		}
     	
     	super.onDestroy();
+    }
+    
+    public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+    	Log.i(TAG, "surface changed");
+    	
+    	ogWrapper.prepare(inputW, inputH);
+    	outputW = ogWrapper.getOutputFrameW();
+    	outputH = ogWrapper.getOutputFrameH();
+    }
+
+    public void surfaceCreated(SurfaceHolder holder) {
+    	Log.i(TAG, "surface created");
+    }
+
+    public void surfaceDestroyed(SurfaceHolder holder) {
+    	Log.i(TAG, "surface destroyed");
     }
     
 	private class ImageViewClickListener implements View.OnClickListener {
@@ -126,7 +140,7 @@ public class MainActivity extends Activity {
 				
 				// run the native image processing function. data will be modified in-place
 				Log.i(TAG, "will run native image processing function...");
-				ogMngr.render();
+				ogWrapper.process();
 				
 				// get the processed image data
 				outputPixels = ogWrapper.getOutputPixels();

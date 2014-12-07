@@ -33,7 +33,7 @@ LOCAL_SRC_FILES := \
 	$(OG_SRC_PATH)/common/proc/multipass/gauss_pass.cpp 
 
 # Load local libraries
-LOCAL_LDLIBS += -llog -ldl  -landroid -lGLESv2
+LOCAL_LDLIBS += -llog -ldl  -landroid -lGLESv2 -lEGL
 
 # Build the shared library defined above
 include $(BUILD_SHARED_LIBRARY)
