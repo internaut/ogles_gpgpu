@@ -44,7 +44,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels
  * Method:    getOutputPixels
  * Signature: ()[I
  */
-JNIEXPORT jintArray JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels
+JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels
   (JNIEnv *, jobject);
 
 /*

@@ -9,27 +9,34 @@
 ## Tested platforms
 
 * iOS 7.1
+* Android 5.0
 
 ## Tested devices
 
 * Apple iPad 2
-* Apple iPad 3
 * Apple iPad 4
+* Google Nexus 10 (2013)
 
 ## TODO
 
 ### Milestone 1
 
-* test ipad3 / ios 8
+* android: different images w/ different sizes
+* android: benchmarks
+* android: implement KHRImage trick?
 
 * add notice: touch the image...
+
+* test iOS projects again
 
 * add common file header
 * add license
 
 ### Milestone 2
 
-* android port
+* android: camera example
+
+* test ipad3 / ios 8
 
 ### Milestone 3
 

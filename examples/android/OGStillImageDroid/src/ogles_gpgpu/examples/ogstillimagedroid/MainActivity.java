@@ -1,5 +1,7 @@
 package ogles_gpgpu.examples.ogstillimagedroid;
 
+import java.nio.ByteBuffer;
+
 import ogles_gpgpu.OGJNIWrapper;
 import ogles_gpgpu.examples.ogstillimagedroid.R;
 import android.app.Activity;
@@ -9,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 /**
@@ -17,35 +20,60 @@ import android.widget.ImageView;
  * MainActivity implements the simple user interaction: Touching the input image will run
  * the native image processing function (grayscale conversion).
  */
-public class MainActivity extends Activity {
+public class MainActivity extends Activity /* implements SurfaceHolder.Callback */ {
 	private final String TAG = this.getClass().getSimpleName();
 	
-	private OGJNIWrapper ogWrapper;
+	private OGJNIWrapper ogWrapper;	// ogles_gpgpu native interface object
+
 	private ImageView imgView;
 	private Bitmap origImgBm;
 	private BitmapDrawable origImgBmDr;
+	
+	private int inputW;
+	private int inputH;
+	private int outputW;
+	private int outputH;
+	
+	private int[] inputPixels;			// pixel data of <origImgBm> as ARGB int values
+	private ByteBuffer outputPixels;	// output pixel data as ARGB bytes values
 	
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
         
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        
+		// set the content view to main view with image view
+        setContentView(R.layout.activity_main);
 		imgView = (ImageView)findViewById(R.id.img_view);
 		
 		// create a bitmap of the input image
 		origImgBm = BitmapFactory.decodeResource(getResources(), R.drawable.leafs_1024x786);
+		inputW = origImgBm.getWidth();
+		inputH = origImgBm.getHeight();
 		
 		// set it as drawable for the image view
 		origImgBmDr = new BitmapDrawable(getResources(), origImgBm);
 		imgView.setImageDrawable(origImgBmDr);
 		
+		// set up the input pixel buffer
+		inputPixels = new int[inputW * inputH];
+		
+		// the output pixel buffer will be directly delivered by ogWrapper.
+		// it is managed on the native side.
+		
+		// create the native ogles_gpgpu wrapper object
+		ogWrapper = new OGJNIWrapper();
+		ogWrapper.init();
+		
+		// prepare for the input image size
+    	ogWrapper.prepare(inputW, inputH);
+    	outputW = ogWrapper.getOutputFrameW();
+    	outputH = ogWrapper.getOutputFrameH();
+		
 		// set the "on click" event listener
 		imgView.setOnClickListener(new ImageViewClickListener(origImgBm));
-		
-		// create ogles_gpgpu native interface
-		ogWrapper = new OGJNIWrapper();	// native interface
-		ogWrapper.init();
     }
     
     @Override
@@ -54,25 +82,17 @@ public class MainActivity extends Activity {
     	
     	super.onDestroy();
     }
-
     
 	private class ImageViewClickListener implements View.OnClickListener {
 		private boolean filtered;
-		private Bitmap bitmap;
-		private int bitmapW;
-		private int bitmapH;
-		private int bitmapData[];	// pixel data if <bitmap> as ARGB int values
+		private Bitmap origBitmap;
 		
 		public ImageViewClickListener(Bitmap bitmap) {			
-			bitmapW = bitmap.getWidth();
-			bitmapH = bitmap.getHeight();
-			
 			// get the pixel data as ARGB int values
-			bitmapData = new int[bitmapW * bitmapH];
-			bitmap.getPixels(bitmapData, 0, bitmapW, 0, 0, bitmapW, bitmapH);
+			bitmap.getPixels(inputPixels, 0, inputW, 0, 0, inputW, inputH);
 			
-			this.filtered = false;
-			this.bitmap = bitmap;			
+			filtered = false;
+			origBitmap = bitmap;			
 		}
 		
 		@Override
@@ -81,22 +101,30 @@ public class MainActivity extends Activity {
 			Bitmap processedBm;
 
 			if (!filtered) {
+				// set input pixels
+				ogWrapper.setInputPixels(inputPixels);
+				
 				// create a new empty bitmap for the result
 				processedBm = Bitmap.createBitmap(
-						bitmapW,
-						bitmapH,
+						outputW,
+						outputH,
 						Bitmap.Config.ARGB_8888);
 				
 				// run the native image processing function. data will be modified in-place
 				Log.i(TAG, "will run native image processing function...");
-//				imgProc.grayscale(bitmapData);
+				ogWrapper.process();
 				
-				// set the processed image data for the result bitmap
-				processedBm.setPixels(bitmapData, 0, bitmapW, 0, 0, bitmapW, bitmapH);
+				// get the processed image data
+				outputPixels = ogWrapper.getOutputPixels();
+				
+				// set it to the bitmap
+				outputPixels.rewind();
+				processedBm.copyPixelsFromBuffer(outputPixels);
+				outputPixels.rewind();
 				
 				filtered = true;
 			} else {
-				processedBm = bitmap;
+				processedBm = origBitmap;
 				filtered = false;
 			}
 
@@ -104,6 +132,5 @@ public class MainActivity extends Activity {
 			BitmapDrawable filteredBitmapDrawable = new BitmapDrawable(getResources(), processedBm);			
 			imgView.setImageDrawable(filteredBitmapDrawable);
 		}
-		
 	}
 }
