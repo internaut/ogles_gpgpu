@@ -124,8 +124,8 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
     inputFrameW = inW;
     inputFrameH = inH;
 
-    OG_LOGINF("Core", "prepare with input frame size %dx%d (POT: %d)",
-              inputFrameW, inputFrameH, inputSizeIsPOT);
+    OG_LOGINF("Core", "prepare with input frame size %dx%d (POT: %d), %d processors in pipeline",
+              inputFrameW, inputFrameH, inputSizeIsPOT, pipeline.size());
 
     // initialize the pipeline
     ProcInterface *prevProc = NULL;
@@ -135,6 +135,8 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
          it != pipeline.end();
          ++it)
     {
+    	OG_LOGINF("Core", "init proc#%d", num);
+
         // find out the input frame size for the proc
         int pipelineFrameW, pipelineFrameH;
         

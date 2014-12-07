@@ -14,7 +14,9 @@ LOCAL_C_INCLUDES += $(OG_SRC_PATH)
 LOCAL_CFLAGS    += -DDEBUG
 
 # Specify the source files
-LOCAL_SRC_FILES := og_jni_wrapper.cpp \
+LOCAL_SRC_FILES := \
+	og_jni_wrapper.cpp \
+	og_pipeline.cpp \
 	$(OG_SRC_PATH)/common/core.cpp \
 	$(OG_SRC_PATH)/common/tools.cpp \
 	$(OG_SRC_PATH)/common/gl/fbo.cpp \
@@ -31,7 +33,7 @@ LOCAL_SRC_FILES := og_jni_wrapper.cpp \
 	$(OG_SRC_PATH)/common/proc/multipass/gauss_pass.cpp 
 
 # Load local libraries
-LOCAL_LDLIBS += -llog -ldl -lGLESv2
+LOCAL_LDLIBS += -llog -ldl  -landroid -lGLESv2
 
 # Build the shared library defined above
 include $(BUILD_SHARED_LIBRARY)
