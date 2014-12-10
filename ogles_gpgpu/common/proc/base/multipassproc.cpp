@@ -120,7 +120,7 @@ void MultiPassProc::render() {
 }
 
 void MultiPassProc::printInfo() {
-    OG_LOGINF(getProcName(), "begin info for %lu passes", procPasses.size());
+    OG_LOGINF(getProcName(), "begin info for %u passes", (unsigned int)procPasses.size());
     
     for (list<ProcInterface *>::iterator it = procPasses.begin();
          it != procPasses.end();

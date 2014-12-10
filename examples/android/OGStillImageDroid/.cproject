@@ -8,10 +8,8 @@
 				</externalSettings>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.GASErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GLDErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.VCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
-					<extension id="org.eclipse.cdt.core.CWDLocator" point="org.eclipse.cdt.core.ErrorParser"/>
 					<extension id="org.eclipse.cdt.core.GCCErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
 				</extensions>
 			</storageModule>
@@ -20,15 +18,15 @@
 					<folderInfo id="0.2065261347." name="/" resourcePath="">
 						<toolChain id="org.eclipse.cdt.build.core.prefbase.toolchain.1559636096" name="No ToolChain" resourceTypeBasedDiscovery="false" superClass="org.eclipse.cdt.build.core.prefbase.toolchain">
 							<targetPlatform id="org.eclipse.cdt.build.core.prefbase.toolchain.1559636096.1529023957" name=""/>
-							<builder command="/Applications/AndroidDevKit/ndk/ndk-build" id="org.eclipse.cdt.build.core.settings.default.builder.1415835553" incrementalBuildTarget="" keepEnvironmentInBuildfile="false" managedBuildOn="false" name="Gnu Make Builder" stopOnErr="false" superClass="org.eclipse.cdt.build.core.settings.default.builder"/>
+							<builder id="com.android.builder.2095327518" keepEnvironmentInBuildfile="false" name="Android Builder" superClass="com.android.builder"/>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.libs.1339458910" name="holder for library settings" superClass="org.eclipse.cdt.build.core.settings.holder.libs"/>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.136028419" name="Assembly" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<inputType id="org.eclipse.cdt.build.core.settings.holder.inType.262820501" languageId="org.eclipse.cdt.core.assembly" languageName="Assembly" sourceContentType="org.eclipse.cdt.core.asmSource" superClass="org.eclipse.cdt.build.core.settings.holder.inType"/>
 							</tool>
 							<tool id="org.eclipse.cdt.build.core.settings.holder.922555304" name="GNU C++" superClass="org.eclipse.cdt.build.core.settings.holder">
 								<option id="org.eclipse.cdt.build.core.settings.holder.incpaths.1963540418" name="Include Paths" superClass="org.eclipse.cdt.build.core.settings.holder.incpaths" valueType="includePath">
-									<listOptionValue builtIn="false" value="/Applications/AndroidDevKit/ndk/platforms/android-21/arch-arm/usr/include"/>
 									<listOptionValue builtIn="false" value="../../../../../ogles_gpgpu"/>
+									<listOptionValue builtIn="false" value="&quot;${NDK_PATH}/platforms/android-21/arch-arm/usr/include&quot;"/>
 								</option>
 								<option id="org.eclipse.cdt.build.core.settings.holder.symbols.1632169225" name="Symbols" superClass="org.eclipse.cdt.build.core.settings.holder.symbols" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="__ANDROID__"/>
