@@ -21,10 +21,7 @@
 
 ### Milestone 1
 
-* android: implement KHRImage trick?
-
-* add common file header
-* add license
+* android: try KHRImage trick
 
 ### Milestone 2
 
@@ -48,3 +45,7 @@
 ### Milestone 6
 
 * native iOS YUV input support
+
+## License
+
+This project is licensed under [GNU LGPL v2.1](http://choosealicense.com/licenses/lgpl-2.1/). See `LICENSE` file for the full text.
