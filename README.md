@@ -21,13 +21,14 @@
 
 ### Milestone 1
 
-* android: different images w/ different sizes
 * android: benchmarks
 * android: implement KHRImage trick?
+* android: fix absolute paths in projects (move project to test)
+* android: fix compilation warnings
 
 * add notice: touch the image...
 
-* test iOS projects again
+* (test iOS projects again)
 
 * add common file header
 * add license
@@ -35,7 +36,6 @@
 ### Milestone 2
 
 * android: camera example
-
 * test ipad3 / ios 8
 
 ### Milestone 3

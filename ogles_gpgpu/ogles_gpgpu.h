@@ -8,6 +8,7 @@
 
 // include main header
 
+#include "common/common_includes.h"
 #include "common/core.h"
 
 // include processors

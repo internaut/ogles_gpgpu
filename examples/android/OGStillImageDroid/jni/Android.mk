@@ -30,7 +30,8 @@ LOCAL_SRC_FILES := \
 	$(OG_SRC_PATH)/common/proc/base/multipassproc.cpp \
 	$(OG_SRC_PATH)/common/proc/base/procbase.cpp \
 	$(OG_SRC_PATH)/common/proc/multipass/adapt_thresh_pass.cpp \
-	$(OG_SRC_PATH)/common/proc/multipass/gauss_pass.cpp 
+	$(OG_SRC_PATH)/common/proc/multipass/gauss_pass.cpp \
+	$(OG_SRC_PATH)/platform/android/egl.cpp 
 
 # Load local libraries
 LOCAL_LDLIBS += -llog -ldl  -landroid -lGLESv2 -lEGL

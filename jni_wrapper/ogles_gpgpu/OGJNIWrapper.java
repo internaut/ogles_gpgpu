@@ -3,12 +3,6 @@ package ogles_gpgpu;
 
 import java.nio.ByteBuffer;
 
-import android.opengl.GLSurfaceView;
-import android.util.Log;
-
-import javax.microedition.khronos.egl.*;
-import javax.microedition.khronos.opengles.GL10;
-
 
 public class OGJNIWrapper {	
 	static {
