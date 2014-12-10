@@ -23,7 +23,7 @@ ThreshProc::ThreshProc() {
 }
 
 int ThreshProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
-    OG_LOGINF(getProcName(), "");
+    OG_LOGINF(getProcName(), "initialize");
     
     // create fbo for output
     createFBO();

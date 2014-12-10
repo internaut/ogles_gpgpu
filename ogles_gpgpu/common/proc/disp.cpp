@@ -14,7 +14,7 @@ void main() {
 );
 
 int Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
-    OG_LOGINF(getProcName(), "");
+    OG_LOGINF(getProcName(), "initialize");
     
     // ProcBase init - set defaults
     baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);

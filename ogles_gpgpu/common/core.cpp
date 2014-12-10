@@ -77,7 +77,7 @@ void Core::addProcToPipeline(ProcInterface *proc) {
         OG_LOGERR("Core", "adding processor failed: pipeline already initialized");
     }
     
-    OG_LOGINF("Core", "adding processor #%lu to pipeline", (pipeline.size() + 1));
+    OG_LOGINF("Core", "adding processor #%u to pipeline", (unsigned int)(pipeline.size() + 1));
     
     // add not processor to pipeline
     pipeline.push_back(proc);
@@ -124,8 +124,8 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
     inputFrameW = inW;
     inputFrameH = inH;
 
-    OG_LOGINF("Core", "prepare with input frame size %dx%d (POT: %d), %d processors in pipeline",
-              inputFrameW, inputFrameH, inputSizeIsPOT, pipeline.size());
+    OG_LOGINF("Core", "prepare with input frame size %dx%d (POT: %d), %u processors in pipeline",
+              inputFrameW, inputFrameH, inputSizeIsPOT, (unsigned int)pipeline.size());
 
     // initialize the pipeline
     ProcInterface *prevProc = NULL;

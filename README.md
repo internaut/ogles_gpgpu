@@ -21,7 +21,6 @@
 
 ### Milestone 1
 
-* android: benchmarks
 * android: implement KHRImage trick?
 * android: fix absolute paths in projects (move project to test)
 * android: fix compilation warnings

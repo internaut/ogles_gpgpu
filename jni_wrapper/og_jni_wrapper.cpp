@@ -6,6 +6,7 @@
 
 #include <cstdlib>
 #include <cassert>
+#include <vector>
 
 static ogles_gpgpu::Core *ogCore = NULL;
 static jlong outputPxBufNumBytes = 0;
@@ -38,11 +39,6 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject 
 	}
 }
 
-/*
- * Class:     ogles_gpgpu_OGJNIWrapper
- * Method:    cleanup
- * Signature: ()V
- */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup(JNIEnv *env, jobject obj) {
 	assert(ogCore);
 
@@ -56,11 +52,6 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup(JNIEnv *env, jobje
 	ogles_gpgpu::EGL::shutdown();
 }
 
-/*
- * Class:     ogles_gpgpu_OGJNIWrapper
- * Method:    prepare
- * Signature: (II)V
- */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobject obj, jint w, jint h) {
 	assert(ogCore);
 
@@ -95,11 +86,6 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobje
 			w, h, outputFrameSize[0], outputFrameSize[1]);
 }
 
-/*
- * Class:     ogles_gpgpu_OGJNIWrapper
- * Method:    setInputPixels
- * Signature: ([I)V
- */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env, jobject obj, jintArray pxData) {
 	assert(ogCore);
 
@@ -113,11 +99,6 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env
 	env->ReleaseIntArrayElements(pxData, pxInts, 0);
 }
 
-/*
- * Class:     ogles_gpgpu_OGJNIWrapper
- * Method:    getOutputPixels
- * Signature: ()[I
- */
 JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEnv *env, jobject obj) {
 	assert(ogCore);
 
@@ -127,11 +108,6 @@ JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEnv 
     return outputPxBuf;
 }
 
-/*
- * Class:     ogles_gpgpu_OGJNIWrapper
- * Method:    process
- * Signature: ()V
- */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_process(JNIEnv *env, jobject obj) {
 	assert(ogCore);
 
@@ -139,20 +115,29 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_process(JNIEnv *env, jobje
 	ogCore->process();
 }
 
-/*
- * Class:     ogles_gpgpu_OGJNIWrapper
- * Method:    getOutputFrameW
- * Signature: ()I
- */
 JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameW(JNIEnv *env, jobject obj) {
     return outputFrameSize[0];
 }
 
-/*
- * Class:     ogles_gpgpu_OGJNIWrapper
- * Method:    getOutputFrameH
- * Signature: ()I
- */
 JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameH(JNIEnv *env, jobject obj) {
 	return outputFrameSize[1];
+}
+
+JNIEXPORT jdoubleArray JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getTimeMeasurements(JNIEnv *env, jobject obj) {
+#ifdef OGLES_GPGPU_BENCHMARK
+	std::vector<double> msrmnts = ogCore->getTimeMeasurements();
+	size_t num = msrmnts.size();
+	jdoubleArray res = env->NewDoubleArray(num);
+	jdouble msrmntsArr[num];
+	for (size_t i = 0; i < num; ++i) {
+		msrmntsArr[i] = msrmnts[i];
+	}
+
+	env->SetDoubleArrayRegion(res, 0, num, msrmntsArr);
+
+	return res;
+
+#else
+	return null;
+#endif
 }

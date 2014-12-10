@@ -189,6 +189,14 @@ public class MainActivity extends Activity /* implements SurfaceHolder.Callback 
 				// create drawable from it
 				dispDrawable = new BitmapDrawable(getResources(), processedBm); 
 				
+				// print time measurments
+				double[] timings = ogWrapper.getTimeMeasurements();
+				if (timings != null) {
+					for (int i = 0; i < timings.length; ++i) {
+						Log.i(TAG, "measurement #" + i + ": " + timings[i]);
+					}
+				}
+				
 				filtered = true;
 			} else {
 				dispDrawable = origImgBmDr;
