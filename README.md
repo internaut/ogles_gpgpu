@@ -3,8 +3,12 @@
 ## Features
 
 * fast and portable C++ code
+* platform optimizations for fast texture access
+ * on iOS: [Core Video Texture Cache API](http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/)
+ * on Android: EGL pixelbuffers (and hopefully soon: KHRImage extensions)
 * well documented
 * contains several example applications
+* LGPL licensed
 
 ## Tested platforms
 
@@ -15,7 +19,25 @@
 
 * Apple iPad 2
 * Apple iPad 4
+* XCode Simulator
 * Google Nexus 10 (2013)
+
+## Example projects
+
+### iOS examples
+
+These examples should run out-of-the-box.
+
+* OGLESGPGPUStillImage - *Simple project that performs GPU-powered adaptive thresholding on different images*
+* OGLESGPGPUVideoCam - *Project that shows real-time GPU-powered image processing on video camera frames*
+
+### Android examples
+
+These projects were created with the Eclipse ADT and use the Android NDK.
+
+To compile, you need to install the [Android NDK](https://developer.android.com/tools/sdk/ndk/index.html) first. Then, do the following: Right click on the project in Eclipse, select *Properties > C/C++ Build > Environment*. Edit the variable *NDK_PATH* to point to your NDK root directory.
+
+* OGStillImageDroid - *Simple project that performs GPU-powered adaptive thresholding on different images*
 
 ## TODO
 
