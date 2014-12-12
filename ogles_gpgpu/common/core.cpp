@@ -22,7 +22,6 @@ using namespace ogles_gpgpu;
 // initialize static variables
 
 Core *Core::instance = NULL;                // no instance
-bool Core::usePlatformOptimizations = true; // turn on platform optimizations
 
 Core *Core::getInstance() {
     if (!Core::instance) {
@@ -37,6 +36,12 @@ void Core::destroy() {
         delete Core::instance;
         Core::instance = NULL;
     }
+}
+
+#pragma mark other static methods
+
+bool Core::tryEnablePlatformOptimizations() {
+    return MemTransferFactory::tryEnablePlatformOptimizations();
 }
 
 #pragma mark constructor and setup methods

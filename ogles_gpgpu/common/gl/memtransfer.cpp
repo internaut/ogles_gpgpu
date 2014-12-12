@@ -11,6 +11,14 @@
 
 using namespace ogles_gpgpu;
 
+#pragma mark static methods
+
+bool MemTransfer::initPlatformOptimizations() {
+    // always return false here. this method is only fully implemented
+    // in platform-specialized classes of MemTransfer.
+    return false;
+}
+
 #pragma mark constructor/deconstructor
 
 MemTransfer::MemTransfer() {

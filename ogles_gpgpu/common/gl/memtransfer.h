@@ -80,6 +80,12 @@ public:
      */
     virtual void fromGPU(unsigned char *buf);
     
+    /**
+     * Try to initialize platform optimizations. Returns true on success, else false.
+     * Is only fully implemented in platform-specialized classes of MemTransfer.
+     */
+    static bool initPlatformOptimizations();
+    
 protected:
     /**
      * bind texture if <texId> > 0 and

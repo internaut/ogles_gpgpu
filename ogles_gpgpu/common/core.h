@@ -163,7 +163,7 @@ public:
     /**
      * Global switch for platform optimizations. Should be set before calling init().
      */
-    static bool usePlatformOptimizations;
+    static bool tryEnablePlatformOptimizations();
     
 private:
     /**

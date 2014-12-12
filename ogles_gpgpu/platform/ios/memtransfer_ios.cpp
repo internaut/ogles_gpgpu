@@ -21,6 +21,19 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
+#pragma mark static methods
+
+bool MemTransferIOS::initPlatformOptimizations() {
+#if TARGET_IPHONE_SIMULATOR
+    OG_LOGERR("MemTransferIOS", "platform optimizations not available in simulator");
+    return false;   // not CV texture cache API not available in simulator
+#else
+    return true;    // CV texture cache API available, but nothing to initialize, just return true
+#endif
+}
+
+#pragma mark constructor / deconstructor
+
 MemTransferIOS::~MemTransferIOS() {
     // release in- and outputs
     releaseInput();

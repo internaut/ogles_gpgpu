@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>FDC4BC12-0AF6-4E7C-BA84-D244C4BBC9F1</string>
+	<key>IDESourceControlProjectName</key>
+	<string>OGLESGPGPUStillImage</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>BD887F89-EEF3-4068-BE07-55F49575EE3F</key>
+		<string>ssh://github.com/internaut/ogles_gpgpu.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>examples/ios/OGLESGPGPUStillImage/OGLESGPGPUStillImage.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>BD887F89-EEF3-4068-BE07-55F49575EE3F</key>
+		<string>../../../../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>ssh://github.com/internaut/ogles_gpgpu.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>BD887F89-EEF3-4068-BE07-55F49575EE3F</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>BD887F89-EEF3-4068-BE07-55F49575EE3F</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ogles_gpgpu</string>
+		</dict>
+	</array>
+</dict>
+</plist>

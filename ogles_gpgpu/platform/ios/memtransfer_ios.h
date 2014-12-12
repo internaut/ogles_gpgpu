@@ -85,6 +85,11 @@ public:
      * Map data from GPU to <buf>
      */
     virtual void fromGPU(unsigned char *buf);
+    
+    /**
+     * Try to initialize platform optimizations. Returns true on success, else false.
+     */
+    static bool initPlatformOptimizations();
 
 private:
     /**
