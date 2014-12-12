@@ -71,7 +71,7 @@ public:
     
     /**
      * Initialize OpenGL settings and the pipeline.
-     * Optionally pass the OpenGL context (needed for platform specific optimizations).
+     * Optionally pass the OpenGL context (possibly needed for platform specific optimizations).
      * Needs to be called after addProcToPipeline().
      * Can be called only once per instance.
      * Note OpenGL context must be initialized before the pipeline was

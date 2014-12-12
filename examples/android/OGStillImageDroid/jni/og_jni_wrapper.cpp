@@ -18,6 +18,7 @@
 #include <vector>
 
 static ogles_gpgpu::Core *ogCore = NULL;		// ogles_gpgpu core manager instance
+static bool ogInitialized = false;
 
 static jlong outputPxBufNumBytes = 0;			// number of bytes in output buffer
 static jobject outputPxBuf = NULL;				// DirectByteBuffer object pointing to <outputPxBufData>
@@ -75,6 +76,12 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobje
 	if (!ogles_gpgpu::EGL::activate()) {
 		OG_LOGERR("OGJNIWrapper", "EGL context activation failed. Aborting!");
 		return;
+	}
+
+	// initialize ogles_gpgpu
+	if (!ogInitialized) {
+		ogCore->init();
+		ogInitialized = true;
 	}
 
 	// prepare for frames of size w by h
