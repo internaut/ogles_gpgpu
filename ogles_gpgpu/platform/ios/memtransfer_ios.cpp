@@ -11,7 +11,6 @@
 
 #import <CoreVideo/CoreVideo.h>
 
-#include <iostream>
 #include "../../common/core.h"
 
 /**

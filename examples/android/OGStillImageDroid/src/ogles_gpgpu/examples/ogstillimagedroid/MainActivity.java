@@ -75,7 +75,7 @@ public class MainActivity extends Activity /* implements SurfaceHolder.Callback 
 		
 		// create the native ogles_gpgpu wrapper object
 		ogWrapper = new OGJNIWrapper();
-		ogWrapper.init();
+		ogWrapper.init(true);
 		
         // load and display the default test image. this will also call ogWrapper.prepare()
         loadAndDisplayTestImage(defaultTestImgId);
