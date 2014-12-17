@@ -41,6 +41,8 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject 
 
 	ogCore = ogles_gpgpu::Core::getInstance();
 
+	ogles_gpgpu::Core::tryEnablePlatformOptimizations();
+
 	// this method is user-defined and sets up the processing pipeline
 	ogPipelineSetup(ogCore);
 

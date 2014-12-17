@@ -35,6 +35,11 @@
 
 namespace ogles_gpgpu {
     
+typedef enum {
+    BUF_TYPE_INPUT = 0,
+    BUF_TYPE_OUTPUT
+} BufType;
+    
 /**
  * typedefs to Android GraphicBuffer functions
  */
@@ -73,7 +78,14 @@ public:
     /**
      * Constructor. Set defaults.
      */
-    MemTransferAndroid() :  MemTransfer() { }
+    MemTransferAndroid() :  MemTransfer(),
+        inputGraBufHndl(NULL),
+        outputGraBufHndl(NULL),
+        inputNativeBuf(NULL),
+        outputNativeBuf(NULL),
+        inputImage(NULL),
+        outputImage(NULL)
+        { }
     
     /**
      * Deconstructor.
@@ -121,6 +133,18 @@ public:
     static bool initPlatformOptimizations();
     
 private:
+    /**
+     * Lock the input or output buffer and return its base address.
+     * The input buffer will be locked for reading AND writing, while the
+     * output buffer will be locked for reading only.
+     */
+    void *lockBufferAndGetPtr(BufType bufType);
+    
+    /**
+     * Unlock the input or output buffer.
+     */
+    void unlockBuffer(BufType bufType);
+    
     static GraphicBufferFnCtor graBufCreate;        // function pointer to GraphicBufferFnCtor
     static GraphicBufferFnDtor graBufDestroy;       // function pointer to GraphicBufferFnDtor
     static GraphicBufferFnGetNativeBuffer graBufGetNativeBuffer;  // function pointer to GraphicBufferFnGetNativeBuffer
@@ -130,10 +154,14 @@ private:
     static EGLExtFnCreateImage  imageKHRCreate;     // function pointer to EGLExtFnCreateImage
     static EGLExtFnDestroyImage  imageKHRDestroy;   // function pointer to EGLExtFnDestroyImage
     
-	struct ANativeWindowBuffer *winBuf;	// weak ref - do not free()
-	void *graBufHndl;                   // Android GraphicBuffer handle
+	void *inputGraBufHndl;      // Android GraphicBuffer handle for input
+	void *outputGraBufHndl;     // Android GraphicBuffer handle for output
     
-	EGLImageKHR inputImage;
+	struct ANativeWindowBuffer *inputNativeBuf;     // pointer to native window buffer for input (weak ref - do not free()!)
+	struct ANativeWindowBuffer *outputNativeBuf;	// pointer to native window buffer for output (weak ref - do not free()!)
+    
+	EGLImageKHR inputImage;     // ImageKHR handle for input
+	EGLImageKHR outputImage;    // ImageKHR handle for output
 };
     
 }

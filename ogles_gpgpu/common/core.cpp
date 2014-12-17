@@ -238,6 +238,8 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
         (*it)->printInfo();
     }
 
+    glFinish();
+
     prepared = true;
 }
 
@@ -331,6 +333,8 @@ void Core::process() {
 void Core::getOutputData(unsigned char *buf) {
     assert(initialized);
     
+    glFinish();
+
 #ifdef OGLES_GPGPU_BENCHMARK
     Tools::startTimeMeasurement();
 #endif

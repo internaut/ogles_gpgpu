@@ -12,6 +12,8 @@
 
 #ifdef __APPLE__
 #include "../../platform/ios/memtransfer_ios.h"
+#elif __ANDROID__
+#include "../../platform/android/memtransfer_android.h"
 #endif
 
 using namespace ogles_gpgpu;
@@ -24,6 +26,8 @@ MemTransfer *MemTransferFactory::createInstance() {
     if (usePlatformOptimizations) {   // create specialized instance
 #ifdef __APPLE__
         instance = (MemTransfer *)new MemTransferIOS();
+#elif __ANDROID__
+        instance = (MemTransfer *)new MemTransferAndroid();
 #endif
     }
     
@@ -36,8 +40,12 @@ MemTransfer *MemTransferFactory::createInstance() {
 
 bool MemTransferFactory::tryEnablePlatformOptimizations() {
 #ifdef __APPLE__
-    return MemTransferIOS::initPlatformOptimizations();
+	usePlatformOptimizations = MemTransferIOS::initPlatformOptimizations();
+#elif __ANDROID__
+	usePlatformOptimizations = MemTransferAndroid::initPlatformOptimizations();
 #else
-    return false;
+	usePlatformOptimizations = false;
 #endif
+
+	return usePlatformOptimizations;
 }
