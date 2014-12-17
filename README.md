@@ -40,6 +40,10 @@ To compile, you need to install the [Android NDK](https://developer.android.com/
 
 * OGStillImageDroid - *Simple project that performs GPU-powered adaptive thresholding on different images*
 
+## Known Issues
+
+1. When using platform optimizations on Android (which enables using the ImageKHR extension), the first processing run will not produce any output (the buffer will only contain zeros). However, any successive runs will work normally.
+
 ## TODO
 
 ### Milestone 2
