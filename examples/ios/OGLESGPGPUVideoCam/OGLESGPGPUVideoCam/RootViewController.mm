@@ -236,7 +236,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     gpgpuMngr = ogles_gpgpu::Core::getInstance();
     
     // enable iOS optimizations (fast texture access)
-    ogles_gpgpu::Core::usePlatformOptimizations = true;
+    ogles_gpgpu::Core::tryEnablePlatformOptimizations();
     
     // do not use mipmaps (will not work with NPOT images)
     gpgpuMngr->setUseMipmaps(false);

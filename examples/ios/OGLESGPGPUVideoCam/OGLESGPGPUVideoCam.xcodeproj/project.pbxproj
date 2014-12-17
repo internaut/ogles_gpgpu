@@ -84,6 +84,7 @@
 		28579B361A23C0EC00B1710F /* CamView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = CamView.mm; sourceTree = "<group>"; };
 		28579B381A23C24600B1710F /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		28579B391A23C24600B1710F /* RootViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RootViewController.mm; sourceTree = "<group>"; };
+		287779C71A41A7E400D45D39 /* memtransfer_optimized.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memtransfer_optimized.h; sourceTree = "<group>"; };
 		28FCE46D1A26020300811A7D /* filterprocbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = filterprocbase.cpp; sourceTree = "<group>"; };
 		28FCE46E1A26020300811A7D /* filterprocbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = filterprocbase.h; sourceTree = "<group>"; };
 		28FCE46F1A26020300811A7D /* multipassproc.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = multipassproc.cpp; sourceTree = "<group>"; };
@@ -161,6 +162,7 @@
 				28193A251A2488730055834F /* memtransfer.cpp */,
 				28193A281A2488730055834F /* memtransfer_factory.h */,
 				28193A271A2488730055834F /* memtransfer_factory.cpp */,
+				287779C71A41A7E400D45D39 /* memtransfer_optimized.h */,
 				28193A2A1A2488730055834F /* shader.h */,
 				28193A291A2488730055834F /* shader.cpp */,
 			);
@@ -476,6 +478,7 @@
 				GCC_PREFIX_HEADER = "OGLESGPGPUVideoCam/OGLESGPGPUVideoCam-Prefix.pch";
 				INFOPLIST_FILE = "OGLESGPGPUVideoCam/OGLESGPGPUVideoCam-Info.plist";
 				PRODUCT_NAME = OGLESGPGPUVideoCam;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -490,6 +493,7 @@
 				GCC_PREFIX_HEADER = "OGLESGPGPUVideoCam/OGLESGPGPUVideoCam-Prefix.pch";
 				INFOPLIST_FILE = "OGLESGPGPUVideoCam/OGLESGPGPUVideoCam-Info.plist";
 				PRODUCT_NAME = OGLESGPGPUVideoCam;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

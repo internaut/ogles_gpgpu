@@ -51,6 +51,7 @@
 		283EBFF01A026D34007102C3 /* RootViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = RootViewController.mm; sourceTree = "<group>"; };
 		283EBFF41A0287D9007102C3 /* moon_2048x2048.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moon_2048x2048.png; sourceTree = "<group>"; };
 		283EBFF61A0289C2007102C3 /* moon_1024x1024.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moon_1024x1024.png; sourceTree = "<group>"; };
+		287779C61A41A48900D45D39 /* memtransfer_optimized.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = memtransfer_optimized.h; sourceTree = "<group>"; };
 		28CC4C411A13943700012CF3 /* moon_1024x512.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = moon_1024x512.png; sourceTree = "<group>"; };
 		28DA908D19EFEDA00030CC98 /* OGLESGPGPUStillImage.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = OGLESGPGPUStillImage.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		28DA909019EFEDA00030CC98 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -225,6 +226,7 @@
 				28F6B3AF1A16430B00C1E1DB /* memtransfer.cpp */,
 				28396F371A1CE58A006AECF7 /* memtransfer_factory.h */,
 				28396F361A1CE58A006AECF7 /* memtransfer_factory.cpp */,
+				287779C61A41A48900D45D39 /* memtransfer_optimized.h */,
 				28DA90C719EFEE950030CC98 /* shader.h */,
 				28DA90D019EFF02B0030CC98 /* shader.cpp */,
 			);
@@ -485,6 +487,7 @@
 				);
 				INFOPLIST_FILE = "OGLESGPGPUStillImage/OGLESGPGPUStillImage-Info.plist";
 				PRODUCT_NAME = OGLESGPGPUStillImage;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -500,6 +503,7 @@
 				GCC_PREFIX_HEADER = "OGLESGPGPUStillImage/OGLESGPGPUStillImage-Prefix.pch";
 				INFOPLIST_FILE = "OGLESGPGPUStillImage/OGLESGPGPUStillImage-Info.plist";
 				PRODUCT_NAME = OGLESGPGPUStillImage;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

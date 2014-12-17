@@ -22,11 +22,6 @@
 
 namespace ogles_gpgpu {
     
-typedef enum {
-    BUF_TYPE_INPUT = 0,
-    BUF_TYPE_OUTPUT
-} BufType;
-    
 /**
  * MemTransferIOS is a platform specific implementation for fast texture access on iOS platforms.
  * It uses CoreVideo's TextureCache API as explained at

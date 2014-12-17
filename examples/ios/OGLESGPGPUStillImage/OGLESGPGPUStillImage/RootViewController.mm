@@ -1,5 +1,8 @@
 #import "RootViewController.h"
 
+#define IDIOM    UI_USER_INTERFACE_IDIOM()
+#define IPAD     UIUserInterfaceIdiomPad
+
 // array with available test images
 static NSArray *availableTestImages = [NSArray arrayWithObjects:
                                        @"moon_1024x512.png",
@@ -158,12 +161,27 @@ static NSArray *availableTestImages = [NSArray arrayWithObjects:
     int i = 0;
     int btnW = 180;
     int btnMrgn = 10;
+    int btnX = btnMrgn;
+    int btnY = 20;
     for (NSString *testImgName in availableTestImages) {
+        if (i > 0) {
+            if (IDIOM != IPAD) {
+                if (i % 2 == 0) {
+                    btnY += 20 + btnMrgn;
+                    btnX = btnMrgn;
+                } else {
+                    btnX += (btnW + btnMrgn);
+                }
+            } else {
+                btnX += (btnW + btnMrgn);
+            }
+        }
+        
         UIButton *btn = [UIButton buttonWithType:UIButtonTypeRoundedRect];
         [btn setTitle:[testImgName stringByDeletingPathExtension] forState:UIControlStateNormal];
         [btn setTag:i];
         [btn setBackgroundColor:[UIColor whiteColor]];
-        [btn setFrame:CGRectMake(btnMrgn + (btnW + btnMrgn) * i, 20, btnW, 26)];
+        [btn setFrame:CGRectMake(btnX, btnY, btnW, 26)];
         [btn addTarget:self action:@selector(testImgBtnPressedAction:) forControlEvents:UIControlEventTouchUpInside];
         
         [baseView addSubview:btn];
