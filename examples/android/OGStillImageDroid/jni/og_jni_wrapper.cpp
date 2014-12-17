@@ -35,13 +35,15 @@ void ogCleanupHelper(JNIEnv *env) {
 	}
 }
 
-JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject obj, jboolean platOpt) {
 	assert(ogCore == NULL);
 	OG_LOGINF("OGJNIWrapper", "creating instance of ogles_gpgpu::Core");
 
 	ogCore = ogles_gpgpu::Core::getInstance();
 
-	ogles_gpgpu::Core::tryEnablePlatformOptimizations();
+	if (platOpt) {
+		ogles_gpgpu::Core::tryEnablePlatformOptimizations();
+	}
 
 	// this method is user-defined and sets up the processing pipeline
 	ogPipelineSetup(ogCore);

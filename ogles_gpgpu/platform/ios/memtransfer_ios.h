@@ -15,6 +15,7 @@
 #define OGLES_GPGPU_IOS_GL_MEMTRANSFER_IOS
 
 #include "../../common/gl/memtransfer.h"
+#include "../../common/gl/memtransfer_optimized.h"
 
 #import <CoreFoundation/CoreFoundation.h>
 #import <CoreVideo/CoreVideo.h>
@@ -31,8 +32,13 @@ typedef enum {
  * It uses CoreVideo's TextureCache API as explained at
  * http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/ .
  */
-class MemTransferIOS : public MemTransfer {
+class MemTransferIOS : public MemTransfer, public MemTransferOptimized {
 public:
+    /**
+     * Try to initialize platform optimizations. Returns true on success, else false.
+     */
+    static bool initPlatformOptimizations();
+
     /**
      * Constructor. Set defaults.
      */
@@ -85,25 +91,20 @@ public:
      * Map data from GPU to <buf>
      */
     virtual void fromGPU(unsigned char *buf);
-    
-    /**
-     * Try to initialize platform optimizations. Returns true on success, else false.
-     */
-    static bool initPlatformOptimizations();
 
-private:
     /**
      * Lock the input or output buffer and return its base address.
      * The input buffer will be locked for reading AND writing, while the
      * output buffer will be locked for reading only.
      */
-    void *lockBufferAndGetPtr(BufType bufType);
+    virtual void *lockBufferAndGetPtr(BufType bufType);
     
     /**
      * Unlock the input or output buffer.
      */
-    void unlockBuffer(BufType bufType);
+    virtual void unlockBuffer(BufType bufType);
     
+private:
     /**
      * Sets <buf> and <lockOpt> to the necessary pointers/values according to <bufType>.
      */

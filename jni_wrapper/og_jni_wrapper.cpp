@@ -17,11 +17,13 @@
 #include <cassert>
 #include <vector>
 
-static ogles_gpgpu::Core *ogCore = NULL;
-static jlong outputPxBufNumBytes = 0;
-static jobject outputPxBuf = NULL;
-static unsigned char *outputPxBufData = NULL;
-static jint outputFrameSize[] = { 0, 0 };	// width x height
+static ogles_gpgpu::Core *ogCore = NULL;		// ogles_gpgpu core manager instance
+static bool ogInitialized = false;
+
+static jlong outputPxBufNumBytes = 0;			// number of bytes in output buffer
+static jobject outputPxBuf = NULL;				// DirectByteBuffer object pointing to <outputPxBufData>
+static unsigned char *outputPxBufData = NULL;	// pointer to data in DirectByteBuffer <outputPxBuf>
+static jint outputFrameSize[] = { 0, 0 };		// width x height
 
 void ogCleanupHelper(JNIEnv *env) {
 	if (outputPxBuf && outputPxBufData) {	// buffer is already set, release it first
@@ -33,11 +35,15 @@ void ogCleanupHelper(JNIEnv *env) {
 	}
 }
 
-JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject obj) {
+JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject obj, jboolean platOpt) {
 	assert(ogCore == NULL);
 	OG_LOGINF("OGJNIWrapper", "creating instance of ogles_gpgpu::Core");
 
 	ogCore = ogles_gpgpu::Core::getInstance();
+
+	if (platOpt) {
+		ogles_gpgpu::Core::tryEnablePlatformOptimizations();
+	}
 
 	// this method is user-defined and sets up the processing pipeline
 	ogPipelineSetup(ogCore);
@@ -74,6 +80,12 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobje
 	if (!ogles_gpgpu::EGL::activate()) {
 		OG_LOGERR("OGJNIWrapper", "EGL context activation failed. Aborting!");
 		return;
+	}
+
+	// initialize ogles_gpgpu
+	if (!ogInitialized) {
+		ogCore->init();
+		ogInitialized = true;
 	}
 
 	// prepare for frames of size w by h

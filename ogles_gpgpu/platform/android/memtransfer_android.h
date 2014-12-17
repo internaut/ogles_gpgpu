@@ -29,16 +29,12 @@
 #include <GLES2/gl2ext.h>
 
 #include "../../common/gl/memtransfer.h"
+#include "../../common/gl/memtransfer_optimized.h"
 
 // "Really I have no idea, but this should be big enough"
 #define OG_ANDROID_GRAPHIC_BUFFER_SIZE 1024
 
 namespace ogles_gpgpu {
-    
-typedef enum {
-    BUF_TYPE_INPUT = 0,
-    BUF_TYPE_OUTPUT
-} BufType;
     
 /**
  * typedefs to Android GraphicBuffer functions
@@ -73,8 +69,13 @@ typedef EGLBoolean (*EGLExtFnDestroyImage)(EGLDisplay dpy, EGLImageKHR image);
 /**
  * MemTransferAndroid is a platform specific implementation for fast texture access on Android platforms.
  */
-class MemTransferAndroid : public MemTransfer {
+class MemTransferAndroid : public MemTransfer, public MemTransferOptimized {
 public:
+    /**
+     * Try to initialize platform optimizations. Returns true on success, else false.
+     */
+    static bool initPlatformOptimizations();
+
     /**
      * Constructor. Set defaults.
      */
@@ -128,23 +129,18 @@ public:
     virtual void fromGPU(unsigned char *buf);
     
     /**
-     * Try to initialize platform optimizations. Returns true on success, else false.
-     */
-    static bool initPlatformOptimizations();
-    
-private:
-    /**
      * Lock the input or output buffer and return its base address.
      * The input buffer will be locked for reading AND writing, while the
      * output buffer will be locked for reading only.
      */
-    void *lockBufferAndGetPtr(BufType bufType);
+    virtual void *lockBufferAndGetPtr(BufType bufType);
     
     /**
      * Unlock the input or output buffer.
      */
-    void unlockBuffer(BufType bufType);
+    virtual void unlockBuffer(BufType bufType);
     
+private:
     static GraphicBufferFnCtor graBufCreate;        // function pointer to GraphicBufferFnCtor
     static GraphicBufferFnDtor graBufDestroy;       // function pointer to GraphicBufferFnDtor
     static GraphicBufferFnGetNativeBuffer graBufGetNativeBuffer;  // function pointer to GraphicBufferFnGetNativeBuffer
