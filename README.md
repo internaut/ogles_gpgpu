@@ -5,7 +5,7 @@
 * fast and portable C++ code
 * platform optimizations for fast texture access
  * on iOS: [Core Video Texture Cache API](http://allmybrain.com/2011/12/08/rendering-to-a-texture-with-ios-5-texture-cache-api/)
- * on Android: EGL pixelbuffers (and hopefully soon: KHRImage extensions)
+ * on Android: EGL pixelbuffers and [KHRImage extensions](http://snorp.net/2011/12/16/android-direct-texture.html)
 * well documented
 * contains several example applications
 * LGPL licensed
@@ -19,6 +19,7 @@
 
 * Apple iPad 2
 * Apple iPad 4
+* Apple iPhone 4s
 * XCode Simulator
 * Google Nexus 10 (2013)
 
@@ -40,10 +41,6 @@ To compile, you need to install the [Android NDK](https://developer.android.com/
 * OGStillImageDroid - *Simple project that performs GPU-powered adaptive thresholding on different images*
 
 ## TODO
-
-### Milestone 1
-
-* android: try KHRImage trick
 
 ### Milestone 2
 
