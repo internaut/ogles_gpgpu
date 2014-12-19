@@ -30,7 +30,7 @@ import android.view.TextureView;
 public class MainActivity extends Activity {
 	private final static String TAG = "MainActivity";
 
-	private OGJNIWrapper ogJNIWrapper;
+	private OGJNIWrapper ogWrapper;
 	
 	private int numAvailablePxFmt = 0;
 	private int selectedPxFmt = 0; 
@@ -57,6 +57,9 @@ public class MainActivity extends Activity {
         textureView = (AutoFitTextureView)findViewById(R.id.texture_view);
 
         textureViewListener = new TextureViewSurfaceListener();
+        
+        ogWrapper = new OGJNIWrapper();
+        ogWrapper.init(true);
     }
 
     @Override
