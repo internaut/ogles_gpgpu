@@ -159,6 +159,6 @@ JNIEXPORT jdoubleArray JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getTimeMeasurement
 	return res;
 
 #else
-	return null;
+	return NULL;
 #endif
 }

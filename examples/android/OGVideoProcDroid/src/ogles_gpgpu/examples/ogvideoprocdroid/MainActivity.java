@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import ogles_gpgpu.OGJNIWrapper;
 import ogles_gpgpu.examples.ogvideoprocdroid.R;
 import android.app.Activity;
 import android.content.Context;
@@ -29,6 +30,8 @@ import android.view.TextureView;
 public class MainActivity extends Activity {
 	private final static String TAG = "MainActivity";
 
+	private OGJNIWrapper ogJNIWrapper;
+	
 	private int numAvailablePxFmt = 0;
 	private int selectedPxFmt = 0; 
 	
