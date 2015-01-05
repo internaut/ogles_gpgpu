@@ -37,7 +37,7 @@ public class OGJNIWrapper {
     /**
      * Initialize ogles_gpgpu. Do this only once per application runtime.
      */
-    public native void init(boolean usePlatformOptimizations, boolean initEGL);
+    public native void init(boolean usePlatformOptimizations, boolean initEGL, boolean createRenderDisp);
     
     /**
      * Prepare ogles_gpgpu for incoming images of size <inW> x <inH>. Do this
@@ -47,7 +47,17 @@ public class OGJNIWrapper {
      * @param inW input frame width
      * @param inH input frame height
      */
-    public native void prepare(int inW, int inH);
+    public native void prepare(int inW, int inH, boolean prepareInput);
+    
+    /**
+     * Specify render display properties. Before that, <init()> must have been called with
+     * "createRenderDisp" = true
+     *
+     * @param w render display width
+     * @param h render display height
+     * @param orientation render orientation
+     */
+    public native void setRenderDisp(int w, int h, int orientation);
     
     /**
      * Cleanup the ogles_gpgpu resources. Call this only once at the end of the
@@ -64,9 +74,21 @@ public class OGJNIWrapper {
     public native void setInputPixels(int[] pixels);
     
     /**
+     * Set input as reference to a texture with ID <texID>.
+     * @param texId
+     */
+    public native void setInputTexture(int texId);
+    
+    /**
      * Executes the GPGPU processing tasks.
      */
     public native void process();
+    
+    /**
+     * Render the output to a render display. Before that, <init()> must have been called
+     * with "createRenderDisp" = true
+     */
+    public native void renderOutput();
 
     /**
      * Return the input pixel data as ARGB ByteBuffer. The size of this byte buffer

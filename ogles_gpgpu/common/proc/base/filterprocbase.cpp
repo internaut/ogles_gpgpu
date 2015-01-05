@@ -86,7 +86,7 @@ void FilterProcBase::filterRenderPrepare() {
     
 	// set input texture
     glActiveTexture(GL_TEXTURE0 + texUnit);
-	glBindTexture(GL_TEXTURE_2D, texId);	// bind input texture
+	glBindTexture(texTarget, texId);	// bind input texture
     
 	// set common uniforms
     glUniform1i(shParamUInputTex, texUnit);

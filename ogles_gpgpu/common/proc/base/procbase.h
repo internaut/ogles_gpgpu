@@ -78,9 +78,9 @@ public:
     virtual void printInfo();
     
     /**
-     * Use texture id <id> as input texture at texture <useTexUnit>.
+     * Use texture id <id> as input texture at texture <useTexUnit> with texture target <target>.
      */
-    virtual void useTexture(GLuint id, GLuint useTexUnit = 1) { texId = id; texUnit = useTexUnit; }
+    virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D) { texId = id; texUnit = useTexUnit; texTarget = target; }
     
     /**
      * Return used texture unit.
@@ -180,8 +180,9 @@ protected:
     
     unsigned int orderNum;  // position of this processor in the pipeline
     
-	GLuint texId;   // input texture id
-    GLuint texUnit; // input texture unit (glActiveTexture())
+	GLuint texId;       // input texture id
+    GLuint texUnit;     // input texture unit (glActiveTexture())
+    GLenum texTarget;   // input texture target
     
     GLint shParamUInputTex;     // shader uniform input texture sampler
     

@@ -141,7 +141,7 @@ void MultiPassProc::printInfo() {
     OG_LOGINF(getProcName(), "end info");
 }
 
-void MultiPassProc::useTexture(GLuint id, GLuint useTexUnit) {
+void MultiPassProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target) {
     ProcInterface *prevProc = NULL;
     
     for (list<ProcInterface *>::iterator it = procPasses.begin();
@@ -149,7 +149,7 @@ void MultiPassProc::useTexture(GLuint id, GLuint useTexUnit) {
          ++it)
     {
         if (!prevProc) {    // means this is the first proc pass
-            (*it)->useTexture(id, useTexUnit);
+            (*it)->useTexture(id, useTexUnit, target);
         } else {            // all other passes
             (*it)->useTexture(prevProc->getOutputTexId(), prevProc->getTextureUnit());
         }

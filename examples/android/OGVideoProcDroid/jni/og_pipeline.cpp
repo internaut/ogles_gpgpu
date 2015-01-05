@@ -23,5 +23,5 @@ void ogPipelineSetup(ogles_gpgpu::Core *core) {
 
 	// add the processors to the processing pipeline
 	core->addProcToPipeline(&grayscaleProc);
-	core->addProcToPipeline(&adaptThreshProc);
+//	core->addProcToPipeline(&adaptThreshProc);
 }

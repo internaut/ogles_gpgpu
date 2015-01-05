@@ -80,10 +80,10 @@ public:
     virtual void printInfo() = 0;
     
     /**
-     * Use texture id <id> as input texture at texture <useTexUnit>.
+     * Use texture id <id> as input texture at texture <useTexUnit> with texture target <target>.
      */
-    virtual void useTexture(GLuint id, GLuint useTexUnit = 1) = 0;
-    
+    virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D) = 0;
+
     /**
      * Return used texture unit.
      */

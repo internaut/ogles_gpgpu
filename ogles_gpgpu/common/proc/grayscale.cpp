@@ -56,7 +56,7 @@ int GrayscaleProc::init(int inW, int inH, unsigned int order, bool prepareForExt
 }
 
 void GrayscaleProc::render() {
-    OG_LOGINF(getProcName(), "input tex %d, framebuffer of size %dx%d", texId, outFrameW, outFrameH);
+    OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
     
     filterRenderPrepare();
     glUniform3fv(shParamUInputConvVec, 1, grayscaleConvVec);        // set additional uniforms

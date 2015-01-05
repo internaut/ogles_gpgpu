@@ -53,6 +53,7 @@ Core::Core() {
     glExtNPOTMipmaps = false;
     renderDisp = NULL;
     glContextPtr = NULL;
+    inputTexTarget = GL_TEXTURE_2D;
     
     // reset to defaults
     reset();
@@ -253,9 +254,11 @@ MemTransfer *Core::getOutputMemTransfer() const {
     return lastProc->getMemTransferObj();
 }
 
-void Core::setInputTexId(GLuint inTexId) {
+void Core::setInputTexId(GLuint inTexId, GLenum inTexTarget) {
     inputTexId = inTexId;
-    firstProc->useTexture(inputTexId);
+    inputTexTarget = inTexTarget;
+    
+    firstProc->useTexture(inputTexId, 1, inputTexTarget);
 }
 
 void Core::setInputData(const unsigned char *data) {
@@ -310,7 +313,7 @@ void Core::process() {
 #endif
     
     // set input texture id
-    firstProc->useTexture(inputTexId);
+    firstProc->useTexture(inputTexId, 1, inputTexTarget);
     
     // set output texture id
     outputTexId = lastProc->getOutputTexId();

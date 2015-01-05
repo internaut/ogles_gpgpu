@@ -35,7 +35,7 @@ int Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInpu
 }
 
 void Disp::render() {
-    OG_LOGINF(getProcName(), "input tex %d, framebuffer of size %dx%d", texId, outFrameW, outFrameH);
+    OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
     
     filterRenderPrepare();
     Tools::checkGLErr(getProcName(), "render prepare");

@@ -79,7 +79,7 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 		surfaceHolder = holder;
 		
 		eglCore = new EglCore();
-		ogWrapper.init(true, false);
+		ogWrapper.init(true, false, true);
 		
 		windowSurface = new WindowSurface(eglCore, holder.getSurface(), false);
 		windowSurface.makeCurrent();
@@ -108,7 +108,8 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 		Log.i(TAG, "surface changed to size " + width + "x" + height);
 		
-		ogWrapper.prepare(camPreviewFrameSize.width, camPreviewFrameSize.height);
+		ogWrapper.setRenderDisp(width, height, 0);
+		ogWrapper.prepare(camPreviewFrameSize.width, camPreviewFrameSize.height, false);
 	}
 
 	@Override
@@ -124,11 +125,16 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	
 	@Override
 	public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+		GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
 		camTexture.updateTexImage();
 		
 //		Log.i(TAG, "updated camera frame texture");
 		
-		// ogWrapper calls...
+		ogWrapper.setInputTexture(camTextureId);
+		ogWrapper.process();
+		ogWrapper.renderOutput();
+		
+		windowSurface.swapBuffers();
 	}
 
 	private void releaseGL() {
@@ -151,13 +157,13 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 			int numCameras = Camera.getNumberOfCameras();
 			for (int i = 0; i < numCameras; i++) {
                 Camera.getCameraInfo(i, camInfo);
-                if (camInfo.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+                if (camInfo.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
                     cam = Camera.open(i);
                     break;
                 }
             }
             if (cam == null) {
-                Log.i(TAG, "No front-facing camera found; opening default");
+                Log.i(TAG, "No back-facing camera found; opening default");
                 cam = Camera.open();    // opens first back-facing camera
             }
             if (cam == null) {
@@ -193,6 +199,8 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	}
 	
 	private int createGLTexture() {
+		GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+		
 		int[] textures = new int[1];
         GLES20.glGenTextures(1, textures, 0);
 

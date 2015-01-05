@@ -64,6 +64,9 @@ public:
     /**
      * Create an object that renders the last processor's output to the screen.
      * Return it as weak ref.
+     * Parameters <dispW>, <dispH> and <orientation> set the render display properties.
+     * They do not have to be set at this point, you can later use the methods of the
+     * returned "Disp" object to adjust these properties.
      * Note: Must be called after last addProcToPipeline() call and before
      * init() / prepare()!
      */
@@ -118,7 +121,7 @@ public:
     /**
      * Set input as OpenGL texture id.
      */
-    void setInputTexId(GLuint inTexId);
+    void setInputTexId(GLuint inTexId, GLenum inTexTarget = GL_TEXTURE_2D);
     
     /**
      * Set input as RGBA byte data of size <w> x <h>.
@@ -212,6 +215,7 @@ private:
     int outputFrameH;       // output frame width
 
     GLuint inputTexId;      // input texture id
+    GLenum inputTexTarget;  // input texture target
     GLuint outputTexId;     // output texture id
 };
     
