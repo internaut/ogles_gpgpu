@@ -18,6 +18,7 @@
 #include <vector>
 
 static ogles_gpgpu::Core *ogCore = NULL;		// ogles_gpgpu core manager instance
+static bool eglInitRequested = false;
 static bool ogInitialized = false;
 
 static jlong outputPxBufNumBytes = 0;			// number of bytes in output buffer
@@ -35,7 +36,7 @@ void ogCleanupHelper(JNIEnv *env) {
 	}
 }
 
-JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject obj, jboolean platOpt) {
+JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject obj, jboolean platOpt, jboolean initEGL) {
 	assert(ogCore == NULL);
 	OG_LOGINF("OGJNIWrapper", "creating instance of ogles_gpgpu::Core");
 
@@ -49,9 +50,11 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject 
 	ogPipelineSetup(ogCore);
 
 	// initialize EGL context
-	if (!ogles_gpgpu::EGL::setup()) {
+	if (initEGL && !ogles_gpgpu::EGL::setup()) {
 		OG_LOGERR("OGJNIWrapper", "EGL setup failed!");
 	}
+
+	eglInitRequested = initEGL;
 }
 
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup(JNIEnv *env, jobject obj) {
@@ -64,22 +67,26 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup(JNIEnv *env, jobje
 
 	ogCleanupHelper(env);
 
-	ogles_gpgpu::EGL::shutdown();
+	if (eglInitRequested) {
+		ogles_gpgpu::EGL::shutdown();
+	}
 }
 
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobject obj, jint w, jint h) {
 	assert(ogCore);
 
-	// set up EGL pixelbuffer surface
-	if (!ogles_gpgpu::EGL::createPBufferSurface(w, h)) {
-		OG_LOGERR("OGJNIWrapper", "EGL pbuffer creation failed. Aborting!");
-		return;
-	}
+	if (eglInitRequested) {
+		// set up EGL pixelbuffer surface
+		if (!ogles_gpgpu::EGL::createPBufferSurface(w, h)) {
+			OG_LOGERR("OGJNIWrapper", "EGL pbuffer creation failed. Aborting!");
+			return;
+		}
 
-	// activate the EGL context
-	if (!ogles_gpgpu::EGL::activate()) {
-		OG_LOGERR("OGJNIWrapper", "EGL context activation failed. Aborting!");
-		return;
+		// activate the EGL context
+		if (!ogles_gpgpu::EGL::activate()) {
+			OG_LOGERR("OGJNIWrapper", "EGL context activation failed. Aborting!");
+			return;
+		}
 	}
 
 	// initialize ogles_gpgpu

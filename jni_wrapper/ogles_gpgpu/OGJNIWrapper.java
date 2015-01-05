@@ -37,7 +37,7 @@ public class OGJNIWrapper {
     /**
      * Initialize ogles_gpgpu. Do this only once per application runtime.
      */
-    public native void init(boolean usePlatformOptimizations);
+    public native void init(boolean usePlatformOptimizations, boolean initEGL);
     
     /**
      * Prepare ogles_gpgpu for incoming images of size <inW> x <inH>. Do this

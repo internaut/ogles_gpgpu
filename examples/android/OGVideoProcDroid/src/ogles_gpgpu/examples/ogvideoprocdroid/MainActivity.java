@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import javax.microedition.khronos.egl.EGL11;
+
 import ogles_gpgpu.OGJNIWrapper;
 import ogles_gpgpu.examples.ogvideoprocdroid.R;
 import android.app.Activity;
@@ -20,6 +22,9 @@ import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.opengl.EGL14;
+import android.opengl.EGLContext;
+import android.opengl.GLES20;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Size;
@@ -30,7 +35,7 @@ import android.view.TextureView;
 public class MainActivity extends Activity {
 	private final static String TAG = "MainActivity";
 
-	private OGJNIWrapper ogJNIWrapper;
+	private OGJNIWrapper ogWrapper;
 	
 	private int numAvailablePxFmt = 0;
 	private int selectedPxFmt = 0; 
@@ -45,6 +50,7 @@ public class MainActivity extends Activity {
 	
 	private AutoFitTextureView textureView;
 	private TextureView.SurfaceTextureListener textureViewListener;
+	private int camSurfaceTexId;
 	
 	private Size previewFrameSize;
 	
@@ -53,9 +59,9 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.activity_main);
-        
+                
+		// init texture view
         textureView = (AutoFitTextureView)findViewById(R.id.texture_view);
-
         textureViewListener = new TextureViewSurfaceListener();
     }
 
@@ -195,14 +201,14 @@ public class MainActivity extends Activity {
     
     private void createCamPreview() {
     	 try {
-             SurfaceTexture texture = textureView.getSurfaceTexture();
-             assert texture != null;
+    		 SurfaceTexture camTexture = textureView.getSurfaceTexture();
+             assert camTexture != null;
              
              // We configure the size of default buffer to be the size of camera preview we want.
-             texture.setDefaultBufferSize(previewFrameSize.getWidth(), previewFrameSize.getHeight());
+             camTexture.setDefaultBufferSize(previewFrameSize.getWidth(), previewFrameSize.getHeight());
 
              // This is the output Surface we need to start preview.
-             Surface previewSurface = new Surface(texture);
+             Surface previewSurface = new Surface(camTexture);
 
              // We set up a CaptureRequest.Builder with the output Surface.
              final CaptureRequest.Builder captureRequestBuilder = camDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
@@ -295,6 +301,18 @@ public class MainActivity extends Activity {
 				int width, int height) {
 			initCam(width, height);
 			startCam();
+			
+			// create the native ogles_gpgpu wrapper object
+			ogWrapper = new OGJNIWrapper();
+			ogWrapper.init(true, true);
+
+			int t[] = new int[1];
+			GLES20.glGenTextures(1, t, 0);
+			camSurfaceTexId = t[0];
+			
+			surface.attachToGLContext(camSurfaceTexId);
+			
+			Log.i(TAG, "surface texture available. created and attached GL texture with ID "+ camSurfaceTexId);
 		}
 
 		@Override
@@ -309,7 +327,7 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-			
+			surface.updateTexImage();
 		}
     }
     

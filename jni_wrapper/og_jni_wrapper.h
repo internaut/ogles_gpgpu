@@ -26,10 +26,10 @@ JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameH
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
  * Method:    init
- * Signature: (Z)V
+ * Signature: (ZZ)V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init
-  (JNIEnv *, jobject, jboolean);
+  (JNIEnv *, jobject, jboolean, jboolean);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
