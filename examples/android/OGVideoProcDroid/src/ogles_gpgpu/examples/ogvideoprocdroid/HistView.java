@@ -1,5 +1,7 @@
 package ogles_gpgpu.examples.ogvideoprocdroid;
 
+import java.util.Arrays;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -23,8 +25,6 @@ public class HistView extends View {
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		
-		Log.i(TAG, "view size: " + widthMeasureSpec + "x" + heightMeasureSpec);
-		
 		setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
 		
 		barPaint.setARGB(255, 255, 0, 0);
@@ -33,6 +33,8 @@ public class HistView extends View {
 	@Override
 	protected void onDraw(Canvas canvas) {
 		canvas.drawARGB(128, 0, 0, 0);
+		
+		if (hist == null) return;
 		
 		float w = canvas.getWidth();
 		float h = canvas.getHeight();
@@ -50,6 +52,10 @@ public class HistView extends View {
 		}
 		
 		super.onDraw(canvas);
+	}
+	
+	public void getHistCopy(float[] arr) {
+		this.hist = Arrays.copyOf(arr, arr.length);
 	}
 
 	public void setHist(float[] hist) {

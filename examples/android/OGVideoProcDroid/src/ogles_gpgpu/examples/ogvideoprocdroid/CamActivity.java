@@ -17,6 +17,7 @@ import android.hardware.Camera.Size;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -38,10 +39,12 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
     
     private OGJNIWrapper ogWrapper;
     
-    private int procOutputW;		// processing output width
-    private int procOutputH;		// processing output width
-    private ByteBuffer procOutput;	// output pixel data as ARGB bytes values
-    private float[] outputHist;		// output histogram
+    private CPUImgProcThread imgProcThread;
+//    private Object imgProcThreadLock = new Object();
+    
+//    private int procOutputW;		// processing output width
+//    private int procOutputH;		// processing output width
+//    private ByteBuffer procOutput;	// output pixel data as ARGB bytes values
     
     private HistView histView;
     
@@ -59,12 +62,11 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cam);
         
+        imgProcThread = new CPUImgProcThread();
+        
         ogWrapper = new OGJNIWrapper();
         
-        outputHist = new float[256];	// grayscale histogram
-        
         histView = (HistView)findViewById(R.id.hist_view);
-        histView.setHist(outputHist);
 
         // get surface holder and set callback
         SurfaceView sv = (SurfaceView)findViewById(R.id.surface_view);
@@ -76,6 +78,7 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
         Log.i(TAG, "onResume");
         super.onResume();
         
+        imgProcThread.start();
         startCam();
     }
 
@@ -85,6 +88,14 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
         super.onPause();
         
         stopCam();
+        
+        imgProcThread.terminate();
+        
+        try {
+			imgProcThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
     }
 
 	@Override
@@ -126,8 +137,8 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 		ogWrapper.setRenderDisp(width, height, 2 /* = RenderOrientationFlipped */);
 		ogWrapper.prepare(camPreviewFrameSize.width, camPreviewFrameSize.height, false);
 
-		procOutputW = ogWrapper.getOutputFrameW();
-		procOutputH = ogWrapper.getOutputFrameH();
+//		procOutputW = ogWrapper.getOutputFrameW();
+//		procOutputH = ogWrapper.getOutputFrameH();
 	}
 
 	@Override
@@ -152,14 +163,14 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 		ogWrapper.process();
 		ogWrapper.renderOutput();
 		
+		imgProcThread.update();
+		
 		// get the processed image data
-		procOutput = ogWrapper.getOutputPixels();
-		procOutput.rewind();
+//		procOutput = ogWrapper.getOutputPixels();
+//		procOutput.rewind();
 		
-		calcHist(procOutput);
+//		calcHist(procOutput);
 //		printHist(outputHist);
-		
-		histView.invalidate();
 
 		windowSurface.swapBuffers();
 	}
@@ -247,37 +258,83 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
         return texId;
 	}
 	
-	private void calcHist(ByteBuffer pxData) {
-		// use an IntBuffer for image data access.
-		// each pixel is a int value with RGBA data 
-		IntBuffer intData = pxData.asIntBuffer();
+	private class CPUImgProcThread extends Thread {
+		private boolean running = false;
+//		private boolean processing = false;
+		private ByteBuffer imgData;
+	    private float[] outputHist = new float[256];		// output histogram
+
 		
-		// reset histogram to zeros
-		Arrays.fill(outputHist, 0.0f);
-		
-		// count values and store them in absolute histogram
-		while (intData.hasRemaining()) {
-			int grayVal = (intData.get() >> 8) & 0x000000FF;	// get the "B" channel
+		@Override
+		public void run() {
+			Log.i(TAG, "starting thread CPUImgProcThread");
 			
-			outputHist[grayVal] += 1.0f;
+			running = true;
+			
+			while (running) {
+				if (imgData != null) {
+					calcHist(imgData);
+					
+					histView.getHistCopy(outputHist);
+					
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							histView.invalidate();
+						}
+					});
+					
+					// reset
+					imgData = null;
+				}
+			}
+			
+			Log.i(TAG, "stopped thread CPUImgProcThread");
 		}
 		
-		intData.rewind();
+		public void terminate() {
+			running = false;
+		}
 		
-		// normalize histogram
-		float maxVal = 0.0f;
-		for (float v : outputHist) {
-			if (v > maxVal) {
-				maxVal = v;
+		public void update() {
+			if (imgData != null) return;	// image data already in use right now
+			
+			imgData = ogWrapper.getOutputPixels();
+			imgData.rewind();
+		}
+	
+		private void calcHist(ByteBuffer pxData) {
+			// use an IntBuffer for image data access.
+			// each pixel is a int value with RGBA data 
+			IntBuffer intData = pxData.asIntBuffer();
+			
+			// reset histogram to zeros
+			Arrays.fill(outputHist, 0.0f);
+			
+			// count values and store them in absolute histogram
+			while (intData.hasRemaining()) {
+				int grayVal = (intData.get() >> 8) & 0x000000FF;	// get the "B" channel
+				
+				outputHist[grayVal] += 1.0f;
+			}
+			
+			intData.rewind();
+			
+			// normalize histogram
+			float maxVal = 0.0f;
+			for (float v : outputHist) {
+				if (v > maxVal) {
+					maxVal = v;
+				}
+			}
+			
+			for (int i = 0; i < outputHist.length; i++) {
+				outputHist[i] /= maxVal; 
 			}
 		}
 		
-		for (int i = 0; i < outputHist.length; i++) {
-			outputHist[i] /= maxVal; 
+		private void printHist(float[] h) {
+			Log.i(TAG, "output histogram values: " + Arrays.toString(outputHist));
 		}
-	}
-	
-	private void printHist(float[] h) {
-		Log.i(TAG, "output histogram values: " + Arrays.toString(outputHist));
 	}
 }
