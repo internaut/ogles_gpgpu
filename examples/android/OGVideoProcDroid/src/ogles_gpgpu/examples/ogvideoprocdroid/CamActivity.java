@@ -108,7 +108,7 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 		Log.i(TAG, "surface changed to size " + width + "x" + height);
 		
-		ogWrapper.setRenderDisp(width, height, 0);
+		ogWrapper.setRenderDisp(width, height, 2 /* = RenderOrientationFlipped */);
 		ogWrapper.prepare(camPreviewFrameSize.width, camPreviewFrameSize.height, false);
 	}
 

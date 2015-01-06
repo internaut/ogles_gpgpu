@@ -20,6 +20,18 @@ const GLfloat GrayscaleProc::grayscaleConvVecBGR[3] = {
     0.114, 0.587, 0.299
 };
 
+/*const char *GrayscaleProc::fshaderGrayscaleSrc = "\
+#extension GL_OES_EGL_image_external : require\n\
+precision mediump float;\n\
+varying vec2 vTexCoord;\n\
+//uniform sampler2D uInputTex;\n\
+uniform samplerExternalOES uInputTex;\n\
+uniform vec3 uInputConvVec;\n\
+void main() {\n\
+    float gray = dot(texture2D(uInputTex, vTexCoord).rgb, uInputConvVec);\n\
+    gl_FragColor = vec4(gray, gray, gray, 1.0);\n\
+}\n";*/
+
 const char *GrayscaleProc::fshaderGrayscaleSrc = OG_TO_STR(
 precision mediump float;
 varying vec2 vTexCoord;
