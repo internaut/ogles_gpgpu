@@ -7,9 +7,17 @@
         android:id="@+id/surface_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+		android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true" />
+    
+    <view class="ogles_gpgpu.examples.ogvideoprocdroid.HistView"
+        android:id="@+id/hist_view"
+        android:layout_width="fill_parent"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        />
 
 </RelativeLayout>

@@ -1,6 +1,9 @@
 package ogles_gpgpu.examples.ogvideoprocdroid;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.IntBuffer;
+import java.util.Arrays;
 
 import ogles_gpgpu.OGJNIWrapper;
 
@@ -35,6 +38,13 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
     
     private OGJNIWrapper ogWrapper;
     
+    private int procOutputW;		// processing output width
+    private int procOutputH;		// processing output width
+    private ByteBuffer procOutput;	// output pixel data as ARGB bytes values
+    private float[] outputHist;		// output histogram
+    
+    private HistView histView;
+    
     private WindowSurface windowSurface;
     
     private Camera cam;
@@ -50,10 +60,15 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
         setContentView(R.layout.activity_cam);
         
         ogWrapper = new OGJNIWrapper();
+        
+        outputHist = new float[256];	// grayscale histogram
+        
+        histView = (HistView)findViewById(R.id.hist_view);
+        histView.setHist(outputHist);
 
-        SurfaceView sv = (SurfaceView) findViewById(R.id.surface_view);
-        SurfaceHolder sh = sv.getHolder();
-        sh.addCallback(this);
+        // get surface holder and set callback
+        SurfaceView sv = (SurfaceView)findViewById(R.id.surface_view);
+        sv.getHolder().addCallback(this);
     }
 
     @Override
@@ -110,6 +125,9 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 		
 		ogWrapper.setRenderDisp(width, height, 2 /* = RenderOrientationFlipped */);
 		ogWrapper.prepare(camPreviewFrameSize.width, camPreviewFrameSize.height, false);
+
+		procOutputW = ogWrapper.getOutputFrameW();
+		procOutputH = ogWrapper.getOutputFrameH();
 	}
 
 	@Override
@@ -134,6 +152,15 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 		ogWrapper.process();
 		ogWrapper.renderOutput();
 		
+		// get the processed image data
+		procOutput = ogWrapper.getOutputPixels();
+		procOutput.rewind();
+		
+		calcHist(procOutput);
+//		printHist(outputHist);
+		
+		histView.invalidate();
+
 		windowSurface.swapBuffers();
 	}
 
@@ -218,5 +245,39 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
         GLES20.glTexParameteri(CAM_FRAME_TEXTURE_TARGET, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE);
 
         return texId;
+	}
+	
+	private void calcHist(ByteBuffer pxData) {
+		// use an IntBuffer for image data access.
+		// each pixel is a int value with RGBA data 
+		IntBuffer intData = pxData.asIntBuffer();
+		
+		// reset histogram to zeros
+		Arrays.fill(outputHist, 0.0f);
+		
+		// count values and store them in absolute histogram
+		while (intData.hasRemaining()) {
+			int grayVal = (intData.get() >> 8) & 0x000000FF;	// get the "B" channel
+			
+			outputHist[grayVal] += 1.0f;
+		}
+		
+		intData.rewind();
+		
+		// normalize histogram
+		float maxVal = 0.0f;
+		for (float v : outputHist) {
+			if (v > maxVal) {
+				maxVal = v;
+			}
+		}
+		
+		for (int i = 0; i < outputHist.length; i++) {
+			outputHist[i] /= maxVal; 
+		}
+	}
+	
+	private void printHist(float[] h) {
+		Log.i(TAG, "output histogram values: " + Arrays.toString(outputHist));
 	}
 }

@@ -10,7 +10,8 @@
 #include "og_pipeline.h"
 
 static ogles_gpgpu::GrayscaleProc grayscaleProc;
-static ogles_gpgpu::AdaptThreshProc adaptThreshProc;
+static ogles_gpgpu::GaussProc gaussProc;
+// static ogles_gpgpu::AdaptThreshProc adaptThreshProc;
 
 void ogPipelineSetup(ogles_gpgpu::Core *core) {
 	core->setUseMipmaps(false);
@@ -23,5 +24,6 @@ void ogPipelineSetup(ogles_gpgpu::Core *core) {
 
 	// add the processors to the processing pipeline
 	core->addProcToPipeline(&grayscaleProc);
-	core->addProcToPipeline(&adaptThreshProc);
+	core->addProcToPipeline(&gaussProc);
+//	core->addProcToPipeline(&adaptThreshProc);
 }
