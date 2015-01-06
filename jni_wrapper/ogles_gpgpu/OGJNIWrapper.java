@@ -16,7 +16,17 @@ import java.nio.ByteBuffer;
  * The ogles_gppgu JNI wrapper class. Interface to the native functions for the
  * og_jni_wrapper.so library.
  */
-public class OGJNIWrapper {	
+public class OGJNIWrapper {
+	public final static int ORIENTATION_NONE 				= -1;
+	public final static int ORIENTATION_STD 				= 0;
+	public final static int ORIENTATION_STD_MIRRORED 		= 1;
+	public final static int ORIENTATION_FLIPPED 			= 2;
+	public final static int ORIENTATION_FLIPPED_MIRRORED	= 3;
+	public final static int ORIENTATION_DIAGONAL			= 4;
+	
+	public final static int RENDER_DISP_MODE_INPUT			= 0;
+	public final static int RENDER_DISP_MODE_OUTPUT			= 1;
+	
 	static {
 		// load the static library ogles_gpgpu JNI wrapper
 		System.loadLibrary("og_jni_wrapper");
@@ -51,13 +61,20 @@ public class OGJNIWrapper {
     
     /**
      * Specify render display properties. Before that, <init()> must have been called with
-     * "createRenderDisp" = true
+     * "createRenderDisp" = true.
      *
      * @param w render display width
      * @param h render display height
-     * @param orientation render orientation
+     * @param orientation render orientation (one of "ORIENTATION_")
      */
     public native void setRenderDisp(int w, int h, int orientation);
+    
+    /**
+     * Set render display to either show camera input or output.
+     *
+     * @param mode one of "RENDER_DISP_MODE_"
+     */
+    public native void setRenderDispShowMode(int mode);
     
     /**
      * Cleanup the ogles_gpgpu resources. Call this only once at the end of the

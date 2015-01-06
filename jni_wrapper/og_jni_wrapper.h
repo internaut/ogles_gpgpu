@@ -7,6 +7,22 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#undef ogles_gpgpu_OGJNIWrapper_ORIENTATION_NONE
+#define ogles_gpgpu_OGJNIWrapper_ORIENTATION_NONE -1L
+#undef ogles_gpgpu_OGJNIWrapper_ORIENTATION_STD
+#define ogles_gpgpu_OGJNIWrapper_ORIENTATION_STD 0L
+#undef ogles_gpgpu_OGJNIWrapper_ORIENTATION_STD_MIRRORED
+#define ogles_gpgpu_OGJNIWrapper_ORIENTATION_STD_MIRRORED 1L
+#undef ogles_gpgpu_OGJNIWrapper_ORIENTATION_FLIPPED
+#define ogles_gpgpu_OGJNIWrapper_ORIENTATION_FLIPPED 2L
+#undef ogles_gpgpu_OGJNIWrapper_ORIENTATION_FLIPPED_MIRRORED
+#define ogles_gpgpu_OGJNIWrapper_ORIENTATION_FLIPPED_MIRRORED 3L
+#undef ogles_gpgpu_OGJNIWrapper_ORIENTATION_DIAGONAL
+#define ogles_gpgpu_OGJNIWrapper_ORIENTATION_DIAGONAL 4L
+#undef ogles_gpgpu_OGJNIWrapper_RENDER_DISP_MODE_INPUT
+#define ogles_gpgpu_OGJNIWrapper_RENDER_DISP_MODE_INPUT 0L
+#undef ogles_gpgpu_OGJNIWrapper_RENDER_DISP_MODE_OUTPUT
+#define ogles_gpgpu_OGJNIWrapper_RENDER_DISP_MODE_OUTPUT 1L
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
  * Method:    getOutputFrameW
@@ -46,6 +62,14 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDisp
   (JNIEnv *, jobject, jint, jint, jint);
+
+/*
+ * Class:     ogles_gpgpu_OGJNIWrapper
+ * Method:    setRenderDispShowMode
+ * Signature: (I)V
+ */
+JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDispShowMode
+  (JNIEnv *, jobject, jint);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper

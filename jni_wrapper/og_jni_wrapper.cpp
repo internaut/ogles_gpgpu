@@ -28,6 +28,9 @@ static jobject outputPxBuf = NULL;				// DirectByteBuffer object pointing to <ou
 static unsigned char *outputPxBufData = NULL;	// pointer to data in DirectByteBuffer <outputPxBuf>
 static jint outputFrameSize[] = { 0, 0 };		// width x height
 
+static GLuint ogInputTexId	= 0;
+static GLuint ogOutputTexId	= 0;
+
 void ogCleanupHelper(JNIEnv *env) {
 	if (outputPxBuf && outputPxBufData) {	// buffer is already set, release it first
 		env->DeleteGlobalRef(outputPxBuf);
@@ -117,6 +120,9 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobje
 	outputPxBuf = env->NewDirectByteBuffer(outputPxBufData, outputPxBufNumBytes);
 	outputPxBuf = env->NewGlobalRef(outputPxBuf);	// we will hold a reference on this global variable until cleanup is called
 
+	// get output texture id
+	ogOutputTexId = ogCore->getOutputTexId();
+
 	OG_LOGINF("OGJNIWrapper", "preparation successful. input size is %dx%d, output size is %dx%d",
 			w, h, outputFrameSize[0], outputFrameSize[1]);
 }
@@ -126,6 +132,18 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDisp(JNIEnv *env,
 	
 	ogDisp->setOutputSize(w, h);
 	ogDisp->setOutputRenderOrientation((ogles_gpgpu::RenderOrientation)orientation);
+}
+
+JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDispShowMode(JNIEnv *env, jobject obj, jint mode) {
+	assert(ogInitialized && ogDisp);
+	assert(ogInputTexId > 0);
+	assert(ogOutputTexId > 0);
+	
+	if (mode == ogles_gpgpu_OGJNIWrapper_RENDER_DISP_MODE_INPUT) {
+		ogDisp->useTexture(ogInputTexId, 1, GL_TEXTURE_EXTERNAL_OES);
+	} else {
+		ogDisp->useTexture(ogOutputTexId, 1, GL_TEXTURE_2D);
+	}
 }
 
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env, jobject obj, jintArray pxData) {
@@ -143,6 +161,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env
 
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputTexture(JNIEnv *env, jobject obj, jint texId) {
 	ogCore->setInputTexId(texId, GL_TEXTURE_EXTERNAL_OES);
+	ogInputTexId = texId;
 }
 
 JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEnv *env, jobject obj) {

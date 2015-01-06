@@ -137,7 +137,7 @@ public:
     /**
      * Get output as OpenGL texture id.
      */
-    GLuint getOutputTexId() const { return outputTexId; }
+    GLuint getOutputTexId() const { assert(lastProc); return lastProc->getOutputTexId(); }
     
     /**
      * Get output as bytes. Will copy the output texture from the GPU to <buf>.

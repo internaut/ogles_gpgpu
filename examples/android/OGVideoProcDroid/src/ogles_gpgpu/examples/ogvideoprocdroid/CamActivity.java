@@ -21,6 +21,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 public class CamActivity extends Activity implements SurfaceHolder.Callback, SurfaceTexture.OnFrameAvailableListener {
 	private final static String TAG = "CamActivity";
@@ -85,6 +86,16 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 			e.printStackTrace();
 		}
     }
+    
+    public void topBtnClicked(View btn) {
+    	int btnId = btn.getId();
+    	
+    	if (btnId == R.id.btn_show_input) {
+    		ogWrapper.setRenderDispShowMode(OGJNIWrapper.RENDER_DISP_MODE_INPUT);
+    	} else {
+    		ogWrapper.setRenderDispShowMode(OGJNIWrapper.RENDER_DISP_MODE_OUTPUT);
+    	}
+    }
 
 	@Override
 	public void surfaceCreated(SurfaceHolder holder) {
@@ -120,7 +131,7 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 		Log.i(TAG, "surface changed to size " + width + "x" + height);
 		
-		ogWrapper.setRenderDisp(width, height, 2 /* = RenderOrientationFlipped */);
+		ogWrapper.setRenderDisp(width, height, OGJNIWrapper.ORIENTATION_FLIPPED);
 		ogWrapper.prepare(camPreviewFrameSize.width, camPreviewFrameSize.height, false);
 	}
 

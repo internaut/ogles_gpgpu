@@ -315,9 +315,6 @@ void Core::process() {
     // set input texture id
     firstProc->useTexture(inputTexId, 1, inputTexTarget);
     
-    // set output texture id
-    outputTexId = lastProc->getOutputTexId();
-    
     // run the processors in the pipeline
     for (list<ProcInterface *>::iterator it = pipeline.begin();
          it != pipeline.end();
