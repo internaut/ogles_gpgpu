@@ -28,23 +28,11 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	private final static int CAM_FPS = 30;
 	private final static int CAM_FRAME_TEXTURE_TARGET = GLES11Ext.GL_TEXTURE_EXTERNAL_OES;
 
-	// The holder for our SurfaceView.  The Surface can outlive the Activity (e.g. when
-    // the screen is turned off and back on with the power button).
-    //
-    // This becomes non-null after the surfaceCreated() callback is called, and gets set
-    // to null when surfaceDestroyed() is called.
-    private static SurfaceHolder surfaceHolder;
-
     private EglCore eglCore;
     
     private OGJNIWrapper ogWrapper;
     
     private CPUImgProcThread imgProcThread;
-//    private Object imgProcThreadLock = new Object();
-    
-//    private int procOutputW;		// processing output width
-//    private int procOutputH;		// processing output width
-//    private ByteBuffer procOutput;	// output pixel data as ARGB bytes values
     
     private HistView histView;
     
@@ -102,8 +90,6 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.i(TAG, "surface created");
 		
-		surfaceHolder = holder;
-		
 		eglCore = new EglCore();
 		ogWrapper.init(true, false, true);
 		
@@ -136,16 +122,11 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 		
 		ogWrapper.setRenderDisp(width, height, 2 /* = RenderOrientationFlipped */);
 		ogWrapper.prepare(camPreviewFrameSize.width, camPreviewFrameSize.height, false);
-
-//		procOutputW = ogWrapper.getOutputFrameW();
-//		procOutputH = ogWrapper.getOutputFrameH();
 	}
 
 	@Override
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		Log.i(TAG, "surface destroyed");
-		
-		surfaceHolder = null;
 		
 		releaseGL();
 		
@@ -154,24 +135,19 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	
 	@Override
 	public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+		// update camera frame texture
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
 		camTexture.updateTexImage();
 		
-//		Log.i(TAG, "updated camera frame texture");
-		
+		// run ogles_gpgpu
 		ogWrapper.setInputTexture(camTextureId);
 		ogWrapper.process();
 		ogWrapper.renderOutput();
 		
+		// update histogram in seperate thread
 		imgProcThread.update();
-		
-		// get the processed image data
-//		procOutput = ogWrapper.getOutputPixels();
-//		procOutput.rewind();
-		
-//		calcHist(procOutput);
-//		printHist(outputHist);
 
+		// swap GL display buffers
 		windowSurface.swapBuffers();
 	}
 
@@ -260,9 +236,8 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	
 	private class CPUImgProcThread extends Thread {
 		private boolean running = false;
-//		private boolean processing = false;
-		private ByteBuffer imgData;
-	    private float[] outputHist = new float[256];		// output histogram
+		private ByteBuffer imgData;						// passed output pixel data as ARGB bytes values
+	    private float[] outputHist = new float[256];	// output histogram
 
 		
 		@Override
@@ -297,7 +272,7 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 		}
 		
 		public void update() {
-			if (imgData != null) return;	// image data already in use right now
+			if (imgData != null || !running) return;	// image data already in use right now
 			
 			imgData = ogWrapper.getOutputPixels();
 			imgData.rewind();
