@@ -18,6 +18,7 @@ Shader::Shader() {
 
 Shader::~Shader() {
 	if (programId > 0) {
+        OG_LOGINF("Shader", "deleting shader program");
 		glDeleteProgram(programId);
 	}
 }

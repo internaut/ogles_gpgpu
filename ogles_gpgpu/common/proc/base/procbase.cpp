@@ -66,10 +66,6 @@ ProcBase::ProcBase() {
 
 ProcBase::~ProcBase() {
     cleanup();
-    
-	if (shader) {
-		delete shader;
-	}
 }
 
 void ProcBase::cleanup() {
@@ -79,6 +75,11 @@ void ProcBase::cleanup() {
         
         outFrameW = outFrameH = 0;
 	}
+    
+    if (shader) {
+        delete shader;
+        shader = NULL;
+    }
 }
 
 void ProcBase::printInfo() {
@@ -213,4 +214,6 @@ void ProcBase::createShader(const char *vShSrc, const char *fShSrc, GLenum targe
     bool compiled = shader->buildFromSrc(vShSrc, fSrcStr.c_str());
     
     assert(compiled);
+    
+    OG_LOGINF(getProcName(), "shader compiled successfully");
 }

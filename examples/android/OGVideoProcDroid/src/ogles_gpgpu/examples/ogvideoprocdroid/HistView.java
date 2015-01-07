@@ -27,7 +27,7 @@ public class HistView extends View {
 		
 		setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
 		
-		barPaint.setARGB(255, 255, 0, 0);
+		barPaint.setARGB(255, 255, 255, 255);
 	}
 
 	@Override

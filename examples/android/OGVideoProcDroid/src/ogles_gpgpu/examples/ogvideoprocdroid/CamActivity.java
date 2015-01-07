@@ -29,6 +29,8 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	private final static int CAM_FPS = 30;
 	private final static int CAM_FRAME_TEXTURE_TARGET = GLES11Ext.GL_TEXTURE_EXTERNAL_OES;
 
+	private static SurfaceHolder surfaceHolder;
+	
     private EglCore eglCore;
     
     private OGJNIWrapper ogWrapper;
@@ -51,15 +53,7 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cam);
         
-        imgProcThread = new CPUImgProcThread();
-        
-        ogWrapper = new OGJNIWrapper();
-        
         histView = (HistView)findViewById(R.id.hist_view);
-
-        // get surface holder and set callback
-        SurfaceView sv = (SurfaceView)findViewById(R.id.surface_view);
-        sv.getHolder().addCallback(this);
     }
 
     @Override
@@ -67,24 +61,41 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
         Log.i(TAG, "onResume");
         super.onResume();
         
+        if (ogWrapper == null) {
+        	ogWrapper = new OGJNIWrapper();
+        }
+        
+        imgProcThread = new CPUImgProcThread();
         imgProcThread.start();
+        imgProcThread.setName("CPUImageProcThread");
+        
         startCam();
+        
+        SurfaceView sv = (SurfaceView)findViewById(R.id.surface_view);
+        sv.getHolder().addCallback(this);
+        
+        if (surfaceHolder != null) {
+        	Log.i(TAG, "surface holder already existent");
+        	initSurface(surfaceHolder, false);
+        } else {
+        	Log.i(TAG, "surface holder will be created automatically");
+        }
     }
 
     @Override
     protected void onPause() {
         Log.i(TAG, "onPause");
-        super.onPause();
-        
+                
         stopCam();
         
-        imgProcThread.terminate();
-        
-        try {
-			imgProcThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+        synchronized (camLock) {
+        	stopImgProcThread();
 		}
+        
+        releaseGL();
+        resetEGL();
+        
+        super.onPause();
     }
     
     public void topBtnClicked(View btn) {
@@ -101,30 +112,9 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	public void surfaceCreated(SurfaceHolder holder) {
 		Log.i(TAG, "surface created");
 		
-		eglCore = new EglCore();
-		ogWrapper.init(true, false, true);
+		surfaceHolder = holder;
 		
-		windowSurface = new WindowSurface(eglCore, holder.getSurface(), false);
-		windowSurface.makeCurrent();
-		
-		Log.i(TAG, "opening camera device");
-		startCam();
-		
-		camTextureId = createGLTexture();
-		camTexture = new SurfaceTexture(camTextureId);
-		camTexture.setOnFrameAvailableListener(this);
-		
-		Log.i(TAG, "created camera frame texture with id " + camTextureId);
-		
-		Log.i(TAG, "starting camera preview");
-		
-		try {
-			cam.setPreviewTexture(camTexture);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		cam.startPreview();
+		initSurface(surfaceHolder, true);
 	}
 
 	@Override
@@ -139,13 +129,22 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 	public void surfaceDestroyed(SurfaceHolder holder) {
 		Log.i(TAG, "surface destroyed");
 		
-		releaseGL();
+		surfaceHolder = null;
 		
-		eglCore.release();
+		if (ogWrapper != null) {
+			Log.i(TAG, "releasing ogles_gpgpu");
+			ogWrapper.cleanup();
+			ogWrapper = null;
+		}
+        
+		resetEGL();
+		releaseEGL();
 	}
 	
 	@Override
 	public void onFrameAvailable(SurfaceTexture surfaceTexture) {
+		if (camTexture == null || windowSurface == null) return;
+		
 		// update camera frame texture
 		GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
 		camTexture.updateTexImage();
@@ -156,19 +155,56 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 		ogWrapper.renderOutput();
 		
 		// update histogram in seperate thread
-		imgProcThread.update();
+		if (imgProcThread != null && imgProcThread.isRunning()) {
+			imgProcThread.update();
+		}
 
 		// swap GL display buffers
 		windowSurface.swapBuffers();
 	}
+	
+    private void stopImgProcThread() {
+        imgProcThread.terminate();
+        
+        try {
+			imgProcThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+        
+        imgProcThread = null;
+	}
 
 	private void releaseGL() {
+		if (camTexture != null) {
+			Log.i(TAG, "releasing camera frame texture");
+			GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
+			int[] t = { camTextureId };
+			GLES20.glDeleteTextures(1, t, 0);
+			
+			camTexture.release();
+			camTexture = null;
+		}
+		
 		if (windowSurface != null) {
+			Log.i(TAG, "releasing window surface");
 			windowSurface.release();
 			windowSurface = null;
 		}
-		
-		eglCore.makeNothingCurrent();
+	}
+	
+	private void resetEGL() {
+		if (eglCore != null) {
+			Log.i(TAG, "resetting EGL");
+			eglCore.makeNothingCurrent();
+		}
+	}
+	
+	private void releaseEGL() {
+		if (eglCore != null) {
+			Log.i(TAG, "releasing EGL");
+			eglCore.release();
+		}
 	}
 
 	private void startCam() {
@@ -216,11 +252,45 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 		
 		synchronized (camLock) {
 			cam.stopPreview();
+			cam.setPreviewCallback(null);
 			cam.release();
 			cam = null;
 		}
 		
 		Log.i(TAG, "stopped camera");
+	}
+	
+	private void initSurface(SurfaceHolder holder, boolean isNew) {
+		Log.i(TAG, "initializing surface (is new surface: " + isNew + ")");
+		
+		if (isNew) {
+			Log.i(TAG, "initializing EGL");
+			eglCore = new EglCore();
+		
+			Log.i(TAG, "initializing ogles_gpgpu");
+			ogWrapper.init(true, false, true);
+		}
+		
+		Log.i(TAG, "creating window surface");
+		windowSurface = new WindowSurface(eglCore, holder.getSurface(), false);
+		windowSurface.makeCurrent();
+		
+		Log.i(TAG, "creating camera frame texture");
+		camTextureId = createGLTexture();
+		camTexture = new SurfaceTexture(camTextureId);
+		camTexture.setOnFrameAvailableListener(this);
+	
+		Log.i(TAG, "created camera frame texture with id " + camTextureId);
+		
+		Log.i(TAG, "starting camera preview");
+	
+		try {
+			cam.setPreviewTexture(camTexture);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	
+		cam.startPreview();
 	}
 	
 	private int createGLTexture() {
@@ -275,6 +345,8 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 				}
 			}
 			
+			imgData = null;
+			
 			Log.i(TAG, "stopped thread CPUImgProcThread");
 		}
 		
@@ -287,6 +359,10 @@ public class CamActivity extends Activity implements SurfaceHolder.Callback, Sur
 			
 			imgData = ogWrapper.getOutputPixels();
 			imgData.rewind();
+		}
+		
+		public boolean isRunning() {
+			return running;
 		}
 	
 		private void calcHist(ByteBuffer pxData) {

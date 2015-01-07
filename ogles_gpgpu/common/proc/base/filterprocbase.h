@@ -25,7 +25,6 @@ namespace ogles_gpgpu {
  */
 class FilterProcBase : public ProcBase {
 public:
-    
     FilterProcBase() : ProcBase(),
     				   fragShaderSrcForCompilation(NULL)
     				   {}

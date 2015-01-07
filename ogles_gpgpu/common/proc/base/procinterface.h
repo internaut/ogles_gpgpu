@@ -27,7 +27,7 @@ public:
     /**
      * Important: deconstructor must be virtual
      */
-    virtual ~ProcInterface() { };
+    virtual ~ProcInterface() { }
     
     /**
      * Init the processor for input frames of size <inW>x<inH> which is at

@@ -45,12 +45,12 @@ public:
     static void destroy();
     
     /**
-     * Deconstructor.
+     * Deconstructor. Will call cleanup().
      */
     ~Core();
     
     /**
-     * Reset the complete processing pipeline.
+     * Reset the complete processing pipeline (will also call cleanup()).
      */
     void reset();
     
@@ -186,6 +186,9 @@ private:
     
     /**
      * Free owned objects.
+     * Will clear the processor pipeline. This only calls cleanup() on all processors and
+     * deletes the pointers to the processors that are stored in the pipeline. the processor
+     * objects are not deleted in this class, because it only stores weak references.
      */
     void cleanup();
     
@@ -199,7 +202,7 @@ private:
     ProcInterface *firstProc;    // pointer to first processor in pipeline
     ProcInterface *lastProc;     // pointer to last processor in pipeline
     
-    Disp *renderDisp;
+    Disp *renderDisp;       // render-to-display object. strong ref.
     
     bool initialized;       // pipeline initialized?
     bool prepared;          // input prepared?

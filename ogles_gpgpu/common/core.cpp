@@ -64,17 +64,10 @@ Core::~Core() {
 }
 
 void Core::reset() {
+    OG_LOGINF("Core", "resetting core");
+    
+    // will also call cleanup() on all processors
     cleanup();
-    
-    // call cleanup() on processors
-    for (list<ProcInterface *>::iterator it = pipeline.begin();
-         it != pipeline.end();
-         ++it)
-    {
-        (*it)->cleanup();
-    }
-    
-    pipeline.clear();
     
     // reset defaults
     prepared = false;
@@ -381,7 +374,21 @@ void Core::checkGLExtensions() {
 
 void Core::cleanup() {
     if (renderDisp) {
+        OG_LOGINF("Core", "deleting render display object");
         delete renderDisp;
         renderDisp = NULL;
     }
+    
+    // call cleanup() on processors
+    for (list<ProcInterface *>::iterator it = pipeline.begin();
+         it != pipeline.end();
+         ++it)
+    {
+        (*it)->cleanup();
+    }
+    
+    // clear processor pipeline. this only deletes the pointers to the processors
+    // the processor objects are not deleted in this class, because it only
+    // stores weak references
+    pipeline.clear();
 }

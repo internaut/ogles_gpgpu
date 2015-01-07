@@ -122,6 +122,7 @@ MemTransferAndroid::~MemTransferAndroid() {
 void MemTransferAndroid::releaseInput() {
     // release input image
     if (inputImage) {
+    	OG_LOGINF("MemTransferAndroid", "releasing input image");
         imageKHRDestroy(EGL_DEFAULT_DISPLAY, inputImage);
 		free(inputImage);
 		inputImage = NULL;
@@ -129,6 +130,7 @@ void MemTransferAndroid::releaseInput() {
     
     // release android graphic buffer handle for input
 	if (inputGraBufHndl) {
+    	OG_LOGINF("MemTransferAndroid", "releasing graphic buffer handle for input");
 		graBufDestroy(inputGraBufHndl);
 		free(inputGraBufHndl);
         
@@ -140,6 +142,7 @@ void MemTransferAndroid::releaseInput() {
 void MemTransferAndroid::releaseOutput() {
     // release output image
     if (outputImage) {
+    	OG_LOGINF("MemTransferAndroid", "releasing output image");
         imageKHRDestroy(EGL_DEFAULT_DISPLAY, outputImage);
 		free(outputImage);
 		outputImage = NULL;
@@ -147,6 +150,7 @@ void MemTransferAndroid::releaseOutput() {
     
     // release android graphic buffer handle for output
 	if (outputGraBufHndl) {
+    	OG_LOGINF("MemTransferAndroid", "releasing graphic buffer handle for output");
 		graBufDestroy(outputGraBufHndl);
 		free(outputGraBufHndl);
         

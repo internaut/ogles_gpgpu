@@ -18,7 +18,7 @@
 #include <vector>
 
 static ogles_gpgpu::Core *ogCore = NULL;		// ogles_gpgpu core manager instance
-static ogles_gpgpu::Disp *ogDisp = NULL;		// ogles_gpgpu render-to-display object
+static ogles_gpgpu::Disp *ogDisp = NULL;		// ogles_gpgpu render-to-display object (weak ref)
 
 static bool eglInitRequested = false;			// is true if init() is called with initEGL = true
 static bool ogInitialized = false;				// is true after init() was called

@@ -24,7 +24,7 @@ namespace ogles_gpgpu {
  * Render an input texture to a fullscreen quad.
  */
 class Disp : public FilterProcBase {
-public:
+public:    
     /**
      * Return the processors name.
      */
