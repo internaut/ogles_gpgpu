@@ -29,10 +29,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 /**
- * Project template for native image processing via JNI on Android.
+ * GPGPU based image processing of still images with ogles_gpgpu. 
  * 
- * MainActivity implements the simple user interaction: Touching the input image will run
- * the native image processing function (grayscale conversion).
+ * MainActivity implements the ogles_gpgpu setup and the simple user interaction:
+ * Touching the input image will run the GPGPU image processing function. This
+ * will be executed by calling native functions to the ogles_gpgpu library via JNI.
+ * See the wrapper class OGJNIWrapper and the C++ sources in the "jni" folder.
  */
 public class MainActivity extends Activity /* implements SurfaceHolder.Callback */ {
 	private final String TAG = this.getClass().getSimpleName();

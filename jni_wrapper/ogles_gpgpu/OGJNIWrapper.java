@@ -110,7 +110,11 @@ public class OGJNIWrapper {
     /**
      * Return the input pixel data as ARGB ByteBuffer. The size of this byte buffer
      * equals output frame width * output frame height * 4 (4 channel ARGB data).
-     * @return pixel data as ByteBuffer
+     * 
+     * Note: The "imgData" ByteBuffer is only a reference to the actual image data
+     * on the native side! It is only valid until the next call to this function!
+     * 
+     * @return reference to pixel data as ByteBuffer valid unit next call to this function
      */
     public native ByteBuffer getOutputPixels();
     
