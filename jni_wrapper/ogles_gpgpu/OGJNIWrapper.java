@@ -45,7 +45,10 @@ public class OGJNIWrapper {
     public native int getOutputFrameH();
     
     /**
-     * Initialize ogles_gpgpu. Do this only once per application runtime.
+     * Initialize ogles_gpgpu. Call this function at first to use ogles_gpgpu.
+     * @param usePlatformOptimizations try to enable platform optimizations
+     * @param initEGL initialize EGL system on the native side
+     * @param createRenderDisp create a render display which will render to output to screen
      */
     public native void init(boolean usePlatformOptimizations, boolean initEGL, boolean createRenderDisp);
     
@@ -56,8 +59,11 @@ public class OGJNIWrapper {
      * 
      * @param inW input frame width
      * @param inH input frame height
+     * @param prepareDataInput set to true if you later want to copy data to ogles_gpgpu
+     *						   by using setInputPixels(). set to false if you submit
+     *						   input data by texture via setInputTexture().
      */
-    public native void prepare(int inW, int inH, boolean prepareInput);
+    public native void prepare(int inW, int inH, boolean prepareDataInput);
     
     /**
      * Specify render display properties. Before that, <init()> must have been called with
@@ -77,8 +83,7 @@ public class OGJNIWrapper {
     public native void setRenderDispShowMode(int mode);
     
     /**
-     * Cleanup the ogles_gpgpu resources. Call this only once at the end of the
-     * application runtime.
+     * Cleanup the ogles_gpgpu resources. Call this only once when you quit using ogles_gpgpu.
      */
     public native void cleanup();
     
@@ -111,7 +116,7 @@ public class OGJNIWrapper {
      * Return the input pixel data as ARGB ByteBuffer. The size of this byte buffer
      * equals output frame width * output frame height * 4 (4 channel ARGB data).
      * 
-     * Note: The "imgData" ByteBuffer is only a reference to the actual image data
+     * Note: The returned ByteBuffer is only a reference to the actual image data
      * on the native side! It is only valid until the next call to this function!
      * 
      * @return reference to pixel data as ByteBuffer valid unit next call to this function
