@@ -89,30 +89,16 @@ Now you are better suited for C++ development on Android. When you start the *Ru
 ## Known Issues
 
 1. When using platform optimizations on Android (which enables using the ImageKHR extension), the first processing run will not produce any output (the buffer will only contain zeros). However, any successive runs will work normally.
+2. The "OGStillImageDroid" example application crashes when switching the screen off and on again. This is because `ogWrapper.init()` will try to initialize EGL again in `onResume()`, but this only works when the application was send to background and resumed again
 
 ## TODO
 
-### Milestone 2
-
-* android: camera example
 * test ipad3 / ios 8
-
-### Milestone 3
-
 * rasp pi port
-
-### Milestone 4
-
-* comparisons with openCV
+* make some comparisons with CPU based image processing (OpenCV as reference)
 * AR support (include into ocv_ar)
-
-### Milestone 5
-
 * more dynamic filters (-> shader code generator)
 * create own multipass filter (multiple gauss filters?)
-
-### Milestone 6
-
 * native iOS YUV input support
 
 ## License
