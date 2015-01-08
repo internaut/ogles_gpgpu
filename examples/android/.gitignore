@@ -1,5 +1,6 @@
 #eclise noise:
 
+**/local.properties
 **/bin/**
 **/obj/**
 **/libs/**/*.so
