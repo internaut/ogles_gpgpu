@@ -78,11 +78,6 @@ public:
     virtual void printInfo();
     
     /**
-     * Use texture id <id> as input texture at texture <useTexUnit>.
-     */
-    virtual void useTexture(GLuint id, GLuint useTexUnit = 1) { texId = id; texUnit = useTexUnit; }
-    
-    /**
      * Return used texture unit.
      */
     virtual GLuint getTextureUnit() const { return texUnit; }
@@ -163,9 +158,10 @@ protected:
     
     /**
      * Create the shader program from vertex and fragment shader source code
-     * <vshSrc> and <fshSrc>.
+     * <vshSrc> and <fshSrc>. The fragment shader source might be modified, depending
+     * on texture target <target>.
      */
-    virtual void createShader(const char *vShSrc, const char *fShSrc);
+    virtual void createShader(const char *vShSrc, const char *fShSrc, GLenum target);
     
     
 	static const GLfloat quadTexCoordsStd[];                // default quad texture coordinates
@@ -180,8 +176,9 @@ protected:
     
     unsigned int orderNum;  // position of this processor in the pipeline
     
-	GLuint texId;   // input texture id
-    GLuint texUnit; // input texture unit (glActiveTexture())
+	GLuint texId;       // input texture id
+    GLuint texUnit;     // input texture unit (glActiveTexture())
+    GLenum texTarget;   // input texture target
     
     GLint shParamUInputTex;     // shader uniform input texture sampler
     

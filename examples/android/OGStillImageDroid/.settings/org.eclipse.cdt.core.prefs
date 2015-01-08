@@ -1,6 +1,6 @@
 eclipse.preferences.version=1
 environment/project/0.2065261347/NDK_PATH/delimiter=\:
-environment/project/0.2065261347/NDK_PATH/operation=append
-environment/project/0.2065261347/NDK_PATH/value=/Applications/AndroidDevKit/ndk
+environment/project/0.2065261347/NDK_PATH/operation=replace
+environment/project/0.2065261347/NDK_PATH/value=${HOME}/lib/android/ndk
 environment/project/0.2065261347/append=true
 environment/project/0.2065261347/appendContributed=true

@@ -8,7 +8,7 @@
 //
 
 /**
- * Common types.
+ * Common types and definitions.
  */
 
 #ifndef OGLES_GPGPU_COMMON_TYPES

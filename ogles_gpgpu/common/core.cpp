@@ -53,6 +53,7 @@ Core::Core() {
     glExtNPOTMipmaps = false;
     renderDisp = NULL;
     glContextPtr = NULL;
+    inputTexTarget = GL_TEXTURE_2D;
     
     // reset to defaults
     reset();
@@ -63,17 +64,10 @@ Core::~Core() {
 }
 
 void Core::reset() {
+    OG_LOGINF("Core", "resetting core");
+    
+    // will also call cleanup() on all processors
     cleanup();
-    
-    // call cleanup() on processors
-    for (list<ProcInterface *>::iterator it = pipeline.begin();
-         it != pipeline.end();
-         ++it)
-    {
-        (*it)->cleanup();
-    }
-    
-    pipeline.clear();
     
     // reset defaults
     prepared = false;
@@ -253,9 +247,11 @@ MemTransfer *Core::getOutputMemTransfer() const {
     return lastProc->getMemTransferObj();
 }
 
-void Core::setInputTexId(GLuint inTexId) {
+void Core::setInputTexId(GLuint inTexId, GLenum inTexTarget) {
     inputTexId = inTexId;
-    firstProc->useTexture(inputTexId);
+    inputTexTarget = inTexTarget;
+    
+    firstProc->useTexture(inputTexId, 1, inputTexTarget);
 }
 
 void Core::setInputData(const unsigned char *data) {
@@ -310,10 +306,7 @@ void Core::process() {
 #endif
     
     // set input texture id
-    firstProc->useTexture(inputTexId);
-    
-    // set output texture id
-    outputTexId = lastProc->getOutputTexId();
+    firstProc->useTexture(inputTexId, 1, inputTexTarget);
     
     // run the processors in the pipeline
     for (list<ProcInterface *>::iterator it = pipeline.begin();
@@ -381,7 +374,21 @@ void Core::checkGLExtensions() {
 
 void Core::cleanup() {
     if (renderDisp) {
+        OG_LOGINF("Core", "deleting render display object");
         delete renderDisp;
         renderDisp = NULL;
     }
+    
+    // call cleanup() on processors
+    for (list<ProcInterface *>::iterator it = pipeline.begin();
+         it != pipeline.end();
+         ++it)
+    {
+        (*it)->cleanup();
+    }
+    
+    // clear processor pipeline. this only deletes the pointers to the processors
+    // the processor objects are not deleted in this class, because it only
+    // stores weak references
+    pipeline.clear();
 }

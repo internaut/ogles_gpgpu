@@ -30,22 +30,43 @@ void FilterProcBase::setOutputRenderOrientation(RenderOrientation o) {
     initTexCoordBuf();
 }
 
+void FilterProcBase::useTexture(GLuint id, GLuint useTexUnit, GLenum target) {
+	texId = id;
+	texUnit = useTexUnit;
+	
+	if (target != texTarget) {	// changed
+		if (fragShaderSrcForCompilation) {	// recreate shader with new texture target
+			filterShaderSetup(fragShaderSrcForCompilation, target);
+		}
+		
+		texTarget = target;
+	}
+}
+
 #pragma mark protected methods
 
 void FilterProcBase::filterInit(const char *fShaderSrc, RenderOrientation o) {
-    // create shader object
-    ProcBase::createShader(FilterProcBase::vshaderDefault, fShaderSrc);
-    
-    // get shader params
-    shParamAPos = shader->getParam(ATTR, "aPos");
-	shParamATexCoord = shader->getParam(ATTR, "aTexCoord");
-    shParamUInputTex = shader->getParam(UNIF, "uInputTex");
+	// create shader object
+	filterShaderSetup(fShaderSrc, texTarget);
     
 	// set geometry
 	memcpy(vertexBuf, ProcBase::quadVertices, OGLES_GPGPU_QUAD_VERTEX_BUFSIZE * sizeof(GLfloat));
     
 	// set texture coordinates
     initTexCoordBuf(o);
+}
+
+void FilterProcBase::filterShaderSetup(const char *fShaderSrc, GLenum target) {
+    // create shader object
+    ProcBase::createShader(FilterProcBase::vshaderDefault, fShaderSrc, target);
+    
+    // get shader params
+    shParamAPos = shader->getParam(ATTR, "aPos");
+	shParamATexCoord = shader->getParam(ATTR, "aTexCoord");
+    shParamUInputTex = shader->getParam(UNIF, "uInputTex");
+    
+    // remember used shader source
+    fragShaderSrcForCompilation = fShaderSrc;
 }
 
 void FilterProcBase::initTexCoordBuf(RenderOrientation overrideRenderOrientation) {
@@ -86,7 +107,7 @@ void FilterProcBase::filterRenderPrepare() {
     
 	// set input texture
     glActiveTexture(GL_TEXTURE0 + texUnit);
-	glBindTexture(GL_TEXTURE_2D, texId);	// bind input texture
+	glBindTexture(texTarget, texId);	// bind input texture
     
 	// set common uniforms
     glUniform1i(shParamUInputTex, texUnit);

@@ -9,6 +9,8 @@
 
 #include "procbase.h"
 
+#include <string>
+
 using namespace ogles_gpgpu;
 using namespace std;
 
@@ -64,10 +66,6 @@ ProcBase::ProcBase() {
 
 ProcBase::~ProcBase() {
     cleanup();
-    
-	if (shader) {
-		delete shader;
-	}
 }
 
 void ProcBase::cleanup() {
@@ -77,6 +75,11 @@ void ProcBase::cleanup() {
         
         outFrameW = outFrameH = 0;
 	}
+    
+    if (shader) {
+        delete shader;
+        shader = NULL;
+    }
 }
 
 void ProcBase::printInfo() {
@@ -182,11 +185,35 @@ void ProcBase::createFBO() {
     fbo->setGLTexUnit(1);
 }
 
-void ProcBase::createShader(const char *vShSrc, const char *fShSrc) {
-    if (shader) return; // already compiled
+void ProcBase::createShader(const char *vShSrc, const char *fShSrc, GLenum target) {
+	if (shader) {	// already compiled,
+		if (texTarget != target) delete shader;	 // change in texture target -> recreate!
+		else return;	// no change -> do nothing
+	}
+	
+	string fSrcStr(fShSrc);
+	
+#ifdef GL_TEXTURE_EXTERNAL_OES
+	if (target == GL_TEXTURE_EXTERNAL_OES) {	// other texture target than default "GL_TEXTURE_2D"
+		// we need to modify the fragment shader source for correct texture access
+		string newSrcHeader = "#extension GL_OES_EGL_image_external : require\n";
+		string newSrcReplacementOld = "uniform sampler2D ";
+		string newSrcReplacementNew = "uniform samplerExternalOES ";
+		
+		// replace 
+		string oldSrc(fShSrc);		
+		Tools::strReplaceAll(oldSrc, newSrcReplacementOld, newSrcReplacementNew);
+		
+		// prepend header
+		fSrcStr = string(newSrcHeader);
+		fSrcStr.append(oldSrc);
+	}
+#endif
     
     shader = new Shader();
-    bool compiled = shader->buildFromSrc(vShSrc, fShSrc);
+    bool compiled = shader->buildFromSrc(vShSrc, fSrcStr.c_str());
     
     assert(compiled);
+    
+    OG_LOGINF(getProcName(), "shader compiled successfully");
 }

@@ -45,12 +45,12 @@ public:
     static void destroy();
     
     /**
-     * Deconstructor.
+     * Deconstructor. Will call cleanup().
      */
     ~Core();
     
     /**
-     * Reset the complete processing pipeline.
+     * Reset the complete processing pipeline (will also call cleanup()).
      */
     void reset();
     
@@ -64,6 +64,9 @@ public:
     /**
      * Create an object that renders the last processor's output to the screen.
      * Return it as weak ref.
+     * Parameters <dispW>, <dispH> and <orientation> set the render display properties.
+     * They do not have to be set at this point, you can later use the methods of the
+     * returned "Disp" object to adjust these properties.
      * Note: Must be called after last addProcToPipeline() call and before
      * init() / prepare()!
      */
@@ -118,7 +121,7 @@ public:
     /**
      * Set input as OpenGL texture id.
      */
-    void setInputTexId(GLuint inTexId);
+    void setInputTexId(GLuint inTexId, GLenum inTexTarget = GL_TEXTURE_2D);
     
     /**
      * Set input as RGBA byte data of size <w> x <h>.
@@ -134,7 +137,7 @@ public:
     /**
      * Get output as OpenGL texture id.
      */
-    GLuint getOutputTexId() const { return outputTexId; }
+    GLuint getOutputTexId() const { assert(lastProc); return lastProc->getOutputTexId(); }
     
     /**
      * Get output as bytes. Will copy the output texture from the GPU to <buf>.
@@ -183,6 +186,9 @@ private:
     
     /**
      * Free owned objects.
+     * Will clear the processor pipeline. This only calls cleanup() on all processors and
+     * deletes the pointers to the processors that are stored in the pipeline. the processor
+     * objects are not deleted in this class, because it only stores weak references.
      */
     void cleanup();
     
@@ -196,7 +202,7 @@ private:
     ProcInterface *firstProc;    // pointer to first processor in pipeline
     ProcInterface *lastProc;     // pointer to last processor in pipeline
     
-    Disp *renderDisp;
+    Disp *renderDisp;       // render-to-display object. strong ref.
     
     bool initialized;       // pipeline initialized?
     bool prepared;          // input prepared?
@@ -212,6 +218,7 @@ private:
     int outputFrameH;       // output frame width
 
     GLuint inputTexId;      // input texture id
+    GLenum inputTexTarget;  // input texture target
     GLuint outputTexId;     // output texture id
 };
     

@@ -48,6 +48,12 @@ public:
      * Split a string <s> by delimiter <delim>.
      */
     static vector<string> split(const string &s, char delim = ' ');
+    
+    /**
+     * Replace all strings <from> in <str> by <to>.
+     * Code from http://stackoverflow.com/a/3418285.
+     */
+    static void strReplaceAll(string& str, const string& from, const string& to);
 
 #ifdef OGLES_GPGPU_BENCHMARK
     static void resetTimeMeasurement();

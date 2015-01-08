@@ -70,7 +70,7 @@ void GaussProcPass::createFBOTex(bool genMipmap) {
 }
 
 void GaussProcPass::render() {
-    OG_LOGINF(getProcName(), "render pass %d, framebuffer of size %dx%d", renderPass, outFrameW, outFrameH);
+    OG_LOGINF(getProcName(), "input tex %d, target %d, render pass %d, framebuffer of size %dx%d", texId, texTarget, renderPass, outFrameW, outFrameH);
     
     filterRenderPrepare();
 	

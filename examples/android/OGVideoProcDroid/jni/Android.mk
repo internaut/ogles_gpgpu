@@ -13,8 +13,8 @@ LOCAL_MODULE := og_jni_wrapper
 LOCAL_C_INCLUDES += $(OG_SRC_PATH)
 
 # Optionally define some macros
-LOCAL_CFLAGS    += -DDEBUG
-LOCAL_CFLAGS    += -DOGLES_GPGPU_BENCHMARK
+#LOCAL_CFLAGS    += -DDEBUG
+#LOCAL_CFLAGS    += -DOGLES_GPGPU_BENCHMARK
 
 # Specify the source files
 LOCAL_SRC_FILES := \
