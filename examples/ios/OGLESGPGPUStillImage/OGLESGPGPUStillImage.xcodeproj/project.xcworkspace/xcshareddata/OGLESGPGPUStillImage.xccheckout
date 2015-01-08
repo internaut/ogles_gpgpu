@@ -10,29 +10,29 @@
 	<string>OGLESGPGPUStillImage</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>BD887F89-EEF3-4068-BE07-55F49575EE3F</key>
-		<string>ssh://github.com/internaut/ogles_gpgpu.git</string>
+		<key>C3339A4E47BD5CBC797FF900B8CB1DC8A0F9DDF0</key>
+		<string>github.com:internaut/ogles_gpgpu.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>examples/ios/OGLESGPGPUStillImage/OGLESGPGPUStillImage.xcodeproj/project.xcworkspace</string>
+	<string>examples/ios/OGLESGPGPUStillImage/OGLESGPGPUStillImage.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>BD887F89-EEF3-4068-BE07-55F49575EE3F</key>
+		<key>C3339A4E47BD5CBC797FF900B8CB1DC8A0F9DDF0</key>
 		<string>../../../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>ssh://github.com/internaut/ogles_gpgpu.git</string>
+	<string>github.com:internaut/ogles_gpgpu.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>BD887F89-EEF3-4068-BE07-55F49575EE3F</string>
+	<string>C3339A4E47BD5CBC797FF900B8CB1DC8A0F9DDF0</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>BD887F89-EEF3-4068-BE07-55F49575EE3F</string>
+			<string>C3339A4E47BD5CBC797FF900B8CB1DC8A0F9DDF0</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ogles_gpgpu</string>
 		</dict>
