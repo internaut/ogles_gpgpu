@@ -10,6 +10,8 @@
 * contains several example applications
 * LGPL licensed
 
+See the [project page on my personal website](http://www.mkonrad.net/projects/ogles_gpgpu.html) for some more information and possible use-cases for this library.
+
 ## Tested platforms
 
 * iOS 7.1
