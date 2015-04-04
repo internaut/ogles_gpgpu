@@ -1,4 +1,16 @@
 #osx noise:
 .DS_Store
 
+#xcode noise:
+*.pbxuser
+*.perspective
+*.perspectivev3
+ 
+*.mode1v3
+*.mode2v3
+
+**/*.xcodeproj/xcuserdata/**
+**/*.xcodeproj/project.xcworkspace/xcuserdata/**
+
+#java noise
 *.class

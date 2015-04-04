@@ -1,0 +1,351 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2802C4A81ACFF14100E77EA8 /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4A71ACFF14100E77EA8 /* core.cpp */; };
+		2802C4AA1ACFF14800E77EA8 /* fbo.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4A91ACFF14800E77EA8 /* fbo.cpp */; };
+		2802C4AC1ACFF14B00E77EA8 /* memtransfer_factory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4AB1ACFF14B00E77EA8 /* memtransfer_factory.cpp */; };
+		2802C4AE1ACFF15000E77EA8 /* memtransfer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4AD1ACFF15000E77EA8 /* memtransfer.cpp */; };
+		2802C4B01ACFF15500E77EA8 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4AF1ACFF15500E77EA8 /* shader.cpp */; };
+		2802C4B21ACFF16400E77EA8 /* filterprocbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4B11ACFF16400E77EA8 /* filterprocbase.cpp */; };
+		2802C4B41ACFF16900E77EA8 /* multipassproc.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4B31ACFF16900E77EA8 /* multipassproc.cpp */; };
+		2802C4B61ACFF16E00E77EA8 /* procbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4B51ACFF16E00E77EA8 /* procbase.cpp */; };
+		2802C4B81ACFF17300E77EA8 /* disp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4B71ACFF17300E77EA8 /* disp.cpp */; };
+		2802C4BA1ACFF17A00E77EA8 /* grayscale.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4B91ACFF17A00E77EA8 /* grayscale.cpp */; };
+		2802C4BC1ACFF18500E77EA8 /* adapt_thresh_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4BB1ACFF18500E77EA8 /* adapt_thresh_pass.cpp */; };
+		2802C4BE1ACFF18A00E77EA8 /* gauss_pass.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4BD1ACFF18A00E77EA8 /* gauss_pass.cpp */; };
+		2802C4C01ACFF18F00E77EA8 /* thresh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4BF1ACFF18F00E77EA8 /* thresh.cpp */; };
+		2802C4C21ACFF19900E77EA8 /* tools.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4C11ACFF19900E77EA8 /* tools.cpp */; };
+		2802C4C41ACFF1B500E77EA8 /* memtransfer_ios.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2802C4C31ACFF1B500E77EA8 /* memtransfer_ios.cpp */; };
+		2802C4C71ACFF20800E77EA8 /* common in Headers */ = {isa = PBXBuildFile; fileRef = 2802C4A41ACFF0DE00E77EA8 /* common */; settings = {ATTRIBUTES = (Public, ); }; };
+		2802C4C81ACFF20E00E77EA8 /* ogles_gpgpu.h in Headers */ = {isa = PBXBuildFile; fileRef = 2802C4A61ACFF0F300E77EA8 /* ogles_gpgpu.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2802C4C91ACFF21000E77EA8 /* platform in Headers */ = {isa = PBXBuildFile; fileRef = 2802C4A51ACFF0E900E77EA8 /* platform */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		28CDEBAE1ACFF02000AF000D /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		2802C4A41ACFF0DE00E77EA8 /* common */ = {isa = PBXFileReference; lastKnownFileType = folder; name = common; path = ../ogles_gpgpu/common; sourceTree = "<group>"; };
+		2802C4A51ACFF0E900E77EA8 /* platform */ = {isa = PBXFileReference; lastKnownFileType = folder; name = platform; path = ../ogles_gpgpu/platform; sourceTree = "<group>"; };
+		2802C4A61ACFF0F300E77EA8 /* ogles_gpgpu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ogles_gpgpu.h; path = ../ogles_gpgpu/ogles_gpgpu.h; sourceTree = "<group>"; };
+		2802C4A71ACFF14100E77EA8 /* core.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = core.cpp; path = ../ogles_gpgpu/common/core.cpp; sourceTree = "<group>"; };
+		2802C4A91ACFF14800E77EA8 /* fbo.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = fbo.cpp; path = ../ogles_gpgpu/common/gl/fbo.cpp; sourceTree = "<group>"; };
+		2802C4AB1ACFF14B00E77EA8 /* memtransfer_factory.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = memtransfer_factory.cpp; path = ../ogles_gpgpu/common/gl/memtransfer_factory.cpp; sourceTree = "<group>"; };
+		2802C4AD1ACFF15000E77EA8 /* memtransfer.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = memtransfer.cpp; path = ../ogles_gpgpu/common/gl/memtransfer.cpp; sourceTree = "<group>"; };
+		2802C4AF1ACFF15500E77EA8 /* shader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = shader.cpp; path = ../ogles_gpgpu/common/gl/shader.cpp; sourceTree = "<group>"; };
+		2802C4B11ACFF16400E77EA8 /* filterprocbase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = filterprocbase.cpp; path = ../ogles_gpgpu/common/proc/base/filterprocbase.cpp; sourceTree = "<group>"; };
+		2802C4B31ACFF16900E77EA8 /* multipassproc.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = multipassproc.cpp; path = ../ogles_gpgpu/common/proc/base/multipassproc.cpp; sourceTree = "<group>"; };
+		2802C4B51ACFF16E00E77EA8 /* procbase.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = procbase.cpp; path = ../ogles_gpgpu/common/proc/base/procbase.cpp; sourceTree = "<group>"; };
+		2802C4B71ACFF17300E77EA8 /* disp.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = disp.cpp; path = ../ogles_gpgpu/common/proc/disp.cpp; sourceTree = "<group>"; };
+		2802C4B91ACFF17A00E77EA8 /* grayscale.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = grayscale.cpp; path = ../ogles_gpgpu/common/proc/grayscale.cpp; sourceTree = "<group>"; };
+		2802C4BB1ACFF18500E77EA8 /* adapt_thresh_pass.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = adapt_thresh_pass.cpp; path = ../ogles_gpgpu/common/proc/multipass/adapt_thresh_pass.cpp; sourceTree = "<group>"; };
+		2802C4BD1ACFF18A00E77EA8 /* gauss_pass.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = gauss_pass.cpp; path = ../ogles_gpgpu/common/proc/multipass/gauss_pass.cpp; sourceTree = "<group>"; };
+		2802C4BF1ACFF18F00E77EA8 /* thresh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = thresh.cpp; path = ../ogles_gpgpu/common/proc/thresh.cpp; sourceTree = "<group>"; };
+		2802C4C11ACFF19900E77EA8 /* tools.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = tools.cpp; path = ../ogles_gpgpu/common/tools.cpp; sourceTree = "<group>"; };
+		2802C4C31ACFF1B500E77EA8 /* memtransfer_ios.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = memtransfer_ios.cpp; path = ../ogles_gpgpu/platform/ios/memtransfer_ios.cpp; sourceTree = "<group>"; };
+		28CDEBB01ACFF02000AF000D /* libogles_gpgpu.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libogles_gpgpu.a; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		28CDEBAD1ACFF02000AF000D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2802C4A31ACFF09B00E77EA8 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				2802C4A41ACFF0DE00E77EA8 /* common */,
+				2802C4A61ACFF0F300E77EA8 /* ogles_gpgpu.h */,
+				2802C4A51ACFF0E900E77EA8 /* platform */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		2802C4C51ACFF1C100E77EA8 /* compilationfiles */ = {
+			isa = PBXGroup;
+			children = (
+				2802C4C31ACFF1B500E77EA8 /* memtransfer_ios.cpp */,
+				2802C4C11ACFF19900E77EA8 /* tools.cpp */,
+				2802C4BF1ACFF18F00E77EA8 /* thresh.cpp */,
+				2802C4BD1ACFF18A00E77EA8 /* gauss_pass.cpp */,
+				2802C4BB1ACFF18500E77EA8 /* adapt_thresh_pass.cpp */,
+				2802C4B91ACFF17A00E77EA8 /* grayscale.cpp */,
+				2802C4B71ACFF17300E77EA8 /* disp.cpp */,
+				2802C4B51ACFF16E00E77EA8 /* procbase.cpp */,
+				2802C4B31ACFF16900E77EA8 /* multipassproc.cpp */,
+				2802C4B11ACFF16400E77EA8 /* filterprocbase.cpp */,
+				2802C4AF1ACFF15500E77EA8 /* shader.cpp */,
+				2802C4AD1ACFF15000E77EA8 /* memtransfer.cpp */,
+				2802C4AB1ACFF14B00E77EA8 /* memtransfer_factory.cpp */,
+				2802C4A91ACFF14800E77EA8 /* fbo.cpp */,
+				2802C4A71ACFF14100E77EA8 /* core.cpp */,
+			);
+			name = compilationfiles;
+			sourceTree = "<group>";
+		};
+		28CDEBA71ACFF02000AF000D = {
+			isa = PBXGroup;
+			children = (
+				2802C4A31ACFF09B00E77EA8 /* src */,
+				2802C4C51ACFF1C100E77EA8 /* compilationfiles */,
+				28CDEBB11ACFF02000AF000D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		28CDEBB11ACFF02000AF000D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				28CDEBB01ACFF02000AF000D /* libogles_gpgpu.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		2802C4C61ACFF1F900E77EA8 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2802C4C71ACFF20800E77EA8 /* common in Headers */,
+				2802C4C81ACFF20E00E77EA8 /* ogles_gpgpu.h in Headers */,
+				2802C4C91ACFF21000E77EA8 /* platform in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		28CDEBAF1ACFF02000AF000D /* ogles_gpgpu */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 28CDEBC41ACFF02000AF000D /* Build configuration list for PBXNativeTarget "ogles_gpgpu" */;
+			buildPhases = (
+				28CDEBAC1ACFF02000AF000D /* Sources */,
+				28CDEBAD1ACFF02000AF000D /* Frameworks */,
+				28CDEBAE1ACFF02000AF000D /* CopyFiles */,
+				2802C4C61ACFF1F900E77EA8 /* Headers */,
+				2802C4CA1ACFF29D00E77EA8 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ogles_gpgpu;
+			productName = ogles_gpgpu;
+			productReference = 28CDEBB01ACFF02000AF000D /* libogles_gpgpu.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		28CDEBA81ACFF02000AF000D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0620;
+				ORGANIZATIONNAME = mkonrad.net;
+				TargetAttributes = {
+					28CDEBAF1ACFF02000AF000D = {
+						CreatedOnToolsVersion = 6.2;
+					};
+				};
+			};
+			buildConfigurationList = 28CDEBAB1ACFF02000AF000D /* Build configuration list for PBXProject "ogles_gpgpu" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 28CDEBA71ACFF02000AF000D;
+			productRefGroup = 28CDEBB11ACFF02000AF000D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				28CDEBAF1ACFF02000AF000D /* ogles_gpgpu */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2802C4CA1ACFF29D00E77EA8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "find ${TARGET_BUILD_DIR}/include/${TARGET_NAME}  -name '*.cpp' -exec rm -f {} \\;";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		28CDEBAC1ACFF02000AF000D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2802C4A81ACFF14100E77EA8 /* core.cpp in Sources */,
+				2802C4AA1ACFF14800E77EA8 /* fbo.cpp in Sources */,
+				2802C4AE1ACFF15000E77EA8 /* memtransfer.cpp in Sources */,
+				2802C4AC1ACFF14B00E77EA8 /* memtransfer_factory.cpp in Sources */,
+				2802C4B01ACFF15500E77EA8 /* shader.cpp in Sources */,
+				2802C4B21ACFF16400E77EA8 /* filterprocbase.cpp in Sources */,
+				2802C4B41ACFF16900E77EA8 /* multipassproc.cpp in Sources */,
+				2802C4B61ACFF16E00E77EA8 /* procbase.cpp in Sources */,
+				2802C4B81ACFF17300E77EA8 /* disp.cpp in Sources */,
+				2802C4BA1ACFF17A00E77EA8 /* grayscale.cpp in Sources */,
+				2802C4BC1ACFF18500E77EA8 /* adapt_thresh_pass.cpp in Sources */,
+				2802C4BE1ACFF18A00E77EA8 /* gauss_pass.cpp in Sources */,
+				2802C4C01ACFF18F00E77EA8 /* thresh.cpp in Sources */,
+				2802C4C21ACFF19900E77EA8 /* tools.cpp in Sources */,
+				2802C4C41ACFF1B500E77EA8 /* memtransfer_ios.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		28CDEBC21ACFF02000AF000D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+					OGLES_GPGPU_BENCHMARK,
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PUBLIC_HEADERS_FOLDER_PATH = "include/${PRODUCT_NAME}";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		28CDEBC31ACFF02000AF000D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PUBLIC_HEADERS_FOLDER_PATH = "include/${PRODUCT_NAME}";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		28CDEBC51ACFF02000AF000D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		28CDEBC61ACFF02000AF000D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		28CDEBAB1ACFF02000AF000D /* Build configuration list for PBXProject "ogles_gpgpu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28CDEBC21ACFF02000AF000D /* Debug */,
+				28CDEBC31ACFF02000AF000D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		28CDEBC41ACFF02000AF000D /* Build configuration list for PBXNativeTarget "ogles_gpgpu" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				28CDEBC51ACFF02000AF000D /* Debug */,
+				28CDEBC61ACFF02000AF000D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 28CDEBA81ACFF02000AF000D /* Project object */;
+}

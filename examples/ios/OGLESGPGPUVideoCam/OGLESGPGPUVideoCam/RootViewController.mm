@@ -184,18 +184,18 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     NSLog(@"loading view of size %dx%d", (int)screenRect.size.width, (int)screenRect.size.height);
     
     // create an empty base view
-    baseFrame = CGRectMake(0, 0, screenRect.size.height, screenRect.size.width);
+    baseFrame = screenRect;
     baseView = [[UIView alloc] initWithFrame:baseFrame];
     
     // create the image view for the camera frames
     camView = [[CamView alloc] initWithFrame:baseFrame];
-    [camView setHidden:showCamPreview];
+    [camView setHidden:YES];
     [baseView addSubview:camView];
     
     // create the GLKView to show the processed frames as textures
     glView = [[GLKView alloc] initWithFrame:baseFrame context:eaglContext];
     [glView setDelegate:self];
-    [glView setHidden:showCamPreview];
+    [glView setHidden:NO];
     [baseView addSubview:glView];
     
     // set a list of buttons for processing output display
@@ -398,7 +398,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     
     // update gl frame view size
     float newViewH = glView.frame.size.width / frameAspectRatio;   // calc new height
-    float viewYOff = (glView.frame.size.height - newViewH) / 2;
+    float viewYOff = (glView.frame.size.height - newViewH) / 2.0f;
     
     CGRect correctedViewRect = CGRectMake(0, viewYOff, glView.frame.size.width, newViewH);
 
