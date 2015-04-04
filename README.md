@@ -70,7 +70,7 @@ You have two options to integrate the library into your project:
 #### Use the *ogles_gpgpu* static library XCode project
 
 1. Simply drag & drop the *ogles_gpgpu.xcodeproj* from the `xcode` folder into your project
-2. In your project, go to the *Build Phases* tab of your target. Under *Link Binary With Libraries* add *libogles_gpgpu*
+2. In your project, go to the *Build Phases* tab of your target. Under *Link Binary With Libraries* add *libogles_gpgpu.a*
 3. Include the header file `ogles_gpgpu/ogles_gpgpu.h` into your project's sources
 
 #### Use the *ogles_gpgpu* sources directly in your XCode project
