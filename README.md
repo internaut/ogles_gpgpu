@@ -8,19 +8,21 @@
  * on Android: EGL pixelbuffers and [KHRImage extensions](http://snorp.net/2011/12/16/android-direct-texture.html)
 * well documented
 * contains several example applications
-* LGPL licensed
+* ~~LGPL~~ [Apache 2 licensed](http://www.apache.org/licenses/LICENSE-2.0.txt)
 
 See the [project page on my personal website](http://www.mkonrad.net/projects/ogles_gpgpu.html) for some more information and possible use-cases for this library.
 
 ## Tested platforms
 
-* iOS 7.1
-* Android 5.0
+* iOS 7.1 to 8.2
+* Android 4.2 to 5.0
 
 ## Tested devices
 
 * Apple iPad 2
 * Apple iPad 4
+* Apple iPad Mini 2
+* Apple iPhone 4
 * Apple iPhone 4s
 * XCode Simulator
 * Google Nexus 10 (2013)
@@ -105,4 +107,4 @@ Now you are better suited for C++ development on Android. When you start the *Ru
 
 ## License
 
-This project is licensed under [GNU LGPL v2.1](http://choosealicense.com/licenses/lgpl-2.1/). See `LICENSE` file for the full text.
+This project is licensed under [Apache 2 licensed](http://www.apache.org/licenses/LICENSE-2.0.txt). See `LICENSE` file for the full text.
