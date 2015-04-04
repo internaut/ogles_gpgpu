@@ -107,7 +107,7 @@ Now you are better suited for C++ development on Android. When you start the *Ru
 
 ## TODO
 
-* test ipad3 / ios 8
+* test ipad3
 * rasp pi port
 * make some comparisons with CPU based image processing (OpenCV as reference)
 * AR support (include into ocv_ar)
