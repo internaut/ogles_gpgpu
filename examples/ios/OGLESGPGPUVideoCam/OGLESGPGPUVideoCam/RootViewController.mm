@@ -80,17 +80,6 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     // delete ogles_gpgpu singleton object
     ogles_gpgpu::Core::destroy();
     gpgpuMngr = NULL;
-    
-    // release camera stuff
-    [vidDataOutput release];
-    [camDeviceInput release];
-    [camSession release];
-    
-    // release views
-    [camView release];
-    [baseView release];
-    
-    [super dealloc];
 }
 
 #pragma mark parent methods
@@ -249,7 +238,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
     [self initGPUPipeline:INITIAL_PROC_TYPE];
     
     // initialize the pipeline
-    gpgpuMngr->init(eaglContext);
+    gpgpuMngr->init((__bridge void *)eaglContext);
 
 }
 
@@ -307,7 +296,7 @@ void fourCCStringFromCode(int code, char fourCC[5]) {
 		}
 	}
     
-    camDeviceInput = [[AVCaptureDeviceInput deviceInputWithDevice:camDevice error:&error] retain];
+    camDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:camDevice error:&error];
     
     if (error) {
         NSLog(@"error getting camera device: %@", error);

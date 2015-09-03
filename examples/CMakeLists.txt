@@ -1,0 +1,7 @@
+if(is_ios)
+  message("BUILD IOS EXAMPLES.......")
+  add_subdirectory(ios)
+elseif(ANDROID)
+  message("BUILD ANDROID EXAMPLES.......")
+  add_subdirectory(android)
+endif()
