@@ -3,4 +3,6 @@ if(is_ios)
 elseif(ANDROID)
   # TODO: Need cmake-fu for APK packaging
   #add_subdirectory(android)
+else()
+  add_subdirectory(opengl)
 endif()

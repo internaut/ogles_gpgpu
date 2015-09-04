@@ -16,12 +16,17 @@ sugar_include(gl)
 sugar_include(proc)
 
 sugar_files(
-    OGLES_GPGPU_SRCS
+    OGLES_GPGPU_COMMON_PUBLIC_HDRS
     common_includes.h
-    core.cpp
     core.h
     macros.h
-    tools.cpp
     tools.h
     types.h
+)
+
+sugar_files(
+    OGLES_GPGPU_SRCS
+    ${OGLES_GPGPU_COMMON_PUBLIC_HDRS}
+    core.cpp
+    tools.cpp
 )

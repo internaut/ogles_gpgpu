@@ -99,11 +99,11 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
     Tools::checkGLErr("MemTransfer", "fbo texture parameters");
     
     // create empty texture space on GPU
-	glTexImage2D(GL_TEXTURE_2D, 0,
-				 GL_RGBA,
-			     outTexW, outTexH, 0,
-			     GL_RGBA, GL_UNSIGNED_BYTE,
-			     NULL);	// we do not need to pass texture data -> it will be generated!
+    glTexImage2D(GL_TEXTURE_2D, 0,
+		 GL_RGBA,
+		 outTexW, outTexH, 0,
+		 GL_RGBA, GL_UNSIGNED_BYTE,
+		 NULL);	// we do not need to pass texture data -> it will be generated!
     
     Tools::checkGLErr("MemTransfer", "fbo texture creation");
     
@@ -130,10 +130,10 @@ void MemTransfer::releaseOutput() {
 void MemTransfer::toGPU(const unsigned char *buf) {
     assert(preparedInput && inputTexId > 0 && buf);
     
-	glBindTexture(GL_TEXTURE_2D, inputTexId);	// bind input texture
+    glBindTexture(GL_TEXTURE_2D, inputTexId);	// bind input texture
 
     // copy data as texture to GPU
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputW, inputH, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputW, inputH, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
     
     // check for error
     Tools::checkGLErr("MemTransfer", "toGPU (glTexImage2D)");
@@ -144,9 +144,9 @@ void MemTransfer::toGPU(const unsigned char *buf) {
 void MemTransfer::fromGPU(unsigned char *buf) {
     assert(preparedOutput && outputTexId > 0 && buf);
     
-	glBindTexture(GL_TEXTURE_2D, outputTexId);
+    glBindTexture(GL_TEXTURE_2D, outputTexId);
     
-	// default (and slow) way using glReadPixels:
+    // default (and slow) way using glReadPixels:
     glReadPixels(0, 0, outputW, outputH, GL_RGBA, GL_UNSIGNED_BYTE, buf);
 
     // check for error
@@ -160,7 +160,7 @@ void MemTransfer::setCommonTextureParams(GLuint texId) {
         glBindTexture(GL_TEXTURE_2D, texId);
     }
     
-	// set clamping (allows NPOT textures)
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    // set clamping (allows NPOT textures)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 }

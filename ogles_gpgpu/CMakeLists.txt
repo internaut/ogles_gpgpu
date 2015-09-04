@@ -44,6 +44,12 @@ install(
 )
 
 install(
+    FILES
+    ${OGLES_GPGPU_COMMON_PUBLIC_HDRS}
+    DESTINATION "${include_install_dir}/${PROJECT_NAME}/common"
+)
+
+install(
     FILES "${project_config}" "${version_config}"
     DESTINATION "${config_install_dir}"
 )

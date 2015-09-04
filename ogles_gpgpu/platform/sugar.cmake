@@ -15,6 +15,9 @@ if(is_ios)
   sugar_include(ios)
 elseif(ANDROID)
   sugar_include(android)
+else()
+  message("include opengl platforms.............")
+  sugar_include(opengl)
 endif()
 
 

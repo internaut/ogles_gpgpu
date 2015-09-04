@@ -10,10 +10,18 @@
 #include "memtransfer_factory.h"
 #include "../core.h"
 
-#ifdef __APPLE__
-#include "../../platform/ios/memtransfer_ios.h"
-#elif __ANDROID__
-#include "../../platform/android/memtransfer_android.h"
+//#ifdef __APPLE__
+//#include "../../platform/ios/memtransfer_ios.h"
+//#elif __ANDROID__
+//#include "../../platform/android/memtransfer_android.h"
+//#endif
+
+#ifdef OGLES_GPGPU_IOS
+#  include "../../platform/ios/memtransfer_ios.h"
+#elif OGLES_GPGPU_ANDROID
+#  include "../../platform/android/memtransfer_android.h"
+#else
+#  include "../../platform/opengl/memtransfer_generic.h"
 #endif
 
 using namespace ogles_gpgpu;
@@ -24,10 +32,12 @@ MemTransfer *MemTransferFactory::createInstance() {
     MemTransfer *instance = NULL;
     
     if (usePlatformOptimizations) {   // create specialized instance
-#ifdef __APPLE__
+#ifdef OGLES_GPGPU_IOS
         instance = (MemTransfer *)new MemTransferIOS();
-#elif __ANDROID__
+#elif OGLES_GPGPU_ANDROID
         instance = (MemTransfer *)new MemTransferAndroid();
+#else
+	instance = (MemTransfer *)new MemTransfer();
 #endif
     }
     
@@ -39,9 +49,9 @@ MemTransfer *MemTransferFactory::createInstance() {
 }
 
 bool MemTransferFactory::tryEnablePlatformOptimizations() {
-#ifdef __APPLE__
+#ifdef OGLES_GPGPU_IOS
 	usePlatformOptimizations = MemTransferIOS::initPlatformOptimizations();
-#elif __ANDROID__
+#elif OGLES_GPGPU_ANDROID
 	usePlatformOptimizations = MemTransferAndroid::initPlatformOptimizations();
 #else
 	usePlatformOptimizations = false;
