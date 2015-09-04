@@ -7,6 +7,7 @@
 // See LICENSE file in project repository root for the license.
 //
 
+#include "../common_includes.h"
 #include "grayscale.h"
 
 using namespace std;
@@ -21,7 +22,11 @@ const GLfloat GrayscaleProc::grayscaleConvVecBGR[3] = {
 };
 
 const char *GrayscaleProc::fshaderGrayscaleSrc = OG_TO_STR(
+
+#if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
+#endif
+
 varying vec2 vTexCoord;
 uniform sampler2D uInputTex;
 uniform vec3 uInputConvVec;

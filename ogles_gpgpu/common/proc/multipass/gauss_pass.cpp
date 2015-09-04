@@ -7,12 +7,16 @@
 // See LICENSE file in project repository root for the license.
 //
 
+#include "../../common_includes.h"
 #include "gauss_pass.h"
 
 using namespace ogles_gpgpu;
 
 const char *GaussProcPass::fshaderGaussSrc = OG_TO_STR(
+
+#if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
+#endif
 
 uniform sampler2D uInputTex;
 uniform float uPxD;

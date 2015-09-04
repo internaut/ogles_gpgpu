@@ -7,6 +7,8 @@
 // See LICENSE file in project repository root for the license.
 //
 
+
+#include "../../common_includes.h"
 #include "adapt_thresh_pass.h"
 
 using namespace ogles_gpgpu;
@@ -15,7 +17,11 @@ using namespace ogles_gpgpu;
 // Perform a vertical 5x1 average gray pixel value calculation
 // Requires a grayscale image as input!
 const char *AdaptThreshProcPass::fshaderAdaptThreshPass1Src = OG_TO_STR(
+
+#if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
+#endif
+
 varying vec2 vTexCoord;
 uniform vec2 uPxD;
 uniform sampler2D uInputTex;
@@ -39,7 +45,11 @@ void main() {
 // Perform a horizontal 7x1 or 5x1 average gray pixel value calculation and
 // the final binarization
 const char *AdaptThreshProcPass::fshaderAdaptThreshPass2Src = OG_TO_STR(
+
+#if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
+#endif
+
 varying vec2 vTexCoord;
 uniform vec2 uPxD;
 uniform sampler2D uInputTex;

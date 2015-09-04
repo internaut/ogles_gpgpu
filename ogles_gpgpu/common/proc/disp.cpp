@@ -7,13 +7,18 @@
 // See LICENSE file in project repository root for the license.
 //
 
+#include "../common_includes.h"
 #include "disp.h"
 
 using namespace std;
 using namespace ogles_gpgpu;
 
 const char *Disp::fshaderDispSrc = OG_TO_STR(
+
+#if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
+#endif
+
 varying vec2 vTexCoord;
 uniform sampler2D uInputTex;
 void main() {

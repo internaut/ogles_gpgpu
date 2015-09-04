@@ -4,5 +4,6 @@ elseif(ANDROID)
   # TODO: Need cmake-fu for APK packaging
   #add_subdirectory(android)
 else()
-  add_subdirectory(opengl)
+  # TODO: Possibly add working (glfw ?) sample
+  #add_subdirectory(opengl)
 endif()
