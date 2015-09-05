@@ -135,7 +135,7 @@ void MemTransfer::toGPU(const unsigned char *buf) {
 
     // copy data as texture to GPU (tested: OS X)
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputW, inputH, 0, GL_BGRA, GL_UNSIGNED_BYTE, buf);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputW, inputH, 0, inputPixelFormat, GL_UNSIGNED_BYTE, buf);
     
     // check for error
     Tools::checkGLErr("MemTransfer", "toGPU (glTexImage2D)");
@@ -149,7 +149,7 @@ void MemTransfer::fromGPU(unsigned char *buf) {
     glBindTexture(GL_TEXTURE_2D, outputTexId);
     
     // default (and slow) way using glReadPixels:
-    glReadPixels(0, 0, outputW, outputH, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+    glReadPixels(0, 0, outputW, outputH, inputPixelFormat, GL_UNSIGNED_BYTE, buf);
 
     // check for error
     Tools::checkGLErr("MemTransfer", "fromGPU (glReadPixels)");
