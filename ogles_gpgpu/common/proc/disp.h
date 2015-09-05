@@ -24,7 +24,20 @@ namespace ogles_gpgpu {
  * Render an input texture to a fullscreen quad.
  */
 class Disp : public FilterProcBase {
-public:    
+public:
+    
+    /**
+     * Output resolution of display.  
+     *
+     * This is useful for setting glViewport correctly.  On Apple Retina displays, for example,
+     * screen coordinates are not in pixels.
+     */
+    virtual void setDisplayResolution(float x, float y)
+    {
+        resolutionX = x;
+        resolutionY = y;
+    }
+    
     /**
      * Return the processors name.
      */
@@ -57,6 +70,10 @@ public:
     virtual MemTransfer *getMemTransferObj() const { assert(false); return NULL; }
 
 private:
+    
+    float resolutionX = 1.f;
+    float resolutionY = 1.f;
+    
     static const char *fshaderDispSrc;         // fragment shader source
 };
     
