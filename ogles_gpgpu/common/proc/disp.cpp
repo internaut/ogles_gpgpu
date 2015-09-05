@@ -23,7 +23,6 @@ varying vec2 vTexCoord;
 uniform sampler2D uInputTex;
 void main() {
     gl_FragColor = vec4(texture2D(uInputTex, vTexCoord).rgba);
-//    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
 );
 
@@ -43,11 +42,13 @@ void Disp::render() {
     OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
     
     filterRenderPrepare();
+    glViewport(0, 0, outFrameW*resolutionX, outFrameH*resolutionY); // override
     Tools::checkGLErr(getProcName(), "render prepare");
     
     filterRenderSetCoords();
     Tools::checkGLErr(getProcName(), "render set coords");
     
+    //glBindBuffer(GL_FRAMEBUFFER, 0);
     filterRenderDraw();
     Tools::checkGLErr(getProcName(), "render draw");
     
