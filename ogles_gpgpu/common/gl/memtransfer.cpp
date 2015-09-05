@@ -130,10 +130,12 @@ void MemTransfer::releaseOutput() {
 void MemTransfer::toGPU(const unsigned char *buf) {
     assert(preparedInput && inputTexId > 0 && buf);
     
+    // set input texture
     glBindTexture(GL_TEXTURE_2D, inputTexId);	// bind input texture
 
-    // copy data as texture to GPU
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputW, inputH, 0, GL_RGBA, GL_UNSIGNED_BYTE, buf);
+    // copy data as texture to GPU (tested: OS X)
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputW, inputH, 0, GL_BGRA, GL_UNSIGNED_BYTE, buf);
     
     // check for error
     Tools::checkGLErr("MemTransfer", "toGPU (glTexImage2D)");
