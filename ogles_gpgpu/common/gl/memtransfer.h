@@ -91,7 +91,7 @@ protected:
      * bind texture if <texId> > 0 and
      * set clamping (allows NPOT textures)
      */
-    virtual void setCommonTextureParams(GLuint texId);
+    virtual void setCommonTextureParams(GLuint texId, GLenum target=GL_TEXTURE_2D);
     
     
     bool initialized;       // is initialized?

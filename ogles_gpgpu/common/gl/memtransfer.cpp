@@ -157,9 +157,11 @@ void MemTransfer::fromGPU(unsigned char *buf) {
 
 #pragma mark protected methods
 
-void MemTransfer::setCommonTextureParams(GLuint texId) {
+void MemTransfer::setCommonTextureParams(GLuint texId, GLenum target) {
     if (texId > 0) {
-        glBindTexture(GL_TEXTURE_2D, texId);
+        Tools::checkGLErr("MemTransfer", "setCommonTextureParams (>glBindTexture)");
+        glBindTexture(target, texId);
+        Tools::checkGLErr("MemTransfer", "setCommonTextureParams (<glBindTexture)");
     }
     
     // set clamping (allows NPOT textures)

@@ -39,6 +39,7 @@ FBO::~FBO() {
 
 void FBO::bind() {
 	glBindFramebuffer(GL_FRAMEBUFFER, id);
+    Tools::checkGLErr("FBO" , "glBindFrameBuffer");
 }
 
 void FBO::unbind() {
@@ -58,7 +59,7 @@ void FBO::destroyAttachedTex() {
     memTransfer->releaseOutput();
 }
 
-void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
+void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment, GLenum target) {
 	assert(memTransfer && w > 0 && h > 0);
     
     // get a corrected width and height when we use a mipmap
@@ -87,16 +88,17 @@ void FBO::createAttachedTex(int w, int h, bool genMipmap, GLenum attachment) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     }
+     Tools::checkGLErr("FBO" , "fbo texture stuff");
     
 	// bind it to FBO
 	glFramebufferTexture2D(GL_FRAMEBUFFER,
 						   attachment,
-						   GL_TEXTURE_2D,
+                           target,
 						   attachedTexId, 0);
     
 	GLenum fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     
-	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) {
+	if (fboStatus != GL_FRAMEBUFFER_COMPLETE) { // GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT
         OG_LOGERR("FBO", "Framebuffer incomplete (error %d)", fboStatus);
         attachedTexId = 0;
 	} else {

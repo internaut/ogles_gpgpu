@@ -76,7 +76,7 @@ public:
      * Will create a framebuffer output texture with texture id <attachedTexId>
      * and will bind it to this FBO.
      */
-    virtual void createAttachedTex(int w, int h, bool genMipmap = false, GLenum attachment = GL_COLOR_ATTACHMENT0);
+    virtual void createAttachedTex(int w, int h, bool genMipmap = false, GLenum attachment = GL_COLOR_ATTACHMENT0, GLenum target=GL_TEXTURE_2D);
     
     /**
      * Copy the framebuffer data which was written to the framebuffer texture back to
