@@ -13,6 +13,8 @@ include(sugar_include)
 
 if(is_ios)
   sugar_include(ios)
+elseif(APPLE)
+  sugar_include(osx)
 elseif(ANDROID)
   sugar_include(android)
 else()

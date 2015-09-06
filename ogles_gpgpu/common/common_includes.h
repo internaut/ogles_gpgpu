@@ -20,6 +20,8 @@
 #  include "TargetConditionals.h"
 #  if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 #    define OGLES_GPGPU_IOS 1
+#  else
+#    define OGLES_GPGPU_OSX 1
 #  endif
 #elif __ANDROID__ || defined(ANDROID)
 #  define OGLES_GPGPU_ANDROID 1
@@ -36,6 +38,9 @@
 #  include "../platform/android/gl_includes.h" 
 #  include "../platform/android/macros.h" 
 #  include "../platform/android/egl.h" 
+#elif OGLES_GPGPU_OSX
+#  include "../platform/osx/gl_includes.h" 
+#  include "macros.h" 
 #else
 #  define OGLES_GPGPU_OPENGL 1
 #  include "../platform/opengl/gl_includes.h"

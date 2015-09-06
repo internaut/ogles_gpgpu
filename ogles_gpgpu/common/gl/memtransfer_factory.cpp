@@ -18,6 +18,8 @@
 
 #ifdef OGLES_GPGPU_IOS
 #  include "../../platform/ios/memtransfer_ios.h"
+#elif OGLES_GPGPU_OSX
+#  include "../../platform/osx/memtransfer_osx.h"
 #elif OGLES_GPGPU_ANDROID
 #  include "../../platform/android/memtransfer_android.h"
 #else
@@ -34,6 +36,8 @@ MemTransfer *MemTransferFactory::createInstance() {
     if (usePlatformOptimizations) {   // create specialized instance
 #ifdef OGLES_GPGPU_IOS
         instance = (MemTransfer *)new MemTransferIOS();
+#elif OGLES_GPGPU_OSX
+        instance = (MemTransfer *)new MemTransferOSX();
 #elif OGLES_GPGPU_ANDROID
         instance = (MemTransfer *)new MemTransferAndroid();
 #else
@@ -51,6 +55,8 @@ MemTransfer *MemTransferFactory::createInstance() {
 bool MemTransferFactory::tryEnablePlatformOptimizations() {
 #ifdef OGLES_GPGPU_IOS
     usePlatformOptimizations = MemTransferIOS::initPlatformOptimizations();
+#elif OGLES_GPGPU_OSX
+    usePlatformOptimizations = MemTransferOSX::initPlatformOptimizations();
 #elif OGLES_GPGPU_ANDROID
     usePlatformOptimizations = MemTransferAndroid::initPlatformOptimizations();
 #else
