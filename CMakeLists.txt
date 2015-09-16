@@ -31,7 +31,7 @@ message("is_linux ${is_linux}")
 message("is_xcode ${is_xcode}")
 
 if(is_xcode)
-  set(CMAKE_CONFIGURATION_TYPES "Debug;Release") 
+  set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 endif()
 
 ## #################################################################
