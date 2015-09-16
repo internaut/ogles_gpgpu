@@ -19,19 +19,19 @@ hunter_add_package(Sugar)
 include("${SUGAR_ROOT}/cmake/Sugar")
 include(sugar_include)
 
-set(is_android ANDROID) # syntax compatibility
+set(is_android ${ANDROID}) # syntax compatibility
 string(COMPARE EQUAL "${CMAKE_OSX_SYSROOT}" "iphoneos" is_ios)
 string(COMPARE EQUAL "${CMAKE_SYSTEM_NAME}" "Linux" is_linux)
 string(COMPARE EQUAL "${CMAKE_BUILD_TYPE}" "DEBUG" is_debug)
 string(COMPARE EQUAL "${CMAKE_GENERATOR}" "Xcode" is_xcode)
 
-message("ANDROID ${ANDROID}")
-message("is_ios ${is_ios}")
-message("is_linux ${is_linux}")
-message("is_xcode ${is_xcode}")
+message("Android: ${is_android}")
+message("iOS    : ${is_ios}")
+message("Linux  : ${is_linux}")
+message("Xcode  : ${is_xcode}")
 
 if(is_xcode)
-  set(CMAKE_CONFIGURATION_TYPES "Debug;Release") 
+  set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
 endif()
 
 ## #################################################################
