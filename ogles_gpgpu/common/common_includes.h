@@ -26,12 +26,10 @@
 #endif
 
 #ifdef OGLES_GPGPU_IOS
-# error no way
 #  define OGLES_GPGPU_OPENGLES 1
 #  include "../platform/ios/gl_includes.h" 
 #  include "macros.h" 
 #elif OGLES_GPGPU_ANDROID
-# error no way
 #  define OGLES_GPGPU_OPENGLES 1
 #  include "../platform/android/gl_includes.h" 
 #  include "../platform/android/macros.h" 
