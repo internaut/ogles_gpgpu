@@ -143,7 +143,7 @@ public class CamActivity
 
     /**
      * Activity resume - create ogles_gpgpu wrapper object, create and start
-     * image processing thread, start the camera und re-initialize the surface
+     * image processing thread, start the camera and re-initialize the surface
      * if it already exists (screen was switched off before).
      */
     @Override
