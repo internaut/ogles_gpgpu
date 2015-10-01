@@ -284,9 +284,12 @@ public class CamActivity
         // application shutdown
         if (camTexture == null || windowSurface == null) return;
 
+	//eglCore.makeCurrent(windowSurface); //  public void makeCurrent(EGLSurface eglSurface)
+        windowSurface.makeCurrent();
+
         // update camera frame texture
         GLES20.glActiveTexture(GLES20.GL_TEXTURE1);
-        eglMakeCurrent();
+
         camTexture.updateTexImage();
 
         // set ogles_gpgpu input texture: the camera frame texture id
