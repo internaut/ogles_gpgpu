@@ -300,7 +300,7 @@ GLuint MemTransferAndroid::prepareOutput(int outTexW, int outTexH) {
 }
 
 void MemTransferAndroid::toGPU(const unsigned char *buf) {
-    assert(preparedInput && inputPixelBuffer && inputTexId > 0 && buf);
+    assert(preparedInput && inputImage && inputTexId > 0 && buf);
 
     // bind the input texture
     glBindTexture(GL_TEXTURE_2D, inputTexId);
@@ -322,7 +322,7 @@ void MemTransferAndroid::toGPU(const unsigned char *buf) {
 }
 
 void MemTransferAndroid::fromGPU(unsigned char *buf) {
-    assert(preparedOutput && outputPixelBuffer && outputTexId > 0 && buf);
+    assert(preparedOutput && outputImage && outputTexId > 0 && buf);
 
     // bind the output texture
     glBindTexture(GL_TEXTURE_2D, outputTexId);
