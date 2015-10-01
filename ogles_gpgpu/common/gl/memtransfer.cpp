@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -42,74 +42,74 @@ MemTransfer::~MemTransfer() {
 
 GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat, void *inputDataPtr) {
     assert(initialized && inTexW > 0 && inTexH > 0);
-    
+
     if (inputW == inTexW && inputH == inTexH && inputPixelFormat == inputPxFormat) {
         return inputTexId; // no change
     }
-    
+
     if (preparedInput) {    // already prepared -- release buffers!
         releaseInput();
     }
-    
+
     // set attributes
     inputW = inTexW;
     inputH = inTexH;
     inputPixelFormat = inputPxFormat;
-    
+
     // generate texture id
     glGenTextures(1, &inputTexId);
-    
+
     if (inputTexId == 0) {
         OG_LOGERR("MemTransfer", "no valid input texture generated");
         return 0;
     }
-    
+
     // done
     preparedInput = true;
-    
+
     return inputTexId;
 }
 
 GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
     assert(initialized && outTexW > 0 && outTexH > 0);
-    
+
     if (outputW == outTexW && outputH == outTexH) {
         return outputTexId; // no change
     }
-    
+
     if (preparedOutput) {    // already prepared -- release buffers!
         releaseOutput();
     }
-    
+
     // set attributes
     outputW = outTexW;
     outputH = outTexH;
-    
+
     // generate texture id
     glGenTextures(1, &outputTexId);
-    
+
     if (outputTexId == 0) {
         OG_LOGERR("MemTransfer", "no valid output texture generated");
         return 0;
     }
-    
+
     // will bind the texture, too:
     setCommonTextureParams(outputTexId);
-    
+
     Tools::checkGLErr("MemTransfer", "fbo texture parameters");
-    
+
     // create empty texture space on GPU
     glTexImage2D(GL_TEXTURE_2D, 0,
-		 GL_RGBA,
-		 outTexW, outTexH, 0,
-		 GL_RGBA, GL_UNSIGNED_BYTE,
-		 NULL);	// we do not need to pass texture data -> it will be generated!
-    
+                 GL_RGBA,
+                 outTexW, outTexH, 0,
+                 GL_RGBA, GL_UNSIGNED_BYTE,
+                 NULL);	// we do not need to pass texture data -> it will be generated!
+
     Tools::checkGLErr("MemTransfer", "fbo texture creation");
-    
+
     // done
     preparedOutput = true;
-    
+
     return outputTexId;
 }
 
@@ -129,25 +129,25 @@ void MemTransfer::releaseOutput() {
 
 void MemTransfer::toGPU(const unsigned char *buf) {
     assert(preparedInput && inputTexId > 0 && buf);
-    
+
     // set input texture
     glBindTexture(GL_TEXTURE_2D, inputTexId);	// bind input texture
 
     // copy data as texture to GPU (tested: OS X)
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, inputW, inputH, 0, inputPixelFormat, GL_UNSIGNED_BYTE, buf);
-    
+
     // check for error
     Tools::checkGLErr("MemTransfer", "toGPU (glTexImage2D)");
-    
+
     setCommonTextureParams(0);
 }
 
 void MemTransfer::fromGPU(unsigned char *buf) {
     assert(preparedOutput && outputTexId > 0 && buf);
-    
+
     glBindTexture(GL_TEXTURE_2D, outputTexId);
-    
+
     // default (and slow) way using glReadPixels:
     glReadPixels(0, 0, outputW, outputH, inputPixelFormat, GL_UNSIGNED_BYTE, buf);
 
@@ -163,7 +163,7 @@ void MemTransfer::setCommonTextureParams(GLuint texId, GLenum target) {
         glBindTexture(target, texId);
         Tools::checkGLErr("MemTransfer", "setCommonTextureParams (<glBindTexture)");
     }
-    
+
     // set clamping (allows NPOT textures)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);

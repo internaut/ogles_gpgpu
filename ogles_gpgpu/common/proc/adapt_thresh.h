@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -24,17 +24,19 @@ public:
     AdaptThreshProc() {
         AdaptThreshProcPass *adaptThreshPass1 = new AdaptThreshProcPass(1);
         AdaptThreshProcPass *adaptThreshPass2 = new AdaptThreshProcPass(2);
-        
+
         procPasses.push_back(adaptThreshPass1);
         procPasses.push_back(adaptThreshPass2);
-        
+
         multiPassInit();
     }
-    
+
     /**
      * Return the processors name.
      */
-    virtual const char *getProcName() { return "AdaptThreshProc"; }
+    virtual const char *getProcName() {
+        return "AdaptThreshProc";
+    }
 };
 }
 

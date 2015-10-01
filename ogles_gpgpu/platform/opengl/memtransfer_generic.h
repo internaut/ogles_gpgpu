@@ -11,7 +11,7 @@
 #define OGLES_GPGPU_ANDROID_GL_MEMTRANSFER_GENERIC
 
 namespace ogles_gpgpu {
-    // Probably not needed
+// Probably not needed
 }
 
 #endif

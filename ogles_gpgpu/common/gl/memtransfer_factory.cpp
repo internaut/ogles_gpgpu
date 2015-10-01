@@ -32,7 +32,7 @@ bool MemTransferFactory::usePlatformOptimizations = false;
 
 MemTransfer *MemTransferFactory::createInstance() {
     MemTransfer *instance = NULL;
-    
+
     if (usePlatformOptimizations) {   // create specialized instance
 #ifdef OGLES_GPGPU_IOS
         instance = (MemTransfer *)new MemTransferIOS();
@@ -44,11 +44,11 @@ MemTransfer *MemTransferFactory::createInstance() {
         instance = (MemTransfer *)new MemTransfer();
 #endif
     }
-    
+
     if (!instance) {    // create default instance
         instance = new MemTransfer();
     }
-    
+
     return instance;
 }
 
@@ -62,6 +62,6 @@ bool MemTransferFactory::tryEnablePlatformOptimizations() {
 #else
     usePlatformOptimizations = false;
 #endif
-    
+
     return usePlatformOptimizations;
 }

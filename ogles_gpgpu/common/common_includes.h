@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -29,20 +29,20 @@
 
 #ifdef OGLES_GPGPU_IOS
 #  define OGLES_GPGPU_OPENGLES 1
-#  include "../platform/ios/gl_includes.h" 
-#  include "macros.h" 
+#  include "../platform/ios/gl_includes.h"
+#  include "macros.h"
 #elif OGLES_GPGPU_ANDROID
 #  define OGLES_GPGPU_OPENGLES 1
-#  include "../platform/android/gl_includes.h" 
-#  include "../platform/android/macros.h" 
-#  include "../platform/android/egl.h" 
+#  include "../platform/android/gl_includes.h"
+#  include "../platform/android/macros.h"
+#  include "../platform/android/egl.h"
 #elif OGLES_GPGPU_OSX
-#  include "../platform/osx/gl_includes.h" 
-#  include "macros.h" 
+#  include "../platform/osx/gl_includes.h"
+#  include "macros.h"
 #else
 #  define OGLES_GPGPU_OPENGL 1
 #  include "../platform/opengl/gl_includes.h"
-#  include "macros.h" 
+#  include "macros.h"
 #endif
 
 /* #ifdef __APPLE__ */
