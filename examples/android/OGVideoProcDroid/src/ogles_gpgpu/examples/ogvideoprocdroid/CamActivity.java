@@ -68,7 +68,7 @@ public class CamActivity
     SurfaceTexture.OnFrameAvailableListener {
     private final static String TAG = "CamActivity";
 
-    private final static int CAM_FPS = 30;		/** requested camera frames. change this if it is not supported by your device */
+    private final static int CAM_FPS = 30;    /** requested camera frames. change this if it is not supported by your device */
     private final static int CAM_FRAME_TEXTURE_TARGET = GLES11Ext.GL_TEXTURE_EXTERNAL_OES;
 
     /**
@@ -176,7 +176,7 @@ public class CamActivity
         // the screen was turned off and on again
         if (surfaceHolder != null) {
             Log.i(TAG, "surface holder already existent");
-            mainInit(surfaceHolder, false);	// re-initialize everything in this case
+            mainInit(surfaceHolder, false);  // re-initialize everything in this case
         } else {
             Log.i(TAG, "surface holder will be set automatically");
             // surfaceCreated() will be called automatically later when the
@@ -284,7 +284,7 @@ public class CamActivity
         // application shutdown
         if (camTexture == null || windowSurface == null) return;
 
-	//eglCore.makeCurrent(windowSurface); //  public void makeCurrent(EGLSurface eglSurface)
+  //eglCore.makeCurrent(windowSurface); //  public void makeCurrent(EGLSurface eglSurface)
         windowSurface.makeCurrent();
 
         // update camera frame texture
@@ -370,7 +370,7 @@ public class CamActivity
      * Open the camera device.
      */
     private void startCam() {
-        if (cam != null) return;	// already existing -> abort
+        if (cam != null) return;  // already existing -> abort
 
         Log.i(TAG, "starting camera");
 
@@ -526,8 +526,8 @@ public class CamActivity
      */
     private class CPUImgProcThread extends Thread {
         private boolean running = false;
-        private ByteBuffer imgData;						// passed output pixel data as ARGB bytes values
-        private float[] outputHist = new float[256];	// output histogram
+        private ByteBuffer imgData;            // passed output pixel data as ARGB bytes values
+        private float[] outputHist = new float[256];  // output histogram
 
         /**
          * Thread run loop. Will run until terminate() is called.
@@ -580,7 +580,7 @@ public class CamActivity
          * only valid until the next call to "getOutputPixels()"!
          */
         public void update() {
-            if (imgData != null || !running) return;	// image data already in use right now
+            if (imgData != null || !running) return;  // image data already in use right now
 
             // get reference to current result image data
             imgData = ogWrapper.getOutputPixels();
@@ -609,7 +609,7 @@ public class CamActivity
 
             // count values and store them in absolute histogram
             while (intData.hasRemaining()) {
-                int grayVal = (intData.get() >> 8) & 0x000000FF;	// get the "B" channel
+                int grayVal = (intData.get() >> 8) & 0x000000FF;  // get the "B" channel
 
                 outputHist[grayVal] += 1.0f;
             }
