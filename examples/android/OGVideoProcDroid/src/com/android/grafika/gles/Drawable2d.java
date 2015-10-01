@@ -28,9 +28,9 @@ public class Drawable2d {
      * Simple equilateral triangle (1.0 per side).  Centered on (0,0).
      */
     private static final float TRIANGLE_COORDS[] = {
-         0.0f,  0.577350269f,   // 0 top
+        0.0f,  0.577350269f,   // 0 top
         -0.5f, -0.288675135f,   // 1 bottom left
-         0.5f, -0.288675135f    // 2 bottom right
+        0.5f, -0.288675135f    // 2 bottom right
     };
     private static final float TRIANGLE_TEX_COORDS[] = {
         0.5f, 0.0f,     // 0 top center
@@ -38,9 +38,9 @@ public class Drawable2d {
         1.0f, 1.0f,     // 2 bottom right
     };
     private static final FloatBuffer TRIANGLE_BUF =
-            GlUtil.createFloatBuffer(TRIANGLE_COORDS);
+        GlUtil.createFloatBuffer(TRIANGLE_COORDS);
     private static final FloatBuffer TRIANGLE_TEX_BUF =
-            GlUtil.createFloatBuffer(TRIANGLE_TEX_COORDS);
+        GlUtil.createFloatBuffer(TRIANGLE_TEX_COORDS);
 
     /**
      * Simple square, specified as a triangle strip.  The square is centered on (0,0) and has
@@ -50,9 +50,9 @@ public class Drawable2d {
      */
     private static final float RECTANGLE_COORDS[] = {
         -0.5f, -0.5f,   // 0 bottom left
-         0.5f, -0.5f,   // 1 bottom right
+        0.5f, -0.5f,   // 1 bottom right
         -0.5f,  0.5f,   // 2 top left
-         0.5f,  0.5f,   // 3 top right
+        0.5f,  0.5f,   // 3 top right
     };
     private static final float RECTANGLE_TEX_COORDS[] = {
         0.0f, 1.0f,     // 0 bottom left
@@ -61,9 +61,9 @@ public class Drawable2d {
         1.0f, 0.0f      // 3 top right
     };
     private static final FloatBuffer RECTANGLE_BUF =
-            GlUtil.createFloatBuffer(RECTANGLE_COORDS);
+        GlUtil.createFloatBuffer(RECTANGLE_COORDS);
     private static final FloatBuffer RECTANGLE_TEX_BUF =
-            GlUtil.createFloatBuffer(RECTANGLE_TEX_COORDS);
+        GlUtil.createFloatBuffer(RECTANGLE_TEX_COORDS);
 
     /**
      * A "full" square, extending from -1 to +1 in both dimensions.  When the model/view/projection
@@ -74,9 +74,9 @@ public class Drawable2d {
      */
     private static final float FULL_RECTANGLE_COORDS[] = {
         -1.0f, -1.0f,   // 0 bottom left
-         1.0f, -1.0f,   // 1 bottom right
+        1.0f, -1.0f,   // 1 bottom right
         -1.0f,  1.0f,   // 2 top left
-         1.0f,  1.0f,   // 3 top right
+        1.0f,  1.0f,   // 3 top right
     };
     private static final float FULL_RECTANGLE_TEX_COORDS[] = {
         0.0f, 0.0f,     // 0 bottom left
@@ -85,9 +85,9 @@ public class Drawable2d {
         1.0f, 1.0f      // 3 top right
     };
     private static final FloatBuffer FULL_RECTANGLE_BUF =
-            GlUtil.createFloatBuffer(FULL_RECTANGLE_COORDS);
+        GlUtil.createFloatBuffer(FULL_RECTANGLE_COORDS);
     private static final FloatBuffer FULL_RECTANGLE_TEX_BUF =
-            GlUtil.createFloatBuffer(FULL_RECTANGLE_TEX_COORDS);
+        GlUtil.createFloatBuffer(FULL_RECTANGLE_TEX_COORDS);
 
 
     private FloatBuffer mVertexArray;
@@ -112,29 +112,29 @@ public class Drawable2d {
      */
     public Drawable2d(Prefab shape) {
         switch (shape) {
-            case TRIANGLE:
-                mVertexArray = TRIANGLE_BUF;
-                mTexCoordArray = TRIANGLE_TEX_BUF;
-                mCoordsPerVertex = 2;
-                mVertexStride = mCoordsPerVertex * SIZEOF_FLOAT;
-                mVertexCount = TRIANGLE_COORDS.length / mCoordsPerVertex;
-                break;
-            case RECTANGLE:
-                mVertexArray = RECTANGLE_BUF;
-                mTexCoordArray = RECTANGLE_TEX_BUF;
-                mCoordsPerVertex = 2;
-                mVertexStride = mCoordsPerVertex * SIZEOF_FLOAT;
-                mVertexCount = RECTANGLE_COORDS.length / mCoordsPerVertex;
-                break;
-            case FULL_RECTANGLE:
-                mVertexArray = FULL_RECTANGLE_BUF;
-                mTexCoordArray = FULL_RECTANGLE_TEX_BUF;
-                mCoordsPerVertex = 2;
-                mVertexStride = mCoordsPerVertex * SIZEOF_FLOAT;
-                mVertexCount = FULL_RECTANGLE_COORDS.length / mCoordsPerVertex;
-                break;
-            default:
-                throw new RuntimeException("Unknown shape " + shape);
+        case TRIANGLE:
+            mVertexArray = TRIANGLE_BUF;
+            mTexCoordArray = TRIANGLE_TEX_BUF;
+            mCoordsPerVertex = 2;
+            mVertexStride = mCoordsPerVertex * SIZEOF_FLOAT;
+            mVertexCount = TRIANGLE_COORDS.length / mCoordsPerVertex;
+            break;
+        case RECTANGLE:
+            mVertexArray = RECTANGLE_BUF;
+            mTexCoordArray = RECTANGLE_TEX_BUF;
+            mCoordsPerVertex = 2;
+            mVertexStride = mCoordsPerVertex * SIZEOF_FLOAT;
+            mVertexCount = RECTANGLE_COORDS.length / mCoordsPerVertex;
+            break;
+        case FULL_RECTANGLE:
+            mVertexArray = FULL_RECTANGLE_BUF;
+            mTexCoordArray = FULL_RECTANGLE_TEX_BUF;
+            mCoordsPerVertex = 2;
+            mVertexStride = mCoordsPerVertex * SIZEOF_FLOAT;
+            mVertexCount = FULL_RECTANGLE_COORDS.length / mCoordsPerVertex;
+            break;
+        default:
+            throw new RuntimeException("Unknown shape " + shape);
         }
         mTexCoordStride = 2 * SIZEOF_FLOAT;
         mPrefab = shape;

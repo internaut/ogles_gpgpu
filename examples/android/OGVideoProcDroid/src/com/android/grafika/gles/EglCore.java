@@ -96,11 +96,11 @@ public final class EglCore {
             EGLConfig config = getConfig(flags, 3);
             if (config != null) {
                 int[] attrib3_list = {
-                        EGL14.EGL_CONTEXT_CLIENT_VERSION, 3,
-                        EGL14.EGL_NONE
+                    EGL14.EGL_CONTEXT_CLIENT_VERSION, 3,
+                    EGL14.EGL_NONE
                 };
                 EGLContext context = EGL14.eglCreateContext(mEGLDisplay, config, sharedContext,
-                        attrib3_list, 0);
+                                     attrib3_list, 0);
 
                 if (EGL14.eglGetError() == EGL14.EGL_SUCCESS) {
                     //Log.d(TAG, "Got GLES 3 config");
@@ -117,11 +117,11 @@ public final class EglCore {
                 throw new RuntimeException("Unable to find a suitable EGLConfig");
             }
             int[] attrib2_list = {
-                    EGL14.EGL_CONTEXT_CLIENT_VERSION, 2,
-                    EGL14.EGL_NONE
+                EGL14.EGL_CONTEXT_CLIENT_VERSION, 2,
+                EGL14.EGL_NONE
             };
             EGLContext context = EGL14.eglCreateContext(mEGLDisplay, config, sharedContext,
-                    attrib2_list, 0);
+                                 attrib2_list, 0);
             checkEglError("eglCreateContext");
             mEGLConfig = config;
             mEGLContext = context;
@@ -131,7 +131,7 @@ public final class EglCore {
         // Confirm with query.
         int[] values = new int[1];
         EGL14.eglQueryContext(mEGLDisplay, mEGLContext, EGL14.EGL_CONTEXT_CLIENT_VERSION,
-                values, 0);
+                              values, 0);
         Log.d(TAG, "EGLContext created, client version " + values[0]);
     }
 
@@ -151,15 +151,15 @@ public final class EglCore {
         // doesn't really help.  It can also lead to a huge performance hit on glReadPixels()
         // when reading into a GL_RGBA buffer.
         int[] attribList = {
-                EGL14.EGL_RED_SIZE, 8,
-                EGL14.EGL_GREEN_SIZE, 8,
-                EGL14.EGL_BLUE_SIZE, 8,
-                EGL14.EGL_ALPHA_SIZE, 8,
-                //EGL14.EGL_DEPTH_SIZE, 16,
-                //EGL14.EGL_STENCIL_SIZE, 8,
-                EGL14.EGL_RENDERABLE_TYPE, renderableType,
-                EGL14.EGL_NONE, 0,      // placeholder for recordable [@-3]
-                EGL14.EGL_NONE
+            EGL14.EGL_RED_SIZE, 8,
+            EGL14.EGL_GREEN_SIZE, 8,
+            EGL14.EGL_BLUE_SIZE, 8,
+            EGL14.EGL_ALPHA_SIZE, 8,
+            //EGL14.EGL_DEPTH_SIZE, 16,
+            //EGL14.EGL_STENCIL_SIZE, 8,
+            EGL14.EGL_RENDERABLE_TYPE, renderableType,
+            EGL14.EGL_NONE, 0,      // placeholder for recordable [@-3]
+            EGL14.EGL_NONE
         };
         if ((flags & FLAG_RECORDABLE) != 0) {
             attribList[attribList.length - 3] = EGL_RECORDABLE_ANDROID;
@@ -168,7 +168,7 @@ public final class EglCore {
         EGLConfig[] configs = new EGLConfig[1];
         int[] numConfigs = new int[1];
         if (!EGL14.eglChooseConfig(mEGLDisplay, attribList, 0, configs, 0, configs.length,
-                numConfigs, 0)) {
+                                   numConfigs, 0)) {
             Log.w(TAG, "unable to find RGB8888 / " + version + " EGLConfig");
             return null;
         }
@@ -186,7 +186,7 @@ public final class EglCore {
             // Android is unusual in that it uses a reference-counted EGLDisplay.  So for
             // every eglInitialize() we need an eglTerminate().
             EGL14.eglMakeCurrent(mEGLDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE,
-                    EGL14.EGL_NO_CONTEXT);
+                                 EGL14.EGL_NO_CONTEXT);
             EGL14.eglDestroyContext(mEGLDisplay, mEGLContext);
             EGL14.eglReleaseThread();
             EGL14.eglTerminate(mEGLDisplay);
@@ -233,10 +233,10 @@ public final class EglCore {
 
         // Create a window surface, and attach it to the Surface we received.
         int[] surfaceAttribs = {
-                EGL14.EGL_NONE
+            EGL14.EGL_NONE
         };
         EGLSurface eglSurface = EGL14.eglCreateWindowSurface(mEGLDisplay, mEGLConfig, surface,
-                surfaceAttribs, 0);
+                                surfaceAttribs, 0);
         checkEglError("eglCreateWindowSurface");
         if (eglSurface == null) {
             throw new RuntimeException("surface was null");
@@ -249,12 +249,12 @@ public final class EglCore {
      */
     public EGLSurface createOffscreenSurface(int width, int height) {
         int[] surfaceAttribs = {
-                EGL14.EGL_WIDTH, width,
-                EGL14.EGL_HEIGHT, height,
-                EGL14.EGL_NONE
+            EGL14.EGL_WIDTH, width,
+            EGL14.EGL_HEIGHT, height,
+            EGL14.EGL_NONE
         };
         EGLSurface eglSurface = EGL14.eglCreatePbufferSurface(mEGLDisplay, mEGLConfig,
-                surfaceAttribs, 0);
+                                surfaceAttribs, 0);
         checkEglError("eglCreatePbufferSurface");
         if (eglSurface == null) {
             throw new RuntimeException("surface was null");
@@ -293,7 +293,7 @@ public final class EglCore {
      */
     public void makeNothingCurrent() {
         if (!EGL14.eglMakeCurrent(mEGLDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE,
-                EGL14.EGL_NO_CONTEXT)) {
+                                  EGL14.EGL_NO_CONTEXT)) {
             throw new RuntimeException("eglMakeCurrent failed");
         }
     }
@@ -319,7 +319,7 @@ public final class EglCore {
      */
     public boolean isCurrent(EGLSurface eglSurface) {
         return mEGLContext.equals(EGL14.eglGetCurrentContext()) &&
-            eglSurface.equals(EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW));
+               eglSurface.equals(EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW));
     }
 
     /**
@@ -357,7 +357,7 @@ public final class EglCore {
         context = EGL14.eglGetCurrentContext();
         surface = EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW);
         Log.i(TAG, "Current EGL (" + msg + "): display=" + display + ", context=" + context +
-                ", surface=" + surface);
+              ", surface=" + surface);
     }
 
     /**

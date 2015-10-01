@@ -28,18 +28,18 @@ public class FlatShadedProgram {
     private static final String TAG = GlUtil.TAG;
 
     private static final String VERTEX_SHADER =
-            "uniform mat4 uMVPMatrix;" +
-            "attribute vec4 aPosition;" +
-            "void main() {" +
-            "    gl_Position = uMVPMatrix * aPosition;" +
-            "}";
+        "uniform mat4 uMVPMatrix;" +
+        "attribute vec4 aPosition;" +
+        "void main() {" +
+        "    gl_Position = uMVPMatrix * aPosition;" +
+        "}";
 
     private static final String FRAGMENT_SHADER =
-            "precision mediump float;" +
-            "uniform vec4 uColor;" +
-            "void main() {" +
-            "    gl_FragColor = uColor;" +
-            "}";
+        "precision mediump float;" +
+        "uniform vec4 uColor;" +
+        "void main() {" +
+        "    gl_FragColor = uColor;" +
+        "}";
 
     // Handles to the GL program and various components of it.
     private int mProgramHandle = -1;
@@ -89,7 +89,7 @@ public class FlatShadedProgram {
      *        sizeof(float)).
      */
     public void draw(float[] mvpMatrix, float[] color, FloatBuffer vertexBuffer,
-            int firstVertex, int vertexCount, int coordsPerVertex, int vertexStride) {
+                     int firstVertex, int vertexCount, int coordsPerVertex, int vertexStride) {
         GlUtil.checkGlError("draw start");
 
         // Select the program.
@@ -110,7 +110,7 @@ public class FlatShadedProgram {
 
         // Connect vertexBuffer to "aPosition".
         GLES20.glVertexAttribPointer(maPositionLoc, coordsPerVertex,
-            GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
+                                     GLES20.GL_FLOAT, false, vertexStride, vertexBuffer);
         GlUtil.checkGlError("glVertexAttribPointer");
 
         // Draw the rect.

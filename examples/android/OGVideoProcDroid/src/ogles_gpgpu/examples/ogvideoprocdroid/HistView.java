@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -19,55 +19,55 @@ import android.util.Log;
 import android.view.View;
 
 public class HistView extends View {
-	private final String TAG = this.getClass().getSimpleName();
-	
-	private float[] hist;
-	
-	private Paint barPaint = new Paint();
-	
-	public HistView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    private final String TAG = this.getClass().getSimpleName();
 
-	
-	@Override
-	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-		
-		setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
-		
-		barPaint.setARGB(255, 255, 255, 255);
-	}
+    private float[] hist;
 
-	@Override
-	protected void onDraw(Canvas canvas) {
-		canvas.drawARGB(128, 0, 0, 0);
-		
-		if (hist == null) return;
-		
-		float w = canvas.getWidth();
-		float h = canvas.getHeight();
-		
-		int barDist = (int)(w / 256.0f);
-		int barW = barDist / 2;
-		int x = 0;
-		
-		for (float v : hist) {
-			float barH = v * h;
+    private Paint barPaint = new Paint();
 
-			canvas.drawRect(x, h - barH, x + barW, h, barPaint);
-			
-			x += barDist;
-		}
-		
-		super.onDraw(canvas);
-	}
-	
-	public void getHistCopy(float[] arr) {
-		this.hist = Arrays.copyOf(arr, arr.length);
-	}
+    public HistView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public void setHist(float[] hist) {
-		this.hist = hist;
-	}
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        setMeasuredDimension(widthMeasureSpec, heightMeasureSpec);
+
+        barPaint.setARGB(255, 255, 255, 255);
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        canvas.drawARGB(128, 0, 0, 0);
+
+        if (hist == null) return;
+
+        float w = canvas.getWidth();
+        float h = canvas.getHeight();
+
+        int barDist = (int)(w / 256.0f);
+        int barW = barDist / 2;
+        int x = 0;
+
+        for (float v : hist) {
+            float barH = v * h;
+
+            canvas.drawRect(x, h - barH, x + barW, h, barPaint);
+
+            x += barDist;
+        }
+
+        super.onDraw(canvas);
+    }
+
+    public void getHistCopy(float[] arr) {
+        this.hist = Arrays.copyOf(arr, arr.length);
+    }
+
+    public void setHist(float[] hist) {
+        this.hist = hist;
+    }
 }
