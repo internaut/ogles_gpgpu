@@ -284,7 +284,6 @@ public class CamActivity
         // application shutdown
         if (camTexture == null || windowSurface == null) return;
 
-  //eglCore.makeCurrent(windowSurface); //  public void makeCurrent(EGLSurface eglSurface)
         windowSurface.makeCurrent();
 
         // update camera frame texture
