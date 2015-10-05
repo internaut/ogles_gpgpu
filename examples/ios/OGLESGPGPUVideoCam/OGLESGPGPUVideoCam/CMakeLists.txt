@@ -3,12 +3,9 @@
 
 cmake_minimum_required(VERSION 3.0.0)
 
-### Emulate toolchain
-set(CMAKE_OSX_SYSROOT "iphoneos")
-set(CMAKE_XCODE_EFFECTIVE_PLATFORMS "-iphoneos;-iphonesimulator")
-set(CMAKE_DEBUG_POSTFIX d)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-### -- end
+if(NOT IOS)
+  message(FATAL_ERROR "Please use iOS toolchain")
+endif()
 
 include_directories("${SUGAR_ROOT}/examples/third_party")
 include_directories("${CMAKE_SOURCE_DIR}/src/app/ios")
@@ -40,7 +37,6 @@ set_target_properties(
   PROPERTIES
   MACOSX_BUNDLE YES
   MACOSX_BUNDLE_INFO_PLIST "${CMAKE_CURRENT_LIST_DIR}/storyboard.plist.in"
-  XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY "iPhone Developer"
   XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY "1,2" # Universal (iPad + iPhone)
   # http://stackoverflow.com/a/20982506/2288008
   XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES
