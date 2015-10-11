@@ -16,15 +16,15 @@ using namespace ogles_gpgpu;
 const char *Disp::fshaderDispSrc = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
-                                       precision mediump float;
+precision mediump float;
 #endif
 
-                                       varying vec2 vTexCoord;
-                                       uniform sampler2D uInputTex;
+varying vec2 vTexCoord;
+uniform sampler2D uInputTex;
 void main() {
     gl_FragColor = vec4(texture2D(uInputTex, vTexCoord).rgba);
 }
-                                   );
+);
 
 int Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     OG_LOGINF(getProcName(), "initialize");
