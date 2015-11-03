@@ -2,7 +2,9 @@ include(sugar_include)
 sugar_include(.)
 
 add_library(ogles_gpgpu ${OGLES_GPGPU_SRCS} )
-#target_link_libraries(ogles_gpgpu )
+if(ANDROID)
+  target_link_libraries(ogles_gpgpu PUBLIC EGL GLESv2)
+endif()
 set_property(TARGET ${library} PROPERTY FOLDER "libs/ogles_gpgpu")
 
 #
