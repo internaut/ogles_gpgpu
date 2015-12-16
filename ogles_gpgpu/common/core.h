@@ -185,6 +185,20 @@ public:
      */
     static bool tryEnablePlatformOptimizations();
 
+#ifdef OGLES_GPGPU_IOS
+    /**
+     * @brief Pring information about CVPixelBufferRef object using NSLog
+     * @param tag - some string to tag message
+     * @pixelBuffer - CVPixelBufferRef object
+     */
+    static void printCVPixelBuffer(const char* tag, void* pixelBuffer);
+
+    /**
+     * @brief Get current EAGLContext
+     */
+    static void* getCurrentEAGLContext();
+#endif
+
 private:
     /**
      * Private constructor for singleton instance.

@@ -17,3 +17,10 @@ sugar_files(
     memtransfer_ios.cpp
     memtransfer_ios.h
 )
+
+if(IOS)
+  sugar_files(
+      OGLES_GPGPU_SRCS
+      core.mm
+  )
+endif()
