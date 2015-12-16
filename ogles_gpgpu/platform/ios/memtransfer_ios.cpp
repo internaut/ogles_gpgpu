@@ -176,6 +176,7 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
             &texRef);
 
     if (res != kCVReturnSuccess) {
+        Core::printCVPixelBuffer("Texture creation failed", bufRef);
         OG_LOGERR("MemTransferIOS", "CVOpenGLESTextureCacheCreateTextureFromImage error %d (input)", res);
         preparedInput = false;
         return 0;
