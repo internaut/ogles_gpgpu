@@ -3,11 +3,10 @@
 
 cmake_minimum_required(VERSION 3.0)
 
-### Hunter snapshot that will be used ###
 include("cmake/HunterGate.cmake")
 HunterGate(
-    URL "https://github.com/ruslo/hunter/archive/v0.8.13.tar.gz"
-    SHA1 "7103f0ab481523ca93a06c1c55abcd56741d3a97"
+    URL "https://github.com/ruslo/hunter/archive/v0.12.33.tar.gz"
+    SHA1 "f64eda11326e12d84b6aa7f4aed80c09c182aa64"
 )
 
 project(ogles_gpgpu VERSION 0.1.0) # Don't see version #?
