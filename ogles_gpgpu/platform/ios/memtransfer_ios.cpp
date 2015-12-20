@@ -129,11 +129,6 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
     inputH = inTexH;
     inputPixelFormat = inputPxFormat;
 
-    // prepare
-    CVPixelBufferRef bufRef = (CVPixelBufferRef)inputDataPtr;
-    CVOpenGLESTextureRef texRef;
-    CVReturn res;
-
     // define pixel format
     OSType pxBufFmt;
     if (inputPixelFormat == GL_BGRA) {
@@ -143,15 +138,45 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
         preparedInput = false;
         return 0;
     }
-
-    // create input pixel buffer if necessary
-    if (!bufRef) {
+    
+    // prepare
+    CVPixelBufferRef bufRef;
+    CVOpenGLESTextureRef texRef;
+    CVReturn res;
+    
+    if(inputDataPtr) {
+        if(useRawPixels) {
+            res = CVPixelBufferCreateWithBytes(
+                                               kCFAllocatorDefault,
+                                               inputW,
+                                               inputH,
+                                               kCVPixelFormatType_32BGRA,
+                                               inputDataPtr,
+                                               inputW * 4,
+                                               nullptr, // releaseCallback
+                                               nullptr, // releaseRefCon
+                                               bufferAttr, // pixelBufferAttributes
+                                               &bufRef);
+            if (res != kCVReturnSuccess) {
+                OG_LOGERR("MemTransferIOS", "CVPixelBufferCreate error %d (input)", res);
+                preparedInput = false;
+                return 0;
+            }
+        }
+        else {
+            bufRef = (CVPixelBufferRef)inputDataPtr;
+        }
+    }
+    else {
+        
+        // create input pixel buffer if necessary
         res = CVPixelBufferCreate(kCFAllocatorDefault,
-                                  inputW, inputH,
+                                  inputW,
+                                  inputH,
                                   pxBufFmt,
                                   bufferAttr,
                                   &bufRef);
-
+        
         if (res != kCVReturnSuccess) {
             OG_LOGERR("MemTransferIOS", "CVPixelBufferCreate error %d (input)", res);
             preparedInput = false;
@@ -185,14 +210,38 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
     // get created texture id
     inputTexId = CVOpenGLESTextureGetName(texRef);
 
+    /*
+    if(inputDataPtr)
+    {
+        struct pixel { uint8_t b, g, r, a; };
+        std::vector<pixel> buffer(inputH * inputW);
+        glReadPixels(0, 0, inputW, inputH, GL_BGRA, GL_UNSIGNED_BYTE, &buffer[0].b);
+        
+        double total[4] = { 0.0, 0.0, 0.0, 0.0 };
+        const pixel * ptr = &buffer[0];
+        for(int i = 0; i < inputH * inputW; i++, ptr++)
+        {
+            total[0] += ptr->b;
+            total[1] += ptr->g;
+            total[2] += ptr->r;
+            total[3] += ptr->a;
+        }
+        std::cout << total[0] << " " << total[1] << std::endl;
+    }
+     */
+    
     OG_LOGINF("MemTransferIOS", "created input tex with id %d", inputTexId);
 
     // set texture parameters
     setCommonTextureParams(inputTexId);
 
     // set member variables
-    if (inputDataPtr == NULL) {
-        inputPixelBuffer = bufRef;  // only necessary if we did not specify our own pixel buffer via <inputDataPtr>
+
+    if (inputDataPtr == NULL || useRawPixels) {
+        // only necessary if we did not specify our own pixel buffer via <inputDataPtr>
+        // ...or if we are using a raw image pointer as an input, in which cas we are
+        // internally allocating a CVPixelBuferRef
+        inputPixelBuffer = bufRef;
     }
     inputTexture = texRef;
     preparedInput = true;

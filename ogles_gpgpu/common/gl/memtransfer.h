@@ -87,6 +87,11 @@ public:
     virtual void fromGPU(unsigned char *buf);
 
     /**
+     * Specify input image format, raw pixels or platform specific image type
+     */
+    virtual void setUseRawPixels(bool flag) { useRawPixels = flag; }
+    
+    /**
      * Try to initialize platform optimizations. Returns true on success, else false.
      * Is only fully implemented in platform-specialized classes of MemTransfer.
      */
@@ -114,6 +119,8 @@ protected:
     GLuint outputTexId;     // output texture id
 
     GLenum inputPixelFormat;    // input texture pixel format
+    
+    bool useRawPixels = false;
 };
 
 }
