@@ -13,14 +13,14 @@ using namespace ogles_gpgpu;
 using namespace std;
 
 const char *FilterProcBase::vshaderDefault = OG_TO_STR (
-            attribute vec4 aPos;
-            attribute vec2 aTexCoord;
-            varying vec2 vTexCoord;
+attribute vec4 aPos;
+attribute vec2 aTexCoord;
+varying vec2 vTexCoord;
 void main() {
     gl_Position = aPos;
     vTexCoord = aTexCoord;
 }
-        );
+);
 
 #pragma mark public methods
 
@@ -34,11 +34,10 @@ void FilterProcBase::useTexture(GLuint id, GLuint useTexUnit, GLenum target) {
     texId = id;
     texUnit = useTexUnit;
 
-    if (target != texTarget) {	// changed
+    if (target != texTarget) {	// changed        
         if (fragShaderSrcForCompilation) {	// recreate shader with new texture target
             filterShaderSetup(fragShaderSrcForCompilation, target);
         }
-
         texTarget = target;
     }
 }
@@ -76,22 +75,28 @@ void FilterProcBase::initTexCoordBuf(RenderOrientation overrideRenderOrientation
     const GLfloat *coordsPtr;
 
     switch (o) {
-    default:
-    case RenderOrientationStd:
-        coordsPtr = ProcBase::quadTexCoordsStd;
-        break;
-    case RenderOrientationStdMirrored:
-        coordsPtr = ProcBase::quadTexCoordsStdMirrored;
-        break;
-    case RenderOrientationFlipped:
-        coordsPtr = ProcBase::quadTexCoordsFlipped;
-        break;
-    case RenderOrientationFlippedMirrored:
-        coordsPtr = ProcBase::quadTexCoordsFlippedMirrored;
-        break;
-    case RenderOrientationDiagonal:
-        coordsPtr = ProcBase::quadTexCoordsDiagonal;
-        break;
+        default:
+        case RenderOrientationStd:
+            coordsPtr = ProcBase::quadTexCoordsStd;
+            break;
+        case RenderOrientationStdMirrored:
+            coordsPtr = ProcBase::quadTexCoordsStdMirrored;
+            break;
+        case RenderOrientationFlipped:
+            coordsPtr = ProcBase::quadTexCoordsFlipped;
+            break;
+        case RenderOrientationFlippedMirrored:
+            coordsPtr = ProcBase::quadTexCoordsFlippedMirrored;
+            break;
+        case RenderOrientationDiagonal:
+            coordsPtr = ProcBase::quadTexCoordsDiagonal;
+            break;
+        case RenderOrientationDiagonalFlipped:
+            coordsPtr = ProcBase::quadTexCoordsDiagonalFlipped;
+            break;
+        case RenderOrientationDiagonalMirrored:
+            coordsPtr = ProcBase::quadTexCoordsDiagonalMirrored;
+            break;
     }
 
     memcpy(texCoordBuf, coordsPtr, OGLES_GPGPU_QUAD_TEX_BUFSIZE * sizeof(GLfloat));
