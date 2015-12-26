@@ -182,7 +182,7 @@ protected:
      * <vshSrc> and <fshSrc>. The fragment shader source might be modified, depending
      * on texture target <target>.
      */
-    virtual void createShader(const char *vShSrc, const char *fShSrc, GLenum target);
+    virtual void createShader(const char *vShSrc, const char *fShSrc, GLenum target, const Shader::Attributes &attributes={});
 
 
     static const GLfloat quadTexCoordsStd[];                // default quad texture coordinates
@@ -190,6 +190,8 @@ protected:
     static const GLfloat quadTexCoordsFlipped[];            // flipped quad texture coordinates
     static const GLfloat quadTexCoordsFlippedMirrored[];    // flipped, mirrored quad texture coordinates
     static const GLfloat quadTexCoordsDiagonal[];           // diagonal quad texture coordinates
+    static const GLfloat quadTexCoordsDiagonalFlipped[];    // diagonal flipped quad texture coordinates
+    static const GLfloat quadTexCoordsDiagonalMirrored[];   // diagonal mirrored quad texture coordinates
     static const GLfloat quadVertices[];                    // default quad vertices
 
     FBO *fbo;       // strong ref.!
