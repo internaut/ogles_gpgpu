@@ -49,6 +49,21 @@ const GLfloat ProcBase::quadTexCoordsDiagonal[] = {
     1, 1
 };
 
+const GLfloat ProcBase::quadTexCoordsDiagonalFlipped[] = {
+    0, 1,
+    0, 0,
+    1, 1,
+    1, 0
+};
+
+const GLfloat ProcBase::quadTexCoordsDiagonalMirrored[] = {
+    1, 0,
+    1, 1,
+    0, 0,
+    0, 1
+};
+
+
 const GLfloat ProcBase::quadVertices[] = {
     -1, -1, 0,
     1, -1, 0,
@@ -191,7 +206,7 @@ void ProcBase::createFBO() {
     fbo->setGLTexUnit(1);
 }
 
-void ProcBase::createShader(const char *vShSrc, const char *fShSrc, GLenum target) {
+void ProcBase::createShader(const char *vShSrc, const char *fShSrc, GLenum target, const Shader::Attributes &attributes) {
     if (shader) {	// already compiled,
         if (texTarget != target) delete shader;	 // change in texture target -> recreate!
         else return;	// no change -> do nothing
@@ -217,7 +232,7 @@ void ProcBase::createShader(const char *vShSrc, const char *fShSrc, GLenum targe
 #endif
 
     shader = new Shader();
-    bool compiled = shader->buildFromSrc(vShSrc, fSrcStr.c_str());
+    bool compiled = shader->buildFromSrc(vShSrc, fSrcStr.c_str(), attributes);
 
     assert(compiled);
 
