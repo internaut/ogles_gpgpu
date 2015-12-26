@@ -63,10 +63,10 @@ protected:
     void filterRenderDraw();
     void filterRenderCleanup();
 
-
     static const char *vshaderDefault;  // default vertex shader to render a fullscreen quad
 
-    const char *fragShaderSrcForCompilation;	// used fragment shader source for shader compilation
+    const char *vertexShaderSrcForCompilation = nullptr;  // used vertex shader source for shader compilation
+    const char *fragShaderSrcForCompilation = nullptr;	  // used fragment shader source for shader compilation
 
     GLint shParamAPos;          // shader attribute vertex positions
     GLint shParamATexCoord;     // shader attribute texture coordinates
