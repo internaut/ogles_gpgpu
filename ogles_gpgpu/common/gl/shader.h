@@ -27,6 +27,10 @@ typedef enum {
  */
 class Shader {
 public:
+    
+    typedef std::pair<int, const char *> Attribute;
+    typedef std::vector<Attribute> Attributes;
+    
     /**
      * Constructor.
      */
@@ -41,7 +45,7 @@ public:
      * Build an OpenGL shader object from vertex and fragment shader source code
      * <vshSrc> and <fshSrc>.
      */
-    bool buildFromSrc(const char *vshSrc, const char *fshSrc);
+    bool buildFromSrc(const char *vshSrc, const char *fshSrc, const std::vector<Attribute> &attributes={});
 
     /**
      * Use the shader program.
@@ -59,7 +63,7 @@ private:
      * Create a shader program from sources <vshSrc> and <fshSrc>. Save shader ids in
      * <vshId> and <fshId>.
      */
-    static GLuint create(const char *vshSrc, const char *fshSrc, GLuint *vshId, GLuint *fshId);
+    static GLuint create(const char *vshSrc, const char *fshSrc, GLuint *vshId, GLuint *fshId, const Attributes &attributes={});
 
     /**
      * Compile a shader of type <type> and source <src> and return its id.
