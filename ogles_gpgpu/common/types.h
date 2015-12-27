@@ -26,6 +26,11 @@ typedef enum {
     RenderOrientationDiagonalFlipped,
     RenderOrientationDiagonalMirrored
 } RenderOrientation;
+    
+struct Mat44f
+{
+    GLfloat data[4][4];
+};
 
 }
 

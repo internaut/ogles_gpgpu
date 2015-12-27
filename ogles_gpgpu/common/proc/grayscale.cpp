@@ -24,17 +24,18 @@ const GLfloat GrayscaleProc::grayscaleConvVecBGR[3] = {
 const char *GrayscaleProc::fshaderGrayscaleSrc = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
-            precision mediump float;
+precision mediump float;
 #endif
 
-            varying vec2 vTexCoord;
-            uniform sampler2D uInputTex;
-            uniform vec3 uInputConvVec;
-void main() {
+varying vec2 vTexCoord;
+uniform sampler2D uInputTex;
+uniform vec3 uInputConvVec;
+void main()
+{
     float gray = dot(texture2D(uInputTex, vTexCoord).rgb, uInputConvVec);
     gl_FragColor = vec4(gray, gray, gray, 1.0);
 }
-        );
+);
 
 GrayscaleProc::GrayscaleProc() {
     // set defaults
@@ -52,7 +53,7 @@ int GrayscaleProc::init(int inW, int inH, unsigned int order, bool prepareForExt
     baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
 
     // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    filterInit(fshaderGrayscaleSrc);
+    filterInit(vshaderDefault, fshaderGrayscaleSrc);
 
     // get additional shader params
     shParamUInputConvVec = shader->getParam(UNIF, "uInputConvVec");

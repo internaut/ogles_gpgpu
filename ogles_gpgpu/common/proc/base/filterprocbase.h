@@ -41,16 +41,16 @@ public:
 
 protected:
     /**
-     * Common initialization method for filters with fragment shader source <fShaderSrc>
-     * and render output orientation <o>.
+     * Common initialization method for filters with vertex shader source <vShaderSrc>
+     * fragment shader source <fShaderSrc> and render output orientation <o>.
      */
-    void filterInit(const char *fShaderSrc, RenderOrientation o = RenderOrientationNone);
+    void filterInit(const char *vShaderSrc, const char *fShaderSrc, RenderOrientation o = RenderOrientationNone);
 
     /**
-     * Common filter shader creation method with fragment shader source <fShaderSrc> and
-     * texture target <target>.
+     * Common filter shader creation method with vertexshader source <vSaderSrc> 
+     * fragment shader source <fShaderSrc> and texture target <target>.
      */
-    void filterShaderSetup(const char *fShaderSrc, GLenum target);
+    virtual void filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target);
 
     /**
      * Initialize texture coordinate buffer according to member variable

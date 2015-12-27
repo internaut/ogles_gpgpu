@@ -51,7 +51,7 @@ int GaussProcPass::init(int inW, int inH, unsigned int order, bool prepareForExt
     pxDy = 1.0f / (float)outFrameH;
 
     // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    filterInit(fshaderGaussSrc, RenderOrientationDiagonal);
+    filterInit(vshaderDefault, fshaderGaussSrc, RenderOrientationDiagonal);
 
     // get additional shader params
     shParamUPxD = shader->getParam(UNIF, "uPxD");

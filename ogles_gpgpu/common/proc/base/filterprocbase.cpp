@@ -36,7 +36,8 @@ void FilterProcBase::useTexture(GLuint id, GLuint useTexUnit, GLenum target) {
 
     if (target != texTarget) {	// changed        
         if (fragShaderSrcForCompilation) {	// recreate shader with new texture target
-            filterShaderSetup(fragShaderSrcForCompilation, target);
+            auto vShaderSrc  = vertexShaderSrcForCompilation ? vertexShaderSrcForCompilation : vshaderDefault;
+            filterShaderSetup(vShaderSrc, fragShaderSrcForCompilation, target);
         }
         texTarget = target;
     }
@@ -44,9 +45,9 @@ void FilterProcBase::useTexture(GLuint id, GLuint useTexUnit, GLenum target) {
 
 #pragma mark protected methods
 
-void FilterProcBase::filterInit(const char *fShaderSrc, RenderOrientation o) {
+void FilterProcBase::filterInit(const char *vShaderSrc, const char *fShaderSrc, RenderOrientation o) {
     // create shader object
-    filterShaderSetup(fShaderSrc, texTarget);
+    filterShaderSetup(vShaderSrc, fShaderSrc, texTarget);
 
     // set geometry
     memcpy(vertexBuf, ProcBase::quadVertices, OGLES_GPGPU_QUAD_VERTEX_BUFSIZE * sizeof(GLfloat));
@@ -55,9 +56,9 @@ void FilterProcBase::filterInit(const char *fShaderSrc, RenderOrientation o) {
     initTexCoordBuf(o);
 }
 
-void FilterProcBase::filterShaderSetup(const char *fShaderSrc, GLenum target) {
+void FilterProcBase::filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target) {
     // create shader object
-    ProcBase::createShader(FilterProcBase::vshaderDefault, fShaderSrc, target);
+    ProcBase::createShader(vShaderSrc, fShaderSrc, target);
 
     // get shader params
     shParamAPos = shader->getParam(ATTR, "aPos");
@@ -65,6 +66,7 @@ void FilterProcBase::filterShaderSetup(const char *fShaderSrc, GLenum target) {
     shParamUInputTex = shader->getParam(UNIF, "uInputTex");
 
     // remember used shader source
+    vertexShaderSrcForCompilation = vShaderSrc;
     fragShaderSrcForCompilation = fShaderSrc;
 }
 

@@ -183,6 +183,8 @@ void ProcBase::setInOutFrameSizes(int inW, int inH, int outW, int outH, float sc
     inFrameW = inW;
     inFrameH = inH;
 
+    bool isFirst = (outW <= 0 && outH <= 0);
+    
     if (outW <= 0) {
         outW = (int)((float)inW * scaleFactor);
     }
@@ -191,6 +193,11 @@ void ProcBase::setInOutFrameSizes(int inW, int inH, int outW, int outH, float sc
         outH = (int)((float)inH * scaleFactor);
     }
 
+    // For transpose operatinos we need swap outW and outH
+    if(isFirst && (renderOrientation >= RenderOrientationDiagonal)) {
+        std::swap(outW, outH);
+    }
+    
     assert(outW > 0 && outH > 0);
 
     outFrameW = outW;

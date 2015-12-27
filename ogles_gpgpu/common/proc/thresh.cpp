@@ -46,7 +46,7 @@ int ThreshProc::init(int inW, int inH, unsigned int order, bool prepareForExtern
     baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
 
     // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    filterInit(fshaderSimpleThreshSrc);
+    filterInit(vshaderDefault, fshaderSimpleThreshSrc);
 
     // get additional shader params
     shParamUThresh = shader->getParam(UNIF, "uThresh");

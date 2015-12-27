@@ -25,4 +25,6 @@ sugar_files(
     grayscale.h
     thresh.cpp
     thresh.h
+    transform.cpp
+    transform.h
 )

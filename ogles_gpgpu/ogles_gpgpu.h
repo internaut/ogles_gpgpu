@@ -2,6 +2,7 @@
 // ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
 // Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
+//         David Hirvonen <dhirvonen@elucideye.com>
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -27,5 +28,6 @@
 #include "common/proc/gauss.h"
 #include "common/proc/grayscale.h"
 #include "common/proc/thresh.h"
+#include "common/proc/transform.h"
 
 #endif

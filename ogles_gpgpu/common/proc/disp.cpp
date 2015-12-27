@@ -33,7 +33,7 @@ int Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInpu
     baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
 
     // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    filterInit(fshaderDispSrc);
+    filterInit(vshaderDefault, fshaderDispSrc);
 
     return 1;
 }

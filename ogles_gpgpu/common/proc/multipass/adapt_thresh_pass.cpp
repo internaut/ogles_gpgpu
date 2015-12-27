@@ -88,7 +88,7 @@ int AdaptThreshProcPass::init(int inW, int inH, unsigned int order, bool prepare
     const char *shSrc = renderPass == 1 ? fshaderAdaptThreshPass1Src : fshaderAdaptThreshPass2Src;
 
     // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    filterInit(shSrc, RenderOrientationDiagonal);
+    filterInit(vshaderDefault, shSrc, RenderOrientationDiagonal);
 
     // get additional shader params
     shParamUPxD = shader->getParam(UNIF, "uPxD");
