@@ -21,7 +21,6 @@ include(sugar_include)
 set(is_android ${ANDROID}) # syntax compatibility
 string(COMPARE EQUAL "${CMAKE_OSX_SYSROOT}" "iphoneos" is_ios)
 string(COMPARE EQUAL "${CMAKE_SYSTEM_NAME}" "Linux" is_linux)
-string(COMPARE EQUAL "${CMAKE_BUILD_TYPE}" "DEBUG" is_debug)
 string(COMPARE EQUAL "${CMAKE_GENERATOR}" "Xcode" is_xcode)
 
 message("Android: ${is_android}")
