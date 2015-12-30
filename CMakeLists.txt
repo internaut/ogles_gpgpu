@@ -29,7 +29,7 @@ message("Linux  : ${is_linux}")
 message("Xcode  : ${is_xcode}")
 
 if(is_xcode)
-  set(CMAKE_CONFIGURATION_TYPES "Debug;Release")
+  set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "Configuration types")
 endif()
 
 ## #################################################################
