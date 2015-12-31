@@ -199,6 +199,7 @@ protected:
 
     unsigned int orderNum;  // position of this processor in the pipeline
 
+    bool hasTexId = true; 
     GLuint texId;       // input texture id
     GLuint texUnit;     // input texture unit (glActiveTexture())
     GLenum texTarget;   // input texture target
