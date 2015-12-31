@@ -27,6 +27,12 @@ typedef enum {
     RenderOrientationDiagonalMirrored
 } RenderOrientation;
     
+    
+struct Vec3f
+{
+    GLfloat data[3];
+};
+    
 struct Mat44f
 {
     GLfloat data[4][4];
