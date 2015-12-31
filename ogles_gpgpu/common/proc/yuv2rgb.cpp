@@ -191,8 +191,6 @@ void Yuv2RgbProc::filterRenderPrepare()
     glActiveTexture(GL_TEXTURE5);
     glBindTexture(GL_TEXTURE_2D, chrominanceTexture);
     glUniform1i(yuvConversionChrominanceTextureUniform, 5);
-    
-    for(int i = 0; i < 9; i++) std::cout << _preferredConversion[i] << " "; std::cout << std::endl;
 
     glUniformMatrix3fv(yuvConversionMatrixUniform, 1, GL_FALSE, _preferredConversion);
 }
