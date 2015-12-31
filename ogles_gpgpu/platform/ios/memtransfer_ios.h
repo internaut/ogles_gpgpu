@@ -22,6 +22,8 @@
 
 namespace ogles_gpgpu {
 
+class Yuv2RgbProc; // forward declaration
+    
 /**
  * MemTransferIOS is a platform specific implementation for fast texture access on iOS platforms.
  * It uses CoreVideo's TextureCache API as explained at
@@ -98,7 +100,7 @@ public:
      * Unlock the input or output buffer.
      */
     virtual void unlockBuffer(BufType bufType);
-
+    
 private:
     /**
      * Sets <buf> and <lockOpt> to the necessary pointers/values according to <bufType>.
@@ -111,13 +113,18 @@ private:
     CVPixelBufferRef inputPixelBuffer;  // input pixel buffer
     CVPixelBufferRef outputPixelBuffer; // output pixel buffer
 
-    CVOpenGLESTextureRef inputTexture;  // input texture reference
-    CVOpenGLESTextureRef outputTexture; // output texture reference
+    CVOpenGLESTextureRef lumaTexture = 0;
+    CVOpenGLESTextureRef chromaTexture = 0;
+    
+    CVOpenGLESTextureRef inputTexture = 0;  // input texture reference
+    CVOpenGLESTextureRef outputTexture = 0; // output texture reference
 
     CVOpenGLESTextureCacheRef textureCache; // common texture cache
 
     size_t inputPixelBufferSize;    // input pixel buffer size in bytes
     size_t outputPixelBufferSize;   // output pixel buffer size in bytes
+    
+    std::shared_ptr<Yuv2RgbProc> yuv2rgb;
 };
 
 }
