@@ -277,7 +277,7 @@ GLuint MemTransferIOS::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat
         }
         else {
             
-            inputPixelBufferSize = (inpuW * inputH) * 3 / 2;
+            inputPixelBufferSize = (inputW * inputH) * 3 / 2;
             
             glActiveTexture(GL_TEXTURE4);
             res = CVOpenGLESTextureCacheCreateTextureFromImage(kCFAllocatorDefault,
