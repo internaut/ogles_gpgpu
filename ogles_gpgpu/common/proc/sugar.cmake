@@ -27,4 +27,6 @@ sugar_files(
     thresh.h
     transform.cpp
     transform.h
+    yuv2rgb.cpp
+    yuv2rgb.h
 )
