@@ -139,16 +139,15 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
     ProcInterface *prevProc = NULL;
     unsigned int num = 0;
     int numInitialized = 0;
-    for (list<ProcInterface *>::iterator it = pipeline.begin();
-            it != pipeline.end();
-            ++it) {
+    for (auto &it : pipeline) {
+
         OG_LOGINF("Core", "init proc#%d", num);
 
         // find out the input frame size for the proc
         int pipelineFrameW, pipelineFrameH;
 
         if (num == 0) { // special set up for first pipeline processor
-            firstProc = *it;
+            firstProc = it;
 
             // first pipeline processor will get input data (e.g. RGBA pixel data)
             firstProc->setExternalInputDataFormat(inFmt);
@@ -164,19 +163,19 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
 
         if (!prepared) {    // for first time preparation
             // initialize current proc
-            numInitialized = (*it)->init(pipelineFrameW, pipelineFrameH, num, num == 0 && inFmt != GL_NONE);
+            numInitialized = it->init(pipelineFrameW, pipelineFrameH, num, num == 0 && inFmt != GL_NONE);
         } else {    // for reinitialization with different frame size
-            numInitialized = (*it)->reinit(pipelineFrameW, pipelineFrameH, num == 0 && inFmt != GL_NONE);
+            numInitialized = it->reinit(pipelineFrameW, pipelineFrameH, num == 0 && inFmt != GL_NONE);
         }
 
         // if this proc will downscale, we should generate a mipmap for the previous output
         if (num > 0) {
             // create a texture that is attached to an FBO for the output
-            prevProc->createFBOTex(useMipmaps && (*it)->getWillDownscale());
+            prevProc->createFBOTex(useMipmaps && it->getWillDownscale());
         }
 
         // set pointer to previous proc
-        prevProc = *it;
+        prevProc = it;
 
         num += numInitialized;
     }
@@ -186,16 +185,14 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
 
     // concatenate all processors
     prevProc = NULL;
-    for (list<ProcInterface *>::iterator it = pipeline.begin();
-            it != pipeline.end();
-            ++it) {
+    for (auto &it : pipeline) {
         if (prevProc) {
             // set input texture id
-            (*it)->useTexture(prevProc->getOutputTexId());  // previous output is this proc's input
+            it->useTexture(prevProc->getOutputTexId());  // previous output is this proc's input
         }
 
         // set pointer to previous proc
-        prevProc = *it;
+        prevProc = it;
     }
 
     // set last processor
@@ -223,10 +220,8 @@ void Core::prepare(int inW, int inH, GLenum inFmt) {
     OG_LOGINF("Core", "prepared (input tex %d, output tex %d)", inputTexId, outputTexId);
 
     // print report (to spot errors in the pipeline)
-    for (list<ProcInterface *>::iterator it = pipeline.begin();
-            it != pipeline.end();
-            ++it) {
-        (*it)->printInfo();
+    for (auto &it : pipeline) {
+        it->printInfo();
     }
 
     glFinish();
@@ -306,11 +301,8 @@ void Core::process() {
     firstProc->useTexture(inputTexId, 1, inputTexTarget);
 
     // run the processors in the pipeline
-    for (list<ProcInterface *>::iterator it = pipeline.begin();
-            it != pipeline.end();
-            ++it) {
-        (*it)->render();
-
+    for (auto & it : pipeline) {
+        it->render();
         glFinish();
     }
 
@@ -347,18 +339,16 @@ void Core::checkGLExtensions() {
 
     // check extensions
 //    OG_LOGINF("Core", "list of extensions:");
-    for (vector<string>::iterator it = glExt.begin();
-            it != glExt.end();
-            ++it) {
+    for (auto &it : glExt) {
         // get lowercase extension string
-        string extName = *it;
+        string extName = it;
         transform(extName.begin(), extName.end(), extName.begin(), ::tolower);
 
 //        OG_LOGINF("Core", "> %s", extName.c_str());
 
         // check for NPOT mipmapping support
-        if (it->compare("gl_arb_texture_non_power_of_two") == 0
-                || it->compare("gl_oes_texture_npot") == 0) {
+        if (it.compare("gl_arb_texture_non_power_of_two") == 0
+                || it.compare("gl_oes_texture_npot") == 0) {
             glExtNPOTMipmaps = true;
         }
     }
@@ -374,10 +364,8 @@ void Core::cleanup() {
     }
 
     // call cleanup() on processors
-    for (list<ProcInterface *>::iterator it = pipeline.begin();
-            it != pipeline.end();
-            ++it) {
-        (*it)->cleanup();
+    for (auto &it : pipeline) {
+        it->cleanup();
     }
 
     // clear processor pipeline. this only deletes the pointers to the processors
