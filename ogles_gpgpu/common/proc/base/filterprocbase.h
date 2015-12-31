@@ -58,10 +58,10 @@ protected:
      */
     void initTexCoordBuf(RenderOrientation overrideRenderOrientation = RenderOrientationNone);
 
-    void filterRenderPrepare();
-    void filterRenderSetCoords();
-    void filterRenderDraw();
-    void filterRenderCleanup();
+    virtual void filterRenderPrepare();
+    virtual void filterRenderSetCoords();
+    virtual void filterRenderDraw();
+    virtual void filterRenderCleanup();
 
     static const char *vshaderDefault;  // default vertex shader to render a fullscreen quad
 
