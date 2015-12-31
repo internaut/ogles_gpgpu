@@ -68,7 +68,7 @@ public:
     virtual GLuint getInputTexId() const {
         return inputTexId;
     }
-
+    
     /**
      * Get output texture id.
      */
@@ -76,6 +76,20 @@ public:
         return outputTexId;
     }
 
+    /**
+     * Get output luminance texture id.
+     */
+    virtual GLuint getLuminanceTexId() const {
+        return luminanceTexId;
+    }
+    
+    /**
+     * Get output chrominance texture id.
+     */
+    virtual GLuint getChrominanceTexId() const {
+        return chrominanceTexId;
+    }
+    
     /**
      * Map data in <buf> to GPU.
      */
@@ -117,6 +131,9 @@ protected:
 
     GLuint inputTexId;      // input texture id
     GLuint outputTexId;     // output texture id
+    
+    GLuint luminanceTexId = 0;
+    GLuint chrominanceTexId = 0;
 
     GLenum inputPixelFormat;    // input texture pixel format
     
