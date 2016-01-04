@@ -26,11 +26,17 @@ namespace ogles_gpgpu {
 class TransformProc : public FilterProcBase {
 public:
     
+    enum Interpolation
+    {
+        BILINEAR,
+        BICUBIC
+    };
+    
     /**
      * Constructor.
      */
     TransformProc();
-
+    
     /**
      * Return the processors name.
      */
@@ -58,6 +64,16 @@ public:
     void setTransformMatrix(const Mat44f & matrix);
     
     /**
+     * Set interpolation mode.
+     */
+    void setInterpolation(Interpolation kind) { interpolation = kind; }
+    
+    /**
+     * Get interpolation mode.
+     */
+    Interpolation getInterpolatino() const { return interpolation; }
+    
+    /**
      * Set the transformation matrix.
      */
     virtual void filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target);
@@ -65,9 +81,14 @@ public:
 private:
     static const char *vshaderTransformSrc;   // fragment shader source
     static const char *fshaderTransformSrc;   // fragment shader source
-
-    GLint shParamUTransform;           // shader uniform transformation matrix
-    Mat44f transformMatrix;       // currently set weighted channel grayscale conversion vector
+    static const char *fshaderTransformBicubicSrc; // bicubic shader
+    
+    Interpolation interpolation = BILINEAR;
+    
+    GLint shParamUTransform;        // shader uniform transformation matrix
+    Mat44f transformMatrix;         // currently set weighted channel grayscale conversion vector
+    
+    GLint shParamUTransformSize=0;  // texture size (for bicubic warp)
 };
 }
 
