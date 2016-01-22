@@ -1,6 +1,6 @@
 # Compile settings
 APP_STL := gnustl_static
-APP_CPPFLAGS := -frtti -fexceptions
+APP_CPPFLAGS := -frtti -fexceptions -std=c++11
 
 # Build all available ABIs
 APP_ABI := all
