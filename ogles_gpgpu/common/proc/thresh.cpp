@@ -18,18 +18,17 @@ using namespace ogles_gpgpu;
 const char *ThreshProc::fshaderSimpleThreshSrc = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
-            precision mediump float;
+precision mediump float;
 #endif
 
-            varying vec2 vTexCoord;
-            uniform float uThresh;
-            uniform sampler2D uInputTex;
+varying vec2 vTexCoord;
+uniform float uThresh;
+uniform sampler2D uInputTex;
 void main() {
     float gray = texture2D(uInputTex, vTexCoord).r;
     float bin = step(uThresh, gray);
     gl_FragColor = vec4(bin, bin, bin, 1.0);
-}
-        );
+});
 
 ThreshProc::ThreshProc() {
     // set defaults
