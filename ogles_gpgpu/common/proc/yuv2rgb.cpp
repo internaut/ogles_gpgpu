@@ -60,16 +60,20 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
 
 const char *kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = OG_TO_STR(
 
- varying highp vec2 vTexCoord;
+#if defined(OGLES_GPGPU_OPENGLES)
+  precision mediump float;
+#endif
+                                                                                  
+ varying OGLES_GPGPU_HIGHP vec2 vTexCoord;
  
  uniform sampler2D luminanceTexture;
  uniform sampler2D chrominanceTexture;
- uniform mediump mat3 colorConversionMatrix;
+ uniform OGLES_GPGPU_MEDIUMP mat3 colorConversionMatrix;
  
  void main()
  {
-     mediump vec3 yuv;
-     lowp vec3 rgb;
+     OGLES_GPGPU_MEDIUMP vec3 yuv;
+     OGLES_GPGPU_LOWP vec3 rgb;
      
      yuv.x = texture2D(luminanceTexture, vTexCoord).r;
      yuv.yz = texture2D(chrominanceTexture, vTexCoord).rg - vec2(0.5, 0.5);
@@ -81,16 +85,16 @@ const char *kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = OG_TO_ST
 
 const char *kGPUImageYUVFullRangeConversionForLAFragmentShaderString = OG_TO_STR(
 
- varying highp vec2 vTexCoord;
+ varying OGLES_GPGPU_HIGHP vec2 vTexCoord;
  
  uniform sampler2D luminanceTexture;
  uniform sampler2D chrominanceTexture;
- uniform mediump mat3 colorConversionMatrix;
+ uniform OGLES_GPGPU_MEDIUMP mat3 colorConversionMatrix;
  
  void main()
  {
-     mediump vec3 yuv;
-     lowp vec3 rgb;
+     OGLES_GPGPU_MEDIUMP vec3 yuv;
+     OGLES_GPGPU_LOWP vec3 rgb;
      
      yuv.x = texture2D(luminanceTexture, vTexCoord).r;
      yuv.yz = texture2D(chrominanceTexture, vTexCoord).ra - vec2(0.5, 0.5);
@@ -102,16 +106,16 @@ const char *kGPUImageYUVFullRangeConversionForLAFragmentShaderString = OG_TO_STR
 
 const char *kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = OG_TO_STR(
 
- varying highp vec2 vTexCoord;
+ varying OGLES_GPGPU_HIGHP vec2 vTexCoord;
  
  uniform sampler2D luminanceTexture;
  uniform sampler2D chrominanceTexture;
- uniform mediump mat3 colorConversionMatrix;
+ uniform OGLES_GPGPU_MEDIUMP mat3 colorConversionMatrix;
  
  void main()
  {
-     mediump vec3 yuv;
-     lowp vec3 rgb;
+     OGLES_GPGPU_MEDIUMP vec3 yuv;
+     OGLES_GPGPU_LOWP vec3 rgb;
      
      yuv.x = texture2D(luminanceTexture, vTexCoord).r - (16.0/255.0);
      yuv.yz = texture2D(chrominanceTexture, vTexCoord).ra - vec2(0.5, 0.5);
