@@ -15,6 +15,16 @@
 
 #include "../common_includes.h"
 
+#if OGLES_GPGPU_OPENGLES
+#  define OGLES_GPGPU_LOWP mediump
+#  define OGLES_GPGPU_MEDIUMP mediump
+#  define OGLES_GPGPU_HIGHP mediump
+#else
+#  define OGLES_GPGPU_LOWP
+#  define OGLES_GPGPU_MEDIUMP
+#  define OGLES_GPGPU_HIGHP
+#endif
+
 namespace ogles_gpgpu {
 
 typedef enum {
