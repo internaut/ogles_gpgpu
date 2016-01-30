@@ -43,7 +43,7 @@ MemTransfer::~MemTransfer() {
 GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat, void *inputDataPtr) {
     assert(initialized && inTexW > 0 && inTexH > 0);
 
-    if (inputW == inTexW && inputH == inTexH && inputPixelFormat == inputPxFormat) {
+    if ((inputDataPtr == nullptr) && (inputW == inTexW) && (inputH == inTexH) && (inputPixelFormat == inputPxFormat)) {
         return inputTexId; // no change
     }
 
@@ -55,7 +55,7 @@ GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat, v
     inputW = inTexW;
     inputH = inTexH;
     inputPixelFormat = inputPxFormat;
-
+    
     // generate texture id
     glGenTextures(1, &inputTexId);
 
@@ -66,6 +66,10 @@ GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat, v
 
     // done
     preparedInput = true;
+    
+    if(inputDataPtr) {
+        toGPU(static_cast<const unsigned char *>(inputDataPtr));
+    }
 
     return inputTexId;
 }
@@ -98,11 +102,17 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
 
     Tools::checkGLErr("MemTransfer", "fbo texture parameters");
 
+#if OGLES_GPGPU_OSX
+    GLenum rgbFormat = GL_BGRA;
+#else
+    GLenum rgbFormat = GL_RGBA;
+#endif
+    
     // create empty texture space on GPU
     glTexImage2D(GL_TEXTURE_2D, 0,
                  GL_RGBA,
                  outTexW, outTexH, 0,
-                 GL_RGBA, GL_UNSIGNED_BYTE,
+                 rgbFormat, GL_UNSIGNED_BYTE,
                  NULL);	// we do not need to pass texture data -> it will be generated!
 
     Tools::checkGLErr("MemTransfer", "fbo texture creation");
