@@ -13,7 +13,6 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-
 const char *TransformProc::vshaderTransformSrc = OG_TO_STR(
 attribute vec4 aPos;
 attribute vec2 aTexCoord;
@@ -43,51 +42,51 @@ void main()
 // theagentd/Myomyomyo
 
 const char *TransformProc::fshaderTransformBicubicSrc = OG_TO_STR(
-highp vec4 cubic(highp float v)
+OGLES_GPGPU_HIGHP vec4 cubic(OGLES_GPGPU_HIGHP float v)
 {
-   highp vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;
-   highp vec4 s = n * n * n;
-   highp float x = s.x;
-   highp float y = s.y - 4.0 * s.x;
-   highp float z = s.z - 4.0 * s.y + 6.0 * s.x;
-   highp float w = 6.0 - x - y - z;
-   highp vec4 result = vec4(x, y, z, w) * (1.0/6.0);
+   OGLES_GPGPU_HIGHP vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;
+   OGLES_GPGPU_HIGHP vec4 s = n * n * n;
+   OGLES_GPGPU_HIGHP float x = s.x;
+   OGLES_GPGPU_HIGHP float y = s.y - 4.0 * s.x;
+   OGLES_GPGPU_HIGHP float z = s.z - 4.0 * s.y + 6.0 * s.x;
+   OGLES_GPGPU_HIGHP float w = 6.0 - x - y - z;
+   OGLES_GPGPU_HIGHP vec4 result = vec4(x, y, z, w) * (1.0/6.0);
    return result;
 }
 
-highp vec4 textureBicubic(sampler2D sampler, highp vec2 texCoords, highp vec2 texSize)
+OGLES_GPGPU_HIGHP vec4 textureBicubic(sampler2D sampler, OGLES_GPGPU_HIGHP vec2 texCoords, OGLES_GPGPU_HIGHP vec2 texSize)
 {
-   highp vec2 invTexSize = 1.0 / texSize;
+   OGLES_GPGPU_HIGHP vec2 invTexSize = 1.0 / texSize;
    
    texCoords = texCoords * texSize - 0.5;
    
-   highp vec2 fxy = fract(texCoords);
+   OGLES_GPGPU_HIGHP vec2 fxy = fract(texCoords);
    texCoords -= fxy;
    
-   highp vec4 xcubic = cubic(fxy.x);
-   highp vec4 ycubic = cubic(fxy.y);
+   OGLES_GPGPU_HIGHP vec4 xcubic = cubic(fxy.x);
+   OGLES_GPGPU_HIGHP vec4 ycubic = cubic(fxy.y);
    
-   highp vec4 c = texCoords.xxyy + vec2(-0.5, +1.5).xyxy;
+   OGLES_GPGPU_HIGHP vec4 c = texCoords.xxyy + vec2(-0.5, +1.5).xyxy;
    
-   highp vec4 s = vec4(xcubic.xz + xcubic.yw, ycubic.xz + ycubic.yw);
-   highp vec4 offset = c + vec4(xcubic.yw, ycubic.yw) / s;
+   OGLES_GPGPU_HIGHP vec4 s = vec4(xcubic.xz + xcubic.yw, ycubic.xz + ycubic.yw);
+   OGLES_GPGPU_HIGHP vec4 offset = c + vec4(xcubic.yw, ycubic.yw) / s;
    
    offset *= invTexSize.xxyy;
    
-   highp vec4 sample0 = texture2D(sampler, offset.xz);
-   highp vec4 sample1 = texture2D(sampler, offset.yz);
-   highp vec4 sample2 = texture2D(sampler, offset.xw);
-   highp vec4 sample3 = texture2D(sampler, offset.yw);
+   OGLES_GPGPU_HIGHP vec4 sample0 = texture2D(sampler, offset.xz);
+   OGLES_GPGPU_HIGHP vec4 sample1 = texture2D(sampler, offset.yz);
+   OGLES_GPGPU_HIGHP vec4 sample2 = texture2D(sampler, offset.xw);
+   OGLES_GPGPU_HIGHP vec4 sample3 = texture2D(sampler, offset.yw);
    
-   highp float sx = s.x / (s.x + s.y);
-   highp float sy = s.z / (s.z + s.w);
+   OGLES_GPGPU_HIGHP float sx = s.x / (s.x + s.y);
+   OGLES_GPGPU_HIGHP float sy = s.z / (s.z + s.w);
    
    return mix(mix(sample3, sample2, sx), mix(sample1, sample0, sx), sy);
 }
 
-uniform highp vec2 texSize;
+uniform OGLES_GPGPU_HIGHP vec2 texSize;
 uniform sampler2D uInputTex;
-varying highp vec2 vTexCoord;
+varying OGLES_GPGPU_HIGHP vec2 vTexCoord;
 
 void main()
 {
