@@ -67,10 +67,8 @@ GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat, v
     // done
     preparedInput = true;
     
-    if(inputDataPtr) {
-        toGPU(static_cast<const unsigned char *>(inputDataPtr));
-    }
-
+    // Texture data to be upladed with Core::setInputData(...)
+    
     return inputTexId;
 }
 
