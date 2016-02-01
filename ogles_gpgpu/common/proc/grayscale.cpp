@@ -22,7 +22,6 @@ const GLfloat GrayscaleProc::grayscaleConvVecBGR[3] = {
 };
 
 const char *GrayscaleProc::fshaderGrayscaleSrc = R"SHADER(
-#version 120
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
 #endif
@@ -33,10 +32,6 @@ void main()
 {
     float gray = dot(texture2D(uInputTex, vTexCoord).rgb, uInputConvVec);
     gl_FragColor = vec4(gray, gray, gray, 1.0);
-    
-    // texture2D() calls seem to fail on OS X runs
-    //gl_FragColor = vec4(vTexCoord.x, vTexCoord.y, 0.5, 1.0);
-    //gl_FragColor = texture2D(uInputTex, vTexCoord);
 }
 )SHADER";
 

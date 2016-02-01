@@ -13,7 +13,7 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-const char *TransformProc::vshaderTransformSrc = OG_TO_STR(
+const char *TransformProc::vshaderTransformSrc = R"SHADER(
 attribute vec4 aPos;
 attribute vec2 aTexCoord;
 varying vec2 vTexCoord;
@@ -22,9 +22,10 @@ void main()
 {
     gl_Position = transformMatrix * vec4(aPos.xyz, 1.0);
     vTexCoord = aTexCoord;
-});
+}
+)SHADER";
 
-const char *TransformProc::fshaderTransformSrc = OG_TO_STR(
+const char *TransformProc::fshaderTransformSrc = R"SHADER(
 
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
@@ -35,64 +36,70 @@ uniform sampler2D uInputTex;
 void main()
 {
     gl_FragColor = vec4(texture2D(uInputTex, vTexCoord).rgba);
-});
+}
+)SHADER";
 
 // Bicubic interpolation from here:
 // http://www.java-gaming.org/index.php?topic=35123.0
 // theagentd/Myomyomyo
 
-const char *TransformProc::fshaderTransformBicubicSrc = OG_TO_STR(
-OGLES_GPGPU_HIGHP vec4 cubic(OGLES_GPGPU_HIGHP float v)
+const char *TransformProc::fshaderTransformBicubicSrc = R"SHADER(
+
+#if defined(OGLES_GPGPU_OPENGLES)
+precision highp float;
+#endif
+
+vec4 cubic(OGLES_GPGPU_HIGHP float v)
 {
-   OGLES_GPGPU_HIGHP vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;
-   OGLES_GPGPU_HIGHP vec4 s = n * n * n;
-   OGLES_GPGPU_HIGHP float x = s.x;
-   OGLES_GPGPU_HIGHP float y = s.y - 4.0 * s.x;
-   OGLES_GPGPU_HIGHP float z = s.z - 4.0 * s.y + 6.0 * s.x;
-   OGLES_GPGPU_HIGHP float w = 6.0 - x - y - z;
-   OGLES_GPGPU_HIGHP vec4 result = vec4(x, y, z, w) * (1.0/6.0);
-   return result;
+    vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;
+    vec4 s = n * n * n;
+    float x = s.x;
+    float y = s.y - 4.0 * s.x;
+    float z = s.z - 4.0 * s.y + 6.0 * s.x;
+    float w = 6.0 - x - y - z;
+    vec4 result = vec4(x, y, z, w) * (1.0/6.0);
+    return result;
 }
 
-OGLES_GPGPU_HIGHP vec4 textureBicubic(sampler2D sampler, OGLES_GPGPU_HIGHP vec2 texCoords, OGLES_GPGPU_HIGHP vec2 texSize)
+vec4 textureBicubic(sampler2D sampler, OGLES_GPGPU_HIGHP vec2 texCoords, OGLES_GPGPU_HIGHP vec2 texSize)
 {
-   OGLES_GPGPU_HIGHP vec2 invTexSize = 1.0 / texSize;
+    vec2 invTexSize = 1.0 / texSize;
+    
+    texCoords = texCoords * texSize - 0.5;
+    
+    vec2 fxy = fract(texCoords);
+    texCoords -= fxy;
+    
+    vec4 xcubic = cubic(fxy.x);
+    vec4 ycubic = cubic(fxy.y);
+    
+    vec4 c = texCoords.xxyy + vec2(-0.5, +1.5).xyxy;
+    
+    vec4 s = vec4(xcubic.xz + xcubic.yw, ycubic.xz + ycubic.yw);
+    vec4 offset = c + vec4(xcubic.yw, ycubic.yw) / s;
+    
+    offset *= invTexSize.xxyy;
+    
+    vec4 sample0 = texture2D(sampler, offset.xz);
+    vec4 sample1 = texture2D(sampler, offset.yz);
+    vec4 sample2 = texture2D(sampler, offset.xw);
+    vec4 sample3 = texture2D(sampler, offset.yw);
    
-   texCoords = texCoords * texSize - 0.5;
-   
-   OGLES_GPGPU_HIGHP vec2 fxy = fract(texCoords);
-   texCoords -= fxy;
-   
-   OGLES_GPGPU_HIGHP vec4 xcubic = cubic(fxy.x);
-   OGLES_GPGPU_HIGHP vec4 ycubic = cubic(fxy.y);
-   
-   OGLES_GPGPU_HIGHP vec4 c = texCoords.xxyy + vec2(-0.5, +1.5).xyxy;
-   
-   OGLES_GPGPU_HIGHP vec4 s = vec4(xcubic.xz + xcubic.yw, ycubic.xz + ycubic.yw);
-   OGLES_GPGPU_HIGHP vec4 offset = c + vec4(xcubic.yw, ycubic.yw) / s;
-   
-   offset *= invTexSize.xxyy;
-   
-   OGLES_GPGPU_HIGHP vec4 sample0 = texture2D(sampler, offset.xz);
-   OGLES_GPGPU_HIGHP vec4 sample1 = texture2D(sampler, offset.yz);
-   OGLES_GPGPU_HIGHP vec4 sample2 = texture2D(sampler, offset.xw);
-   OGLES_GPGPU_HIGHP vec4 sample3 = texture2D(sampler, offset.yw);
-   
-   OGLES_GPGPU_HIGHP float sx = s.x / (s.x + s.y);
-   OGLES_GPGPU_HIGHP float sy = s.z / (s.z + s.w);
+    float sx = s.x / (s.x + s.y);
+    float sy = s.z / (s.z + s.w);
    
    return mix(mix(sample3, sample2, sx), mix(sample1, sample0, sx), sy);
 }
 
-uniform OGLES_GPGPU_HIGHP vec2 texSize;
+uniform vec2 texSize;
 uniform sampler2D uInputTex;
-varying OGLES_GPGPU_HIGHP vec2 vTexCoord;
+varying vec2 vTexCoord;
 
 void main()
 {
    gl_FragColor = textureBicubic(uInputTex, vTexCoord, texSize);
-   //gl_FragColor = texture2D(uInputTex, vTexCoord);
-});
+}
+)SHADER";
 
 TransformProc::TransformProc()
 {

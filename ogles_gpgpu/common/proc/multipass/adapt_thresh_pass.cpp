@@ -16,7 +16,7 @@ using namespace ogles_gpgpu;
 // Adaptive thresholding - Pass 1 fragment shader
 // Perform a vertical 5x1 average gray pixel value calculation
 // Requires a grayscale image as input!
-const char *AdaptThreshProcPass::fshaderAdaptThreshPass1Src = OG_TO_STR(
+const char *AdaptThreshProcPass::fshaderAdaptThreshPass1Src = R"SHADER(
 
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
@@ -39,12 +39,12 @@ void main() {
     // Result stores average pixel value (R) and original gray value (G)
     gl_FragColor = vec4(avg, centerGray, 0.0, 1.0);
 }
-);
+)SHADER";
 
 // Adaptive thresholding - Pass 2
 // Perform a horizontal 7x1 or 5x1 average gray pixel value calculation and
 // the final binarization
-const char *AdaptThreshProcPass::fshaderAdaptThreshPass2Src = OG_TO_STR(
+const char *AdaptThreshProcPass::fshaderAdaptThreshPass2Src = R"SHADER(
 
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
@@ -53,7 +53,8 @@ precision mediump float;
 varying vec2 vTexCoord;
 uniform vec2 uPxD;
 uniform sampler2D uInputTex;
-void main() {
+void main()
+{
     vec4 centerPx = texture2D(uInputTex, vTexCoord); // stores: horizontal avg, orig. gray value, 0, 1
     const float bigC = 9.5 / 255.0;
     // get the sum
@@ -69,7 +70,7 @@ void main() {
     // store thresholded values
     gl_FragColor = vec4(bin, bin, bin, 1.0);
 }
-);
+)SHADER";
 
 int AdaptThreshProcPass::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     OG_LOGINF(getProcName(), "render pass %d", renderPass);

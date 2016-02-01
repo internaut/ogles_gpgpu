@@ -12,17 +12,18 @@
 
 using namespace ogles_gpgpu;
 
-const char *GaussProcPass::fshaderGaussSrc = OG_TO_STR(
+const char *GaussProcPass::fshaderGaussSrc = R"SHADER(
 
 #if defined(OGLES_GPGPU_OPENGLES)
-            precision mediump float;
+precision mediump float;
 #endif
 
-            uniform sampler2D uInputTex;
-            uniform float uPxD;
-            varying vec2 vTexCoord;
+uniform sampler2D uInputTex;
+uniform float uPxD;
+varying vec2 vTexCoord;
 // 7x1 Gauss kernel
-void main() {
+void main()
+{
     vec4 pxC  = texture2D(uInputTex, vTexCoord);
     vec4 pxL1 = texture2D(uInputTex, vTexCoord - vec2(uPxD, 0.0));
     vec4 pxL2 = texture2D(uInputTex, vTexCoord - vec2(2.0 * uPxD, 0.0));
@@ -35,7 +36,7 @@ void main() {
                    + 0.242 * (pxL1 + pxR1)
                    + 0.382 * pxC;
 }
-        );
+)SHADER";
 
 int GaussProcPass::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     OG_LOGINF(getProcName(), "render pass %d", renderPass);

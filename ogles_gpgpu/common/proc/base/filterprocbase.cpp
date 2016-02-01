@@ -12,15 +12,16 @@
 using namespace ogles_gpgpu;
 using namespace std;
 
-const char *FilterProcBase::vshaderDefault = OG_TO_STR (
+const char *FilterProcBase::vshaderDefault = R"SHADER(
 attribute vec4 aPos;
 attribute vec2 aTexCoord;
 varying vec2 vTexCoord;
-void main() {
+void main()
+{
     gl_Position = aPos;
     vTexCoord = aTexCoord;
 }
-);
+)SHADER";
 
 #pragma mark public methods
 
