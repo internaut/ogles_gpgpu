@@ -24,6 +24,8 @@ import android.opengl.GLES20;
 import android.util.Log;
 import android.view.SurfaceHolder;
 
+import java.util.List;
+
 /**
  * Camera frames processing thread.
  * We should use separate thread to avoid conflicts with main-UI OpenGL's context.
@@ -375,7 +377,30 @@ class CameraProcThread
 
         // get the camera parameters and set the preview size and FPS rate
         Camera.Parameters camParams = cam.getParameters();
-        camPreviewFrameSize = camParams.getPreferredPreviewSizeForVideo();
+
+        List<Size> supportedSizes = camParams.getSupportedPreviewSizes();
+        for (Size size: supportedSizes) {
+            Log.i(CamActivity.TAG, "size supported: " + size.width + "x" + size.height);
+        }
+
+        // TESTME --
+        boolean autoSize = true;
+        // --
+
+        if (autoSize) {
+          camPreviewFrameSize = camParams.getPreferredPreviewSizeForVideo();
+        }
+        else {
+          // Set size manually
+
+          // TESTME --
+          int width = 640;
+          int height = 480;
+          // --
+
+          camPreviewFrameSize = cam.new Size(width, height);
+        }
+
         camParams.setPreviewSize(camPreviewFrameSize.width, camPreviewFrameSize.height);
 
         camParams.setPreviewFpsRange(CAM_FPS * 1000, CAM_FPS * 1000);
@@ -384,6 +409,14 @@ class CameraProcThread
 
         int[] fps = new int[2];
         camParams.getPreviewFpsRange(fps);
+
+        // Check preview size set correctly
+        Camera.Size realPreviewSize = camParams.getPreviewSize();
+        if (!realPreviewSize.equals(camPreviewFrameSize)) {
+            Log.i(CamActivity.TAG, "real size is " + realPreviewSize.width + "x" + realPreviewSize.height);
+            Log.i(CamActivity.TAG, "expected size is " + camPreviewFrameSize.width + "x" + camPreviewFrameSize.height);
+            throw new RuntimeException("Unexpected preview size");
+        }
 
         Log.i(CamActivity.TAG, "camera preview frame size is " + camPreviewFrameSize.width + "x" + camPreviewFrameSize.height);
         Log.i(CamActivity.TAG, "camera preview fps range is " + fps[0] / 1000.0f + " - " + fps[1] / 1000.0f);
