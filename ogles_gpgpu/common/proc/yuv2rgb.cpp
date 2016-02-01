@@ -58,7 +58,7 @@ void setColorConversion709( GLfloat conversionMatrix[9] )
     kColorConversion709 = conversionMatrix;
 }
 
-const char *kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = R"SHADER(
+const char *kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
   precision mediump float;
@@ -81,9 +81,9 @@ const char *kGPUImageYUVVideoRangeConversionForRGFragmentShaderString = R"SHADER
      
      gl_FragColor = vec4(rgb, 1);
  }
-)SHADER";
+);
 
-const char *kGPUImageYUVFullRangeConversionForLAFragmentShaderString = R"SHADER(
+const char *kGPUImageYUVFullRangeConversionForLAFragmentShaderString = OG_TO_STR(
 
  varying OGLES_GPGPU_HIGHP vec2 vTexCoord;
  
@@ -102,9 +102,9 @@ const char *kGPUImageYUVFullRangeConversionForLAFragmentShaderString = R"SHADER(
      
      gl_FragColor = vec4(rgb, 1);
  }
-)SHADER";
+);
 
-const char *kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = R"SHADER(
+const char *kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = OG_TO_STR(
 
  varying OGLES_GPGPU_HIGHP vec2 vTexCoord;
  
@@ -123,7 +123,7 @@ const char *kGPUImageYUVVideoRangeConversionForLAFragmentShaderString = R"SHADER
      
      gl_FragColor = vec4(rgb, 1);
  }
-)SHADER";
+);
 
 // =================================================================================
 

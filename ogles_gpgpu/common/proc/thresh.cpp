@@ -15,7 +15,7 @@ using namespace ogles_gpgpu;
 
 // Simple thresholding fragment shader
 // Requires a grayscale image as input!
-const char *ThreshProc::fshaderSimpleThreshSrc = R"SHADER(
+const char *ThreshProc::fshaderSimpleThreshSrc = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
@@ -30,7 +30,7 @@ void main()
     float bin = step(uThresh, gray);
     gl_FragColor = vec4(bin, bin, bin, 1.0);
 }
-)SHADER";
+);
 
 ThreshProc::ThreshProc() {
     // set defaults

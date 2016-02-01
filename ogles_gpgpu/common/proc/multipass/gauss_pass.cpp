@@ -12,7 +12,7 @@
 
 using namespace ogles_gpgpu;
 
-const char *GaussProcPass::fshaderGaussSrc = R"SHADER(
+const char *GaussProcPass::fshaderGaussSrc = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
@@ -36,7 +36,7 @@ void main()
                    + 0.242 * (pxL1 + pxR1)
                    + 0.382 * pxC;
 }
-)SHADER";
+);
 
 int GaussProcPass::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     OG_LOGINF(getProcName(), "render pass %d", renderPass);

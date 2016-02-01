@@ -13,7 +13,7 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-const char *Disp::fshaderDispSrc = R"SHADER(
+const char *Disp::fshaderDispSrc = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
@@ -25,7 +25,7 @@ void main()
 {
     gl_FragColor = vec4(texture2D(uInputTex, vTexCoord).rgba);
 }
-)SHADER";
+);
 
 int Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     OG_LOGINF(getProcName(), "initialize");

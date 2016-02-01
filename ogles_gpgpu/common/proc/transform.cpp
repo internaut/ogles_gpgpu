@@ -13,7 +13,7 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-const char *TransformProc::vshaderTransformSrc = R"SHADER(
+const char *TransformProc::vshaderTransformSrc = OG_TO_STR(
 attribute vec4 aPos;
 attribute vec2 aTexCoord;
 varying vec2 vTexCoord;
@@ -23,9 +23,9 @@ void main()
     gl_Position = transformMatrix * vec4(aPos.xyz, 1.0);
     vTexCoord = aTexCoord;
 }
-)SHADER";
+);
 
-const char *TransformProc::fshaderTransformSrc = R"SHADER(
+const char *TransformProc::fshaderTransformSrc = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
@@ -37,13 +37,13 @@ void main()
 {
     gl_FragColor = vec4(texture2D(uInputTex, vTexCoord).rgba);
 }
-)SHADER";
+);
 
 // Bicubic interpolation from here:
 // http://www.java-gaming.org/index.php?topic=35123.0
 // theagentd/Myomyomyo
 
-const char *TransformProc::fshaderTransformBicubicSrc = R"SHADER(
+const char *TransformProc::fshaderTransformBicubicSrc = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
 precision highp float;
@@ -99,7 +99,7 @@ void main()
 {
    gl_FragColor = textureBicubic(uInputTex, vTexCoord, texSize);
 }
-)SHADER";
+);
 
 TransformProc::TransformProc()
 {

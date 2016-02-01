@@ -21,19 +21,22 @@ const GLfloat GrayscaleProc::grayscaleConvVecBGR[3] = {
     0.114, 0.587, 0.299
 };
 
-const char *GrayscaleProc::fshaderGrayscaleSrc = R"SHADER(
+const char *GrayscaleProc::fshaderGrayscaleSrc = OG_TO_STR(
+
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
 #endif
-varying vec2 vTexCoord;
+
 uniform sampler2D uInputTex;
 uniform vec3 uInputConvVec;
+varying vec2 vTexCoord;
+
 void main()
 {
     float gray = dot(texture2D(uInputTex, vTexCoord).rgb, uInputConvVec);
     gl_FragColor = vec4(gray, gray, gray, 1.0);
 }
-)SHADER";
+);
 
 GrayscaleProc::GrayscaleProc() {
     // set defaults
