@@ -281,9 +281,6 @@ void Core::setInputData(const unsigned char *data) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     }
     
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
     Tools::checkGLErr("Core", "set texture parameters for input data");
 
     glFinish();
@@ -309,6 +306,21 @@ void Core::process() {
         glFinish();
     }
 
+#ifdef OGLES_GPGPU_BENCHMARK
+    Tools::stopTimeMeasurement();
+#endif
+}
+
+void Core::getInputData(unsigned char *buf) {
+    assert(initialized);
+    
+#ifdef OGLES_GPGPU_BENCHMARK
+    Tools::startTimeMeasurement();
+#endif
+    
+    // will copy the result data from the GPU's memory space to <buf>
+    firstProc->getMemTransferObj()->fromGPU(buf);
+    
 #ifdef OGLES_GPGPU_BENCHMARK
     Tools::stopTimeMeasurement();
 #endif
