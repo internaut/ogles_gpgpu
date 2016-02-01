@@ -147,6 +147,12 @@ public:
         assert(lastProc);
         return lastProc->getOutputTexId();
     }
+    
+    /**
+     * Get input as bytes. Will copy the input texture from the GPU to <buf>.
+     */
+    void getInputData(unsigned char *buf);
+
 
     /**
      * Get output as bytes. Will copy the output texture from the GPU to <buf>.
