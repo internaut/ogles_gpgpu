@@ -20,7 +20,11 @@ sugar_files(
     adapt_thresh.h
     disp.cpp
     disp.h
+    filter3x3.cpp
+    filter3x3.h
     gauss.h
+    grad.cpp
+    grad.h
     grayscale.cpp
     grayscale.h
     thresh.cpp
