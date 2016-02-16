@@ -13,7 +13,7 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-const char *Filter3x3Proc::fshaderFilter3x3Src = OG_TO_STR(
+const char *GradProc::fshaderGradSrc = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
 precision highp float;
@@ -73,38 +73,15 @@ GradProc::GradProc() {
 
 }
 
+
 int GradProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     OG_LOGINF(getProcName(), "initialize");
-
-    // create fbo for output
-    createFBO();
-
-    // ProcBase init - set defaults
-    baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
-
+    
+    Filter3x3Proc::init(inW, inH, order, prepareForExternalInput);
+    
     // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    filterInit(vshaderFilter3x3Src, fshaderFilter3x3Src);
-
+    filterInit(vshaderFilter3x3Src, fshaderGradSrc);
     shParamUInputTex = shader->getParam(UNIF, "inputImageTexture");
     
     return 1;
-}
-
-void GradProc::render() {
-    OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
-
-    filterRenderPrepare();
-  
-    // TODO: set uniforms here
-    glUniform1f(texelWidthUniform, (1.0f/ float(inFrameW)));
-    glUniform1f(texelHeightUniform, (1.0f/ float(inFrameH)));
-
-    filterRenderSetCoords();
-    Tools::checkGLErr(getProcName(), "render set coords");
-
-    filterRenderDraw();
-    Tools::checkGLErr(getProcName(), "render draw");
-
-    filterRenderCleanup();
-    Tools::checkGLErr(getProcName(), "render cleanup");
 }

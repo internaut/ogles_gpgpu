@@ -8,30 +8,30 @@
 //
 
 /**
- * GPGPU grad processor.
+ * GPGPU lbp processor.
  */
-#ifndef OGLES_GPGPU_COMMON_PROC_GRAD
-#define OGLES_GPGPU_COMMON_PROC_GRAD
+#ifndef OGLES_GPGPU_COMMON_PROC_LBP
+#define OGLES_GPGPU_COMMON_PROC_LBP
 
 #include "proc/filter3x3.h"
 
 namespace ogles_gpgpu {
 
 /**
- * GPGPU gradient, gradient magnitude and orientation 
+ * GPGPU lbpient, lbpient magnitude and orientation 
  */
-class GradProc : public Filter3x3Proc {
+class LbpProc : public Filter3x3Proc {
 public:
     /**
      * Constructor.
      */
-    GradProc();
+    LbpProc();
 
     /**
      * Return the processors name.
      */
     virtual const char *getProcName() {
-        return "GradProc";
+        return "LbpProc";
     }
 
     /**
@@ -40,10 +40,9 @@ public:
      */
     virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
 
-
 private:
 
-    static const char *fshaderGradSrc;   // fragment shader source
+    static const char *fshaderLbpSrc;   // fragment shader source
     
 };
 }

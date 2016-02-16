@@ -98,7 +98,9 @@ void Filter3x3Proc::render()
     filterRenderPrepare();
     Tools::checkGLErr(getProcName(), "render prepare");
 
-    // TODO:
+    // Set texel width/height uniforms:
+    glUniform1f(texelWidthUniform, (1.0f/ float(inFrameW)));
+    glUniform1f(texelHeightUniform, (1.0f/ float(inFrameH)));
 
     filterRenderSetCoords();
     Tools::checkGLErr(getProcName(), "render set coords");
