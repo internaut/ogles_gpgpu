@@ -44,39 +44,12 @@ GrayscaleProc::GrayscaleProc() {
     setGrayscaleConvType(GRAYSCALE_INPUT_CONVERSION_RGB);
 }
 
-int GrayscaleProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
-    OG_LOGINF(getProcName(), "initialize");
-
-    // create fbo for output
-    createFBO();
-
-    // ProcBase init - set defaults
-    baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
-
-    // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    filterInit(vshaderDefault, fshaderGrayscaleSrc);
-
-    // get additional shader params
-    shParamUInputConvVec = shader->getParam(UNIF, "uInputConvVec");
-
-    return 1;
+void GrayscaleProc::setUniforms() {
+    glUniform3fv(shParamUInputConvVec, 1, grayscaleConvVec);        // set additional uniforms
 }
 
-void GrayscaleProc::render() {
-    OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
-
-    filterRenderPrepare();
-    glUniform3fv(shParamUInputConvVec, 1, grayscaleConvVec);        // set additional uniforms
-    Tools::checkGLErr(getProcName(), "render prepare");
-
-    filterRenderSetCoords();
-    Tools::checkGLErr(getProcName(), "render set coords");
-
-    filterRenderDraw();
-    Tools::checkGLErr(getProcName(), "render draw");
-
-    filterRenderCleanup();
-    Tools::checkGLErr(getProcName(), "render cleanup");
+void GrayscaleProc::getUniforms() {
+    shParamUInputConvVec = shader->getParam(UNIF, "uInputConvVec");
 }
 
 void GrayscaleProc::setGrayscaleConvVec(const GLfloat v[3]) {

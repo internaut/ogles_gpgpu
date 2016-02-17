@@ -34,14 +34,17 @@ public:
         return "GradProc";
     }
 
-    /**
-     * Init the processor for input frames of size <inW>x<inH> which is at
-     * position <order> in the processing pipeline.
-     */
-    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
-
-
 private:
+    
+    /**
+     * Get the fragment shader source.
+     */
+    virtual const char *getFragmentShaderSoure() { return fshaderGradSrc; }
+    
+    /**
+     * Get uniform indices.
+     */
+    virtual void getUniforms();
 
     static const char *fshaderGradSrc;   // fragment shader source
     
