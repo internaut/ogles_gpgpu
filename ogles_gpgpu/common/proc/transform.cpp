@@ -101,75 +101,39 @@ void main()
 }
 );
 
-TransformProc::TransformProc()
-{
+TransformProc::TransformProc() {
     memset(transformMatrix.data, 0, sizeof(transformMatrix.data));
-    for(int i = 0; i < 4; i++)
-    {
+    for(int i = 0; i < 4; i++) {
         transformMatrix.data[i][i] = 1;
     }
 }
 
-void TransformProc::filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target)
-{
-    FilterProcBase::filterShaderSetup(vShaderSrc, fShaderSrc, target);
-    Tools::checkGLErr(getProcName(), "filterShaderSetup");
-    
-    shParamUTransform = shader->getParam(UNIF, "transformMatrix");
-    Tools::checkGLErr(getProcName(), "getParam()");
-    
-    if(interpolation == BICUBIC)
-    {
-        shParamUTransformSize = shader->getParam(UNIF, "texSize");
-        Tools::checkGLErr(getProcName(), "getParam()");
-    }
+
+const char *TransformProc::getFragmentShaderSoure() {
+    return (interpolation == BILINEAR) ? fshaderTransformSrc : fshaderTransformBicubicSrc;
 }
 
-int TransformProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput)
-{
-    OG_LOGINF(getProcName(), "initialize");
-
-    // create fbo for output
-    createFBO();
-
-    // ProcBase init - set defaults
-    baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
-
-    // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    auto fShaderSrc = (interpolation == BILINEAR) ? fshaderTransformSrc : fshaderTransformBicubicSrc;
-    filterInit(vshaderTransformSrc, fShaderSrc);
-    
-    return 1;
+const char *TransformProc::getVertexShaderSource() {
+    return vshaderTransformSrc;
 }
 
-void TransformProc::render()
-{
-    OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
-
-    filterRenderPrepare();
-    Tools::checkGLErr(getProcName(), "render prepare");
-    
-    glUniformMatrix4fv(shParamUTransform, 1, 0, &transformMatrix.data[0][0]);        // set additional uniforms
-    Tools::checkGLErr(getProcName(), "glUniformMatrix4fv");
-    
-    if(interpolation == BICUBIC)
-    {
+void TransformProc::setUniforms() {
+    FilterProcBase::setUniforms();
+    glUniformMatrix4fv(shParamUTransform, 1, 0, &transformMatrix.data[0][0]);
+    if(interpolation == BICUBIC) {
         glUniform2f(shParamUTransformSize, inFrameW, inFrameH);
-        Tools::checkGLErr(getProcName(), "glUniformMatrix2fv");
     }
-
-    filterRenderSetCoords();
-    Tools::checkGLErr(getProcName(), "render set coords");
-
-    filterRenderDraw();
-    Tools::checkGLErr(getProcName(), "render draw");
-
-    filterRenderCleanup();
-    Tools::checkGLErr(getProcName(), "render cleanup");
 }
 
-void TransformProc::setTransformMatrix(const Mat44f &matrix)
-{
+void TransformProc::getUniforms() {
+    FilterProcBase::getUniforms();
+    shParamUTransform = shader->getParam(UNIF, "transformMatrix");
+    if(interpolation == BICUBIC) {
+        shParamUTransformSize = shader->getParam(UNIF, "texSize");
+    }
+}
+
+void TransformProc::setTransformMatrix(const Mat44f &matrix) {
     transformMatrix = matrix;
 }
 

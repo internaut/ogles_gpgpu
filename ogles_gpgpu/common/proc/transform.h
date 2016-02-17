@@ -43,15 +43,24 @@ public:
     virtual const char *getProcName() { return "TransformProc"; }
 
     /**
-     * Init the processor for input frames of size <inW>x<inH> which is at
-     * position <order> in the processing pipeline.
+     * Get the fragment shader source.
      */
-    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
+    virtual const char *getFragmentShaderSoure();
 
     /**
-     * Render the output.
+     * Get the vertex shader source.
      */
-    virtual void render();
+    virtual const char *getVertexShaderSource();
+    
+    /**
+     * Set additional uniforms.
+     */
+    virtual void setUniforms();
+    
+    /**
+     * Get uniform indices.
+     */
+    virtual void getUniforms();
 
     /**
      * Get the transformation matrix.
@@ -71,13 +80,8 @@ public:
     /**
      * Get interpolation mode.
      */
-    Interpolation getInterpolatino() const { return interpolation; }
-    
-    /**
-     * Set the transformation matrix.
-     */
-    virtual void filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target);
-
+    Interpolation getInterpolation() const { return interpolation; }
+ 
 private:
     static const char *vshaderTransformSrc;   // fragment shader source
     static const char *fshaderTransformSrc;   // fragment shader source
