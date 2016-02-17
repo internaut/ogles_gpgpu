@@ -73,15 +73,7 @@ GradProc::GradProc() {
 
 }
 
-
-int GradProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
-    OG_LOGINF(getProcName(), "initialize");
-    
-    Filter3x3Proc::init(inW, inH, order, prepareForExternalInput);
-    
-    // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    filterInit(vshaderFilter3x3Src, fshaderGradSrc);
+void GradProc::getUniforms() {
+    Filter3x3Proc::getUniforms();
     shParamUInputTex = shader->getParam(UNIF, "inputImageTexture");
-    
-    return 1;
 }

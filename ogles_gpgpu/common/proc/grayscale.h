@@ -48,17 +48,6 @@ public:
     }
 
     /**
-     * Init the processor for input frames of size <inW>x<inH> which is at
-     * position <order> in the processing pipeline.
-     */
-    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
-
-    /**
-     * Render the output.
-     */
-    virtual void render();
-
-    /**
      * Set weighted channel grayscale conversion vector directly to <v>.
      */
     void setGrayscaleConvVec(const GLfloat v[3]);
@@ -83,6 +72,23 @@ public:
     }
 
 private:
+    
+    /**
+     * Get the fragment shader source.
+     */
+    virtual const char *getFragmentShaderSoure() { return fshaderGrayscaleSrc; }
+    
+    /**
+     * Set additional uniforms.
+     */
+    virtual void setUniforms();
+    
+    /**
+     * Get uniform indices.
+     */
+    virtual void getUniforms();
+    
+    
     static const char *fshaderGrayscaleSrc;         // fragment shader source
     static const GLfloat grayscaleConvVecRGB[3];    // weighted channel grayscale conversion for RGB input (default)
     static const GLfloat grayscaleConvVecBGR[3];    // weighted channel grayscale conversion for BGR input
