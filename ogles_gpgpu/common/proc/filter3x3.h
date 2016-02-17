@@ -36,15 +36,19 @@ public:
     virtual const char *getProcName() { return "Filter3x3Proc"; }
 
     /**
-     * Init the processor for input frames of size <inW>x<inH> which is at
-     * position <order> in the processing pipeline.
+     * Get the fragment shader source.
      */
-    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
-
+    virtual const char *getVertexShaderSource() { return vshaderFilter3x3Src; }
+    
     /**
-     * Render the output.
+     * Set additional uniforms.
      */
-    virtual void render();
+    virtual void setUniforms();
+    
+    /**
+     * Get uniform indices.
+     */
+    virtual void getUniforms();
 
     /**
      * Setup the shaders

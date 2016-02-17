@@ -57,8 +57,7 @@ const char *Filter3x3Proc::vshaderFilter3x3Src = OG_TO_STR(
  }
  );
 
-Filter3x3Proc::Filter3x3Proc()
-{
+Filter3x3Proc::Filter3x3Proc() {
 
 }
 
@@ -74,42 +73,15 @@ void Filter3x3Proc::filterShaderSetup(const char *vShaderSrc, const char *fShade
     texelHeightUniform = shader->getParam(UNIF, "texelHeight");
     
     Tools::checkGLErr(getProcName(), "filterShaderSetup");
-
-    // TODO:
 }
 
-int Filter3x3Proc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput)
-{
-    OG_LOGINF(getProcName(), "initialize");
-
-    // create fbo for output
-    createFBO();
-
-    // ProcBase init - set defaults
-    baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
+void Filter3x3Proc::getUniforms() {
     
-    return 1;
 }
 
-void Filter3x3Proc::render()
-{
-    OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
-
-    filterRenderPrepare();
-    Tools::checkGLErr(getProcName(), "render prepare");
-
+void Filter3x3Proc::setUniforms() {
     // Set texel width/height uniforms:
     glUniform1f(texelWidthUniform, (1.0f/ float(inFrameW)));
     glUniform1f(texelHeightUniform, (1.0f/ float(inFrameH)));
-
-    filterRenderSetCoords();
-    Tools::checkGLErr(getProcName(), "render set coords");
-
-    filterRenderDraw();
-    Tools::checkGLErr(getProcName(), "render draw");
-
-    filterRenderCleanup();
-    Tools::checkGLErr(getProcName(), "render cleanup");
 }
-
 
