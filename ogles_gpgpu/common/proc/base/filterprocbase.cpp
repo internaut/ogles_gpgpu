@@ -12,6 +12,19 @@
 using namespace ogles_gpgpu;
 using namespace std;
 
+const char *FilterProcBase::vshaderGPUImage = OG_TO_STR(
+ attribute vec4 position;
+ attribute vec4 inputTextureCoordinate;
+ 
+ varying vec2 textureCoordinate;
+ void main()
+ {
+     gl_Position = position;
+     textureCoordinate = inputTextureCoordinate.xy;
+ }
+);
+
+
 const char *FilterProcBase::vshaderDefault = OG_TO_STR(
 attribute vec4 aPos;
 attribute vec2 aTexCoord;
@@ -69,6 +82,29 @@ void FilterProcBase::filterShaderSetup(const char *vShaderSrc, const char *fShad
     // remember used shader source
     vertexShaderSrcForCompilation = vShaderSrc;
     fragShaderSrcForCompilation = fShaderSrc;
+}
+
+/**
+ * Render a result, i.e. run the shader on the input texture.
+ * Abstract method.
+ */
+void FilterProcBase::render() {
+    OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
+    
+    filterRenderPrepare();
+
+    setUniforms();
+
+    Tools::checkGLErr(getProcName(), "render prepare");
+    
+    filterRenderSetCoords();
+    Tools::checkGLErr(getProcName(), "render set coords");
+    
+    filterRenderDraw();
+    Tools::checkGLErr(getProcName(), "render draw");
+    
+    filterRenderCleanup();
+    Tools::checkGLErr(getProcName(), "render cleanup");
 }
 
 void FilterProcBase::initTexCoordBuf(RenderOrientation overrideRenderOrientation) {
@@ -155,3 +191,22 @@ void FilterProcBase::filterRenderCleanup() {
 
     if (fbo) fbo->unbind();
 }
+
+int FilterProcBase::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
+    OG_LOGINF(getProcName(), "initialize");
+    
+    // create fbo for output
+    createFBO();
+    
+    // ProcBase init - set defaults
+    baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
+    
+    // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
+    filterInit(getVertexShaderSource(), getFragmentShaderSoure());
+
+    // Get shader specific uniforms
+    getUniforms();
+    
+    return 1;
+}
+

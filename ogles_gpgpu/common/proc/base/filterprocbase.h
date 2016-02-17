@@ -39,7 +39,39 @@ public:
      */
     virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D);
 
+    /**
+     * Render a result, i.e. run the shader on the input texture.
+     * Abstract method.
+     */
+    virtual void render();
+    
 protected:
+    
+    /**
+     * Perform a standard shader initialization.
+     */
+    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput);
+    
+    /**
+     * Get the vertex shader source.
+     */
+    virtual const char *getVertexShaderSource() { return vshaderDefault; }
+    
+    /**
+     * Get the fragment shader source.
+     */
+    virtual const char *getFragmentShaderSoure() { return 0; }
+    
+    /**
+     * Set additional uniforms.
+     */
+    virtual void setUniforms() {}
+    
+    /**
+     * Get uniform indices.
+     */
+    virtual void getUniforms() {}
+    
     /**
      * Common initialization method for filters with vertex shader source <vShaderSrc>
      * fragment shader source <fShaderSrc> and render output orientation <o>.
@@ -63,6 +95,7 @@ protected:
     virtual void filterRenderDraw();
     virtual void filterRenderCleanup();
 
+    static const char *vshaderGPUImage; // GPUImage vertex shader (shader compatibility)
     static const char *vshaderDefault;  // default vertex shader to render a fullscreen quad
 
     const char *vertexShaderSrcForCompilation = nullptr;  // used vertex shader source for shader compilation
