@@ -23,6 +23,11 @@ void PyramidProc::setOutputSize(float scaleFactor)
     // noop
 }
 
+void PyramidProc::setScales(const std::vector<Size> &scales)
+{
+    m_scales = scales;
+}
+
 void PyramidProc::PyramidProc::render()
 {
     OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
@@ -39,6 +44,22 @@ void PyramidProc::PyramidProc::render()
     glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0,0,0,1);
     
+    if(m_scales.size())
+    {
+        renderMultiscale();
+    }
+    else
+    {
+        renderPyramid();
+    }
+    
+ 
+    filterRenderCleanup();
+    Tools::checkGLErr(getProcName(), "render cleanup");
+}
+
+void PyramidProc::renderPyramid()
+{
     int x = 0, y = 0, w = inFrameW, h = inFrameH;
     for(int i = 0; i < 8; i++)
     {
@@ -59,13 +80,38 @@ void PyramidProc::PyramidProc::render()
         Tools::checkGLErr(getProcName(), "render draw");
     }
 
-    filterRenderCleanup();
-    Tools::checkGLErr(getProcName(), "render cleanup");
+}
+
+void PyramidProc::renderMultiscale()
+{
+    int x = 0, y = 0;
+    for(int i = 0; i < m_scales.size(); i++)
+    {
+        glViewport(x, y, m_scales[i].width, m_scales[i].height);
+        x += m_scales[i].width;
+        filterRenderDraw();
+        Tools::checkGLErr(getProcName(), "render draw");
+    }
 }
 
 int PyramidProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput)
 {
-    ProcBase::setOutputSize(inW * 3/2, inH);
+    int width = 0, height = 0;
+    if(m_scales.size())
+    {
+        for(int i = 0; i < m_scales.size(); i++)
+        {
+            width += m_scales[i].width;
+            height = std::max(m_scales[i].height, height);
+        }
+    }
+    else
+    {
+        width = inW * 3/2;
+        height = inH;
+    }
+
+    ProcBase::setOutputSize(width, height);
     return FilterProcBase::init(inW, inH, order, prepareForExternalInput);
 }
 
