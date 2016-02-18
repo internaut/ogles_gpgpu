@@ -16,9 +16,9 @@
 #include "../common_includes.h"
 
 #if OGLES_GPGPU_OPENGLES
-#  define OGLES_GPGPU_LOWP mediump
+#  define OGLES_GPGPU_LOWP lowp
 #  define OGLES_GPGPU_MEDIUMP mediump
-#  define OGLES_GPGPU_HIGHP mediump
+#  define OGLES_GPGPU_HIGHP highp
 #else
 #  define OGLES_GPGPU_LOWP
 #  define OGLES_GPGPU_MEDIUMP
