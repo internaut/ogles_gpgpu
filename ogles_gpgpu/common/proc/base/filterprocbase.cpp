@@ -74,14 +74,18 @@ void FilterProcBase::filterShaderSetup(const char *vShaderSrc, const char *fShad
     // create shader object
     ProcBase::createShader(vShaderSrc, fShaderSrc, target);
 
-    // get shader params
+    // TODO: Support uniform reads through virtual API call:
     shParamAPos = shader->getParam(ATTR, "aPos");
     shParamATexCoord = shader->getParam(ATTR, "aTexCoord");
     shParamUInputTex = shader->getParam(UNIF, "uInputTex");
-
+    
     // remember used shader source
     vertexShaderSrcForCompilation = vShaderSrc;
     fragShaderSrcForCompilation = fShaderSrc;
+}
+
+void FilterProcBase::getUniforms() {
+    
 }
 
 /**

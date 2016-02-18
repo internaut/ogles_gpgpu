@@ -33,6 +33,8 @@ sugar_files(
     lbp.h
     nms.cpp
     nms.h
+    pyramid.cpp
+    pyramid.h
     shitomasi.cpp # corner
     shitomasi.h
     tensor.cpp # tensor

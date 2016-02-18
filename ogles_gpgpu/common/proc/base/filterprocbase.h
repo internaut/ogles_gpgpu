@@ -70,7 +70,7 @@ protected:
     /**
      * Get uniform indices.
      */
-    virtual void getUniforms() {}
+    virtual void getUniforms();
     
     /**
      * Common initialization method for filters with vertex shader source <vShaderSrc>

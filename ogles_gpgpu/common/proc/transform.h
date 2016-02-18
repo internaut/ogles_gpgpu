@@ -82,7 +82,8 @@ public:
      */
     Interpolation getInterpolation() const { return interpolation; }
  
-private:
+protected:
+    
     static const char *vshaderTransformSrc;   // fragment shader source
     static const char *fshaderTransformSrc;   // fragment shader source
     static const char *fshaderTransformBicubicSrc; // bicubic shader
