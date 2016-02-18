@@ -12,8 +12,6 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-OGLES_GPGPU_LOWP
-
 const char *NmsProc::fshaderNmsSrc = OG_TO_STR(
 
 #if defined(OGLES_GPGPU_OPENGLES)
