@@ -18,8 +18,6 @@ sugar_include(multipass)
 sugar_files(
     OGLES_GPGPU_SRCS
     adapt_thresh.h
-    corner.cpp # tensor + corner
-    corner.h
     disp.cpp
     disp.h
     filter3x3.cpp
