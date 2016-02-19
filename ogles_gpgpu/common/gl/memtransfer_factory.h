@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -30,16 +30,16 @@ public:
      * Create a new MemTransfer instance.
      */
     static MemTransfer *createInstance();
-    
+
     /**
      * Try to enable platform optimizations. Returns true on success, else false.
      */
     static bool tryEnablePlatformOptimizations();
-    
+
 private:
     static bool usePlatformOptimizations;   // is true if tryEnablePlatformOptimizations() was called and succeeded
 };
-    
+
 }
 
 #endif

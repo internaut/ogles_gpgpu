@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -43,28 +43,28 @@
     BOOL showCamPreview;        // is YES if the camera preview is shown or NO if the processed frames are shown
     BOOL firstFrame;            // is YES when the current frame is the very first camera frame
     BOOL prepared;              // is YES when everything is ready to process camera frames
-    
+
     CGSize frameSize;           // original camera frame size
-    
+
     UIView *baseView;           // root view
     CamView *camView;           // shows the grabbed video frames ("camera preview")
     GLKView *glView;            // shows the processed video frames as textures in a GLKit view
     CGRect baseFrame;           // base UI frame
     UIButton *prevSelBtn;       // previously selected button
-    
+
     EAGLContext *eaglContext;   // OpenGL ES 2.0 context
-    
+
     ogles_gpgpu::Core *gpgpuMngr;   // ogles_gpgpu manager
-    
+
     ogles_gpgpu::MemTransfer *gpgpuInputHandler;    // input handler for direct access to the camera frames. weak ref!
-    
+
     ogles_gpgpu::GrayscaleProc grayscaleProc;       // pipeline processor 1: convert input to grayscale image
     ogles_gpgpu::ThreshProc simpleThreshProc;       // pipeline processor 2 (alternative 1): simple thresholding
     ogles_gpgpu::AdaptThreshProc adaptThreshProc;   // pipeline processor 2 (alternative 2): adaptive thresholding (two passes)
     ogles_gpgpu::GaussProc gaussProc;               // pipeline processor 2 (alternative 3): gaussian smoothing (two passes)
-    
+
     ogles_gpgpu::Disp *outputDispRenderer;  // display renderer to directly display the output in the GL view. weak ref!
-    
+
     ogles_gpgpu::RenderOrientation dispRenderOrientation;   // current output orientation of the display renderer
 }
 

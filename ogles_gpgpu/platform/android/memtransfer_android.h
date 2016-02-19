@@ -35,37 +35,37 @@
 #define OG_ANDROID_GRAPHIC_BUFFER_SIZE 1024
 
 namespace ogles_gpgpu {
-    
+
 /**
  * typedefs to Android GraphicBuffer functions
  */
 
 // constructor
 typedef void (*GraphicBufferFnCtor)(void *graphicBufHndl, uint32_t w, uint32_t h, uint32_t format, uint32_t usage);
-    
+
 // deconstructor
 typedef void (*GraphicBufferFnDtor)(void *graphicBufHndl);
-    
+
 // getNativeBuffer
 typedef void* (*GraphicBufferFnGetNativeBuffer)(void *graphicBufHndl);
-    
+
 // lock
 typedef int (*GraphicBufferFnLock)(void *graphicBufHndl, uint32_t usage, unsigned char **addr);
-    
+
 // unlock
 typedef int (*GraphicBufferFnUnlock)(void *graphicBufHndl);
 
 /**
  * typedefs to EGL extension functions for ImageKHR extension
  */
-    
+
 // create ImageKHR
 typedef EGLImageKHR (*EGLExtFnCreateImage)(EGLDisplay dpy, EGLContext ctx, EGLenum target, EGLClientBuffer buffer, const EGLint *attribList);
 
 // destroy ImageKHR
 typedef EGLBoolean (*EGLExtFnDestroyImage)(EGLDisplay dpy, EGLImageKHR image);
 
-    
+
 /**
  * MemTransferAndroid is a platform specific implementation for fast texture access on Android platforms.
  */
@@ -85,80 +85,80 @@ public:
         inputNativeBuf(NULL),
         outputNativeBuf(NULL),
         inputImage(NULL),
-        outputImage(NULL)
-        { }
-    
+        outputImage(NULL) {
+    }
+
     /**
      * Deconstructor.
      */
     virtual ~MemTransferAndroid();
-    
+
     /**
      * Initialize method to be called AFTER the OpenGL context was created
      */
     virtual void init();
-    
+
     /**
      * Prepare for input frames of size <inTexW>x<inTexH>. Return a texture id for the input frames.
      */
     virtual GLuint prepareInput(int inTexW, int inTexH, GLenum inputPxFormat = GL_RGBA, void *inputDataPtr = NULL);
-    
+
     /**
      * Prepare for output frames of size <outTexW>x<outTexH>. Return a texture id for the output frames.
      */
     virtual GLuint prepareOutput(int outTexW, int outTexH);
-    
+
     /**
      * Delete input texture.
      */
     virtual void releaseInput();
-    
+
     /**
      * Delete output texture.
      */
     virtual void releaseOutput();
-    
+
     /**
      * Map data in <buf> to GPU.
      */
     virtual void toGPU(const unsigned char *buf);
-    
+
     /**
      * Map data from GPU to <buf>
      */
     virtual void fromGPU(unsigned char *buf);
-    
+
     /**
      * Lock the input or output buffer and return its base address.
      * The input buffer will be locked for reading AND writing, while the
      * output buffer will be locked for reading only.
      */
     virtual void *lockBufferAndGetPtr(BufType bufType);
-    
+
     /**
      * Unlock the input or output buffer.
      */
     virtual void unlockBuffer(BufType bufType);
-    
+
 private:
     static GraphicBufferFnCtor graBufCreate;        // function pointer to GraphicBufferFnCtor
     static GraphicBufferFnDtor graBufDestroy;       // function pointer to GraphicBufferFnDtor
     static GraphicBufferFnGetNativeBuffer graBufGetNativeBuffer;  // function pointer to GraphicBufferFnGetNativeBuffer
     static GraphicBufferFnLock graBufLock;          // function pointer to GraphicBufferFnLock
     static GraphicBufferFnUnlock graBufUnlock;      // function pointer to GraphicBufferFnUnlock
-    
+
     static EGLExtFnCreateImage  imageKHRCreate;     // function pointer to EGLExtFnCreateImage
     static EGLExtFnDestroyImage  imageKHRDestroy;   // function pointer to EGLExtFnDestroyImage
-    
-	void *inputGraBufHndl;      // Android GraphicBuffer handle for input
-	void *outputGraBufHndl;     // Android GraphicBuffer handle for output
-    
-	struct ANativeWindowBuffer *inputNativeBuf;     // pointer to native window buffer for input (weak ref - do not free()!)
-	struct ANativeWindowBuffer *outputNativeBuf;	// pointer to native window buffer for output (weak ref - do not free()!)
-    
-	EGLImageKHR inputImage;     // ImageKHR handle for input
-	EGLImageKHR outputImage;    // ImageKHR handle for output
+
+    void *inputGraBufHndl;      // Android GraphicBuffer handle for input
+    void *outputGraBufHndl;     // Android GraphicBuffer handle for output
+
+    struct ANativeWindowBuffer *inputNativeBuf;     // pointer to native window buffer for input (weak ref - do not free()!)
+    struct ANativeWindowBuffer *outputNativeBuf;	// pointer to native window buffer for output (weak ref - do not free()!)
+
+    EGLImageKHR inputImage;     // ImageKHR handle for input
+    EGLImageKHR outputImage;    // ImageKHR handle for output
 };
-    
+
 }
 #endif

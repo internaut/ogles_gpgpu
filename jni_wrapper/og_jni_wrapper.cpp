@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -22,7 +22,7 @@
 /**
  * common objects and variables
  */
- 
+
 static ogles_gpgpu::Core *ogCore = NULL;		// ogles_gpgpu core manager instance
 static ogles_gpgpu::Disp *ogDisp = NULL;		// ogles_gpgpu render-to-display object (weak ref)
 
@@ -41,13 +41,13 @@ static GLuint ogOutputTexId	= 0;				// output texture id
  * Cleanup helper. Will release the output pixel buffer.
  */
 void ogCleanupHelper(JNIEnv *env) {
-	if (outputPxBuf && outputPxBufData) {	// buffer is already set, release it first
-		env->DeleteGlobalRef(outputPxBuf);
-		delete outputPxBufData;
+    if (outputPxBuf && outputPxBufData) {	// buffer is already set, release it first
+        env->DeleteGlobalRef(outputPxBuf);
+        delete outputPxBufData;
 
-		outputPxBuf = NULL;
-		outputPxBufData = NULL;
-	}
+        outputPxBuf = NULL;
+        outputPxBufData = NULL;
+    }
 }
 
 /**
@@ -57,54 +57,54 @@ void ogCleanupHelper(JNIEnv *env) {
  * @param createRenderDisp create a render display which will render to output to screen
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init(JNIEnv *env, jobject obj, jboolean platOpt, jboolean initEGL, jboolean createRenderDisp) {
-	assert(ogCore == NULL);
-	OG_LOGINF("OGJNIWrapper", "creating instance of ogles_gpgpu::Core");
+    assert(ogCore == NULL);
+    OG_LOGINF("OGJNIWrapper", "creating instance of ogles_gpgpu::Core");
 
-	ogCore = ogles_gpgpu::Core::getInstance();
+    ogCore = ogles_gpgpu::Core::getInstance();
 
-	if (platOpt) {
-		ogles_gpgpu::Core::tryEnablePlatformOptimizations();
-	}
+    if (platOpt) {
+        ogles_gpgpu::Core::tryEnablePlatformOptimizations();
+    }
 
-	// this method is user-defined and sets up the processing pipeline
-	ogPipelineSetup(ogCore);
-	
-	// create a render display output
-	if (createRenderDisp) {
-		ogDisp = ogCore->createRenderDisplay();
-	}
+    // this method is user-defined and sets up the processing pipeline
+    ogPipelineSetup(ogCore);
 
-	// initialize EGL context
-	if (initEGL && !ogles_gpgpu::EGL::setup()) {
-		OG_LOGERR("OGJNIWrapper", "EGL setup failed!");
-	}
+    // create a render display output
+    if (createRenderDisp) {
+        ogDisp = ogCore->createRenderDisplay();
+    }
 
-	eglInitRequested = initEGL;
+    // initialize EGL context
+    if (initEGL && !ogles_gpgpu::EGL::setup()) {
+        OG_LOGERR("OGJNIWrapper", "EGL setup failed!");
+    }
+
+    eglInitRequested = initEGL;
 }
 
 /**
  * Cleanup the ogles_gpgpu resources. Call this only once when you quit using ogles_gpgpu.
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup(JNIEnv *env, jobject obj) {
-	assert(ogCore);
+    assert(ogCore);
 
-	OG_LOGINF("OGJNIWrapper", "destroying instance of ogles_gpgpu::Core");
+    OG_LOGINF("OGJNIWrapper", "destroying instance of ogles_gpgpu::Core");
 
-	ogles_gpgpu::Core::destroy();
-	ogCore = NULL;
+    ogles_gpgpu::Core::destroy();
+    ogCore = NULL;
 
-	ogCleanupHelper(env);
+    ogCleanupHelper(env);
 
-	if (eglInitRequested) {
-		ogles_gpgpu::EGL::shutdown();
-	}
+    if (eglInitRequested) {
+        ogles_gpgpu::EGL::shutdown();
+    }
 }
 
 /**
  * Prepare ogles_gpgpu for incoming images of size <inW> x <inH>. Do this
  * each time you change the input image size (and of course at the beginning
- * for the initial input image size). 
- * 
+ * for the initial input image size).
+ *
  * @param inW input frame width
  * @param inH input frame height
  * @param prepareDataInput set to true if you later want to copy data to ogles_gpgpu
@@ -112,48 +112,48 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup(JNIEnv *env, jobje
  *						   input data by texture via setInputTexture().
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobject obj, jint w, jint h, jboolean prepareDataInput) {
-	assert(ogCore);
+    assert(ogCore);
 
-	if (eglInitRequested) {
-		// set up EGL pixelbuffer surface
-		if (!ogles_gpgpu::EGL::createPBufferSurface(w, h)) {
-			OG_LOGERR("OGJNIWrapper", "EGL pbuffer creation failed. Aborting!");
-			return;
-		}
+    if (eglInitRequested) {
+        // set up EGL pixelbuffer surface
+        if (!ogles_gpgpu::EGL::createPBufferSurface(w, h)) {
+            OG_LOGERR("OGJNIWrapper", "EGL pbuffer creation failed. Aborting!");
+            return;
+        }
 
-		// activate the EGL context
-		if (!ogles_gpgpu::EGL::activate()) {
-			OG_LOGERR("OGJNIWrapper", "EGL context activation failed. Aborting!");
-			return;
-		}
-	}
+        // activate the EGL context
+        if (!ogles_gpgpu::EGL::activate()) {
+            OG_LOGERR("OGJNIWrapper", "EGL context activation failed. Aborting!");
+            return;
+        }
+    }
 
-	// initialize ogles_gpgpu
-	if (!ogInitialized) {
-		ogCore->init();
-		ogInitialized = true;
-	}
+    // initialize ogles_gpgpu
+    if (!ogInitialized) {
+        ogCore->init();
+        ogInitialized = true;
+    }
 
-	// prepare for frames of size w by h
-	ogCore->prepare(w, h, prepareDataInput ? GL_RGBA : GL_NONE);
+    // prepare for frames of size w by h
+    ogCore->prepare(w, h, prepareDataInput ? GL_RGBA : GL_NONE);
 
-	ogCleanupHelper(env);
+    ogCleanupHelper(env);
 
-	// get the output frame size
-	outputFrameSize[0] = ogCore->getOutputFrameW();
-	outputFrameSize[1] = ogCore->getOutputFrameH();
+    // get the output frame size
+    outputFrameSize[0] = ogCore->getOutputFrameW();
+    outputFrameSize[1] = ogCore->getOutputFrameH();
 
-	// create the output buffer as NIO direct byte buffer
-	outputPxBufNumBytes = outputFrameSize[0] * outputFrameSize[1] * 4;
-	outputPxBufData = new unsigned char[outputPxBufNumBytes];
-	outputPxBuf = env->NewDirectByteBuffer(outputPxBufData, outputPxBufNumBytes);
-	outputPxBuf = env->NewGlobalRef(outputPxBuf);	// we will hold a reference on this global variable until cleanup is called
+    // create the output buffer as NIO direct byte buffer
+    outputPxBufNumBytes = outputFrameSize[0] * outputFrameSize[1] * 4;
+    outputPxBufData = new unsigned char[outputPxBufNumBytes];
+    outputPxBuf = env->NewDirectByteBuffer(outputPxBufData, outputPxBufNumBytes);
+    outputPxBuf = env->NewGlobalRef(outputPxBuf);	// we will hold a reference on this global variable until cleanup is called
 
-	// get output texture id
-	ogOutputTexId = ogCore->getOutputTexId();
+    // get output texture id
+    ogOutputTexId = ogCore->getOutputTexId();
 
-	OG_LOGINF("OGJNIWrapper", "preparation successful. input size is %dx%d, output size is %dx%d",
-			w, h, outputFrameSize[0], outputFrameSize[1]);
+    OG_LOGINF("OGJNIWrapper", "preparation successful. input size is %dx%d, output size is %dx%d",
+              w, h, outputFrameSize[0], outputFrameSize[1]);
 }
 
 /**
@@ -165,10 +165,10 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare(JNIEnv *env, jobje
  * @param orientation render orientation (one of "ORIENTATION_")
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDisp(JNIEnv *env, jobject obj, jint w, jint h, jint orientation) {
-	assert(ogInitialized && ogDisp);
-	
-	ogDisp->setOutputSize(w, h);
-	ogDisp->setOutputRenderOrientation((ogles_gpgpu::RenderOrientation)orientation);
+    assert(ogInitialized && ogDisp);
+
+    ogDisp->setOutputSize(w, h);
+    ogDisp->setOutputRenderOrientation((ogles_gpgpu::RenderOrientation)orientation);
 }
 
 /**
@@ -177,36 +177,36 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDisp(JNIEnv *env,
  * @param mode one of "RENDER_DISP_MODE_"
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDispShowMode(JNIEnv *env, jobject obj, jint mode) {
-	assert(ogInitialized && ogDisp);
-	assert(ogInputTexId > 0);
-	assert(ogOutputTexId > 0);
-	
-	if (mode == ogles_gpgpu_OGJNIWrapper_RENDER_DISP_MODE_INPUT) {
-		ogDisp->useTexture(ogInputTexId, 1, GL_TEXTURE_EXTERNAL_OES);
-	} else {
-		ogDisp->useTexture(ogOutputTexId, 1, GL_TEXTURE_2D);
-	}
+    assert(ogInitialized && ogDisp);
+    assert(ogInputTexId > 0);
+    assert(ogOutputTexId > 0);
+
+    if (mode == ogles_gpgpu_OGJNIWrapper_RENDER_DISP_MODE_INPUT) {
+        ogDisp->useTexture(ogInputTexId, 1, GL_TEXTURE_EXTERNAL_OES);
+    } else {
+        ogDisp->useTexture(ogOutputTexId, 1, GL_TEXTURE_2D);
+    }
 }
 
 /**
  * Set the raw input pixel data as ARGB integer array. The size of this array
  * must equal <inW> * <inH> (set via <prepare()>).
- * 
+ *
  * @param pixels    pixel data with ARGB integers
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env, jobject obj, jintArray pxData) {
-	assert(ogCore);
+    assert(ogCore);
 
-	// get pointer to int data in java array
-	jint *pxInts = env->GetIntArrayElements(pxData, 0);
+    // get pointer to int data in java array
+    jint *pxInts = env->GetIntArrayElements(pxData, 0);
 
-	assert(pxInts);
+    assert(pxInts);
 
-	// cast to bytes and set as input data
-	ogCore->setInputData((const unsigned char *)pxInts);
+    // cast to bytes and set as input data
+    ogCore->setInputData((const unsigned char *)pxInts);
 
-	// release pointer again
-	env->ReleaseIntArrayElements(pxData, pxInts, 0);
+    // release pointer again
+    env->ReleaseIntArrayElements(pxData, pxInts, 0);
 }
 
 /**
@@ -214,26 +214,26 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels(JNIEnv *env
  * @param texId
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputTexture(JNIEnv *env, jobject obj, jint texId) {
-	ogCore->setInputTexId(texId, GL_TEXTURE_EXTERNAL_OES);
-	ogInputTexId = texId;
+    ogCore->setInputTexId(texId, GL_TEXTURE_EXTERNAL_OES);
+    ogInputTexId = texId;
 }
 
 
 /**
  * Return the input pixel data as ARGB ByteBuffer. The size of this byte buffer
  * equals output frame width * output frame height * 4 (4 channel ARGB data).
- * 
+ *
  * Note: The returned ByteBuffer is only a reference to the actual image data
  * on the native side! It is only valid until the next call to this function!
- * 
+ *
  * @return reference to pixel data as ByteBuffer valid unit next call to this function
  */
 JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEnv *env, jobject obj) {
-	assert(ogCore);
+    assert(ogCore);
 
-	// write to the output buffer
-	ogCore->getOutputData(outputPxBufData);
-    
+    // write to the output buffer
+    ogCore->getOutputData(outputPxBufData);
+
     return outputPxBuf;
 }
 
@@ -241,10 +241,10 @@ JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels(JNIEnv 
  * Executes the GPGPU processing tasks.
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_process(JNIEnv *env, jobject obj) {
-	assert(ogCore);
+    assert(ogCore);
 
-	// run the processing operations
-	ogCore->process();
+    // run the processing operations
+    ogCore->process();
 }
 
 /**
@@ -252,9 +252,9 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_process(JNIEnv *env, jobje
  * with "createRenderDisp" = true
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_renderOutput(JNIEnv *, jobject) {
-	assert(ogInitialized && ogDisp);
-	
-	ogDisp->render();
+    assert(ogInitialized && ogDisp);
+
+    ogDisp->render();
 }
 
 
@@ -271,32 +271,32 @@ JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameW(JNIEnv *en
  * @return output image height
  */
 JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameH(JNIEnv *env, jobject obj) {
-	return outputFrameSize[1];
+    return outputFrameSize[1];
 }
 
 
 /**
  * Return the time measurements in milliseconds for the individual steps: input, process, output
  * if ogles_gpgpu was compiled for benchmarking, otherwise return null.
- * 
+ *
  * @return time measurements in milliseconds for the individual steps input, process, output
- * 		   or null if ogles_gpgpu was not compiled for benchmarking 
+ * 		   or null if ogles_gpgpu was not compiled for benchmarking
  */
 JNIEXPORT jdoubleArray JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getTimeMeasurements(JNIEnv *env, jobject obj) {
 #ifdef OGLES_GPGPU_BENCHMARK
-	std::vector<double> msrmnts = ogCore->getTimeMeasurements();
-	size_t num = msrmnts.size();
-	jdoubleArray res = env->NewDoubleArray(num);
-	jdouble msrmntsArr[num];
-	for (size_t i = 0; i < num; ++i) {
-		msrmntsArr[i] = msrmnts[i];
-	}
+    std::vector<double> msrmnts = ogCore->getTimeMeasurements();
+    size_t num = msrmnts.size();
+    jdoubleArray res = env->NewDoubleArray(num);
+    jdouble msrmntsArr[num];
+    for (size_t i = 0; i < num; ++i) {
+        msrmntsArr[i] = msrmnts[i];
+    }
 
-	env->SetDoubleArrayRegion(res, 0, num, msrmntsArr);
+    env->SetDoubleArrayRegion(res, 0, num, msrmntsArr);
 
-	return res;
+    return res;
 
 #else
-	return NULL;
+    return NULL;
 #endif
 }

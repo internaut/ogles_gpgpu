@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -33,22 +33,22 @@ public:
      * message in class <cls> with prefix <msg>.
      */
     static void checkGLErr(const char *cls, const char *msg);
-    
+
     /**
      * Check if <v> is a power-of-two (POT) value.
      */
     static bool isPOT(float v);
-    
+
     /**
      * Get the next bigger POT value if <v> is not a POT value.
      */
     static float getBiggerPOTValue(float v);
-    
+
     /**
      * Split a string <s> by delimiter <delim>.
      */
     static vector<string> split(const string &s, char delim = ' ');
-    
+
     /**
      * Replace all strings <from> in <str> by <to>.
      * Code from http://stackoverflow.com/a/3418285.
@@ -59,19 +59,21 @@ public:
     static void resetTimeMeasurement();
     static void startTimeMeasurement();
     static void stopTimeMeasurement();
-    
+
     static double getTicksDiffInMs(clock_t t1, clock_t t2);
-    static vector<double> getTimeMeasurements() { return timeMeasurements; }
+    static vector<double> getTimeMeasurements() {
+        return timeMeasurements;
+    }
 #endif
-    
+
 private:
-    
+
 #ifdef OGLES_GPGPU_BENCHMARK
     static clock_t startTick;
     static vector<double> timeMeasurements;
 #endif
 };
-    
+
 }
 
 #endif

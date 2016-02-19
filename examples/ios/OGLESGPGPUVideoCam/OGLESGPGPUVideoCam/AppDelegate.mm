@@ -8,7 +8,7 @@
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 
-    RootViewController *rootViewCtrl = [[[RootViewController alloc] initWithNibName:nil bundle:nil] autorelease];
+    RootViewController *rootViewCtrl = [[RootViewController alloc] initWithNibName:nil bundle:nil];
     [self.window setRootViewController:rootViewCtrl];
     
     self.window.backgroundColor = [UIColor whiteColor];
