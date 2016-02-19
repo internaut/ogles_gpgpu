@@ -143,7 +143,29 @@ public:
      * Return the output texture id (= texture that is attached to the FBO).
      */
     virtual GLuint getOutputTexId() const = 0;
+    
+    // ############ Begin filter chain methods ####################
+    
+    /**
+     * Add a subscriber
+     */
+    virtual void add(ProcInterface *filter) ;
+    
+    /**
+     * Prepare teh filter chain
+     */
+    virtual void prepare(int inW, int inH, GLenum inFmt, int index = 0);
+    
+    /**
+     * Process a filter chain:
+     */
+    virtual void process(GLuint id, GLuint useTexUnit, GLenum target, int index = 0);
+    
+protected:
+    
+    std::vector<ProcInterface*> subscribers;
 };
+
 }
 
 #endif

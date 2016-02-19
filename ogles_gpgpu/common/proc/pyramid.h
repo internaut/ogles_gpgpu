@@ -28,8 +28,6 @@ namespace ogles_gpgpu {
 class PyramidProc : public TransformProc {
 public:
 
-    struct Size { int width, height; };
-    
     /**
      * Constructor.
      */
@@ -54,7 +52,7 @@ public:
     /**
      * Preset output scales
      */
-    void setScales(const std::vector<Size> &scales);
+    void setScales(const std::vector<Size2d> &scales);
     
 private:
 
@@ -70,7 +68,7 @@ private:
     
     virtual void setOutputSize(float scaleFactor);
 
-    std::vector<Size> m_scales;
+    std::vector<Size2d> m_scales;
     
 };
 }

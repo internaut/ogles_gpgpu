@@ -19,5 +19,6 @@ sugar_files(
     multipassproc.h
     procbase.cpp
     procbase.h
+    procinterface.cpp
     procinterface.h
 )
