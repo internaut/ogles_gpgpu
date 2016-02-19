@@ -15,10 +15,8 @@ using namespace ogles_gpgpu;
 
 MultiPassProc::~MultiPassProc() {
     // remove all pass instances
-    for (list<ProcInterface *>::iterator it = procPasses.begin();
-            it != procPasses.end();
-            ++it) {
-        delete *it;
+    for(auto &it : procPasses) {
+        delete it;
     }
 
     procPasses.clear();
@@ -30,9 +28,9 @@ int MultiPassProc::init(int inW, int inH, unsigned int order, bool prepareForExt
     ProcInterface *prevProc = NULL;
     int num = 0;
     int numInitialized = 0;
-    for (list<ProcInterface *>::iterator it = procPasses.begin();
-            it != procPasses.end();
-            ++it) {
+    
+    for(auto &it : procPasses) {
+
         // find out the input frame size for the proc
         int pipelineFrameW, pipelineFrameH;
 
@@ -46,10 +44,10 @@ int MultiPassProc::init(int inW, int inH, unsigned int order, bool prepareForExt
             pipelineFrameH = prevProc->getOutFrameH();
         }
 
-        numInitialized = (*it)->init(pipelineFrameW, pipelineFrameH, num, num == 0 ? prepareForExternalInput : false);
+        numInitialized = it->init(pipelineFrameW, pipelineFrameH, num, num == 0 ? prepareForExternalInput : false);
 
         // set pointer to previous proc
-        prevProc = *it;
+        prevProc = it;
 
         num += numInitialized;
     }
@@ -61,9 +59,9 @@ int MultiPassProc::reinit(int inW, int inH, bool prepareForExternalInput) {
     ProcInterface *prevProc = NULL;
     int num = 0;
     int numInitialized = 0;
-    for (list<ProcInterface *>::iterator it = procPasses.begin();
-            it != procPasses.end();
-            ++it) {
+    
+    for(auto &it : procPasses) {
+
         // find out the input frame size for the proc
         int pipelineFrameW, pipelineFrameH;
 
@@ -77,10 +75,10 @@ int MultiPassProc::reinit(int inW, int inH, bool prepareForExternalInput) {
             pipelineFrameH = prevProc->getOutFrameH();
         }
 
-        numInitialized = (*it)->reinit(pipelineFrameW, pipelineFrameH, num == 0 ? prepareForExternalInput : false);
+        numInitialized = it->reinit(pipelineFrameW, pipelineFrameH, num == 0 ? prepareForExternalInput : false);
 
         // set pointer to previous proc
-        prevProc = *it;
+        prevProc = it;
 
         num += numInitialized;
     }
@@ -89,10 +87,8 @@ int MultiPassProc::reinit(int inW, int inH, bool prepareForExternalInput) {
 }
 
 void MultiPassProc::cleanup() {
-    for (list<ProcInterface *>::iterator it = procPasses.begin();
-            it != procPasses.end();
-            ++it) {
-        (*it)->cleanup();
+    for(auto &it : procPasses) {
+        it->cleanup();
     }
 }
 
@@ -107,46 +103,36 @@ void MultiPassProc::setExternalInputData(const unsigned char *data) {
 }
 
 void MultiPassProc::createFBOTex(bool genMipmap) {
-    for (list<ProcInterface *>::iterator it = procPasses.begin();
-            it != procPasses.end();
-            ++it) {
-        (*it)->createFBOTex(it == procPasses.begin() ? genMipmap : false);
+    bool first = true;
+    for(auto &it : procPasses) {
+        it->createFBOTex(first ? genMipmap : false);
+        first = false;
     }
 }
 
 void MultiPassProc::render() {
-    for (list<ProcInterface *>::iterator it = procPasses.begin();
-            it != procPasses.end();
-            ++it) {
-        (*it)->render();
+    for(auto &it : procPasses) {
+        it->render();
     }
 }
 
 void MultiPassProc::printInfo() {
     OG_LOGINF(getProcName(), "begin info for %u passes", (unsigned int)procPasses.size());
-
-    for (list<ProcInterface *>::iterator it = procPasses.begin();
-            it != procPasses.end();
-            ++it) {
-        (*it)->printInfo();
+    for(auto &it : procPasses) {
+        it->printInfo();
     }
-
     OG_LOGINF(getProcName(), "end info");
 }
 
 void MultiPassProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target) {
     ProcInterface *prevProc = NULL;
 
-    for (list<ProcInterface *>::iterator it = procPasses.begin();
-            it != procPasses.end();
-            ++it) {
+    for(auto &it : procPasses) {
         if (!prevProc) {    // means this is the first proc pass
-            (*it)->useTexture(id, useTexUnit, target);
+            it->useTexture(id, useTexUnit, target);
         } else {            // all other passes
-            (*it)->useTexture(prevProc->getOutputTexId(), prevProc->getTextureUnit());
+            it->useTexture(prevProc->getOutputTexId(), prevProc->getTextureUnit());
         }
-
-        prevProc = *it;
     }
 }
 
@@ -175,13 +161,22 @@ int MultiPassProc::getOutFrameH() const {
     return lastProc->getOutFrameH();
 }
 
-bool MultiPassProc::getWillDownscale() const {
-    for (list<ProcInterface *>::const_iterator it = procPasses.begin();
-            it != procPasses.end();
-            ++it) {
-        if ((*it)->getWillDownscale()) return true;
-    }
+int MultiPassProc::getInFrameW() const {
+    assert(firstProc);
+    return firstProc->getInFrameW();
+}
 
+int MultiPassProc::getInFrameH() const {
+    assert(firstProc);
+    return firstProc->getInFrameH();
+}
+
+bool MultiPassProc::getWillDownscale() const {
+    for (auto &it : procPasses) {
+        if(it->getWillDownscale()) {
+            return true;
+        }
+    }
     return false;
 }
 

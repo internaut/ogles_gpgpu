@@ -27,9 +27,14 @@ void ProcInterface::prepare(int inW, int inH, GLenum inFmt, int index) {
     if(index == 0) {
         setExternalInputDataFormat(inFmt);
     }
-        
-    init(inW, inH, index, (index == 0) && (inFmt != GL_NONE));
-        
+    
+    if((getInFrameW() == 0) && (getInFrameH() == 0)) {
+        init(inW, inH, index, (index == 0) && (inFmt != GL_NONE));
+    }
+    else {
+        reinit(inW, inH, (index == 0) && (inFmt != GL_NONE));
+    }
+    
     bool useMipmaps = false; // TODO:
     bool willDownScale = false;
     if(subscribers.size() != 0) {
