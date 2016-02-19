@@ -20,6 +20,8 @@ sugar_files(
     adapt_thresh.h
     disp.cpp
     disp.h
+    fifo.cpp
+    fifo.h
     filter3x3.cpp
     filter3x3.h
     gauss.h
@@ -41,6 +43,10 @@ sugar_files(
     thresh.h
     transform.cpp
     transform.h
+    two.cpp
+    two.h
+    video.cpp # image source
+    video.h
     yuv2rgb.cpp
     yuv2rgb.h
 )
