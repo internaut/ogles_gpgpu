@@ -23,7 +23,7 @@ void PyramidProc::setOutputSize(float scaleFactor)
     // noop
 }
 
-void PyramidProc::setScales(const std::vector<Size> &scales)
+void PyramidProc::setScales(const std::vector<Size2d> &scales)
 {
     m_scales = scales;
 }
