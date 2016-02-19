@@ -40,7 +40,7 @@ void VideoSource::operator()(const Size2d &size, void* pixelBuffer, bool useRawP
 {
     assert(pipeline);
     
-    if (firstFrame)
+    if (firstFrame || size != frameSize)
     {
         configurePipeline(size, inputPixFormat);
         firstFrame = false;

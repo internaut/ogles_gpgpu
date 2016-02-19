@@ -128,6 +128,20 @@ public:
     virtual int getOutFrameH() const {
         return outFrameH;
     }
+    
+    /**
+     * Get the input frame width.
+     */
+    virtual int getInFrameW() const {
+        return inFrameW;
+    }
+    
+    /**
+     * Get the input frame height.
+     */
+    virtual int getInFrameH() const {
+        return inFrameH;
+    }
 
     /**
      * Returns true if output size < input size.
@@ -216,11 +230,11 @@ protected:
 
     GLenum inputDataFmt;    // input pixel data format
 
-    int inFrameW;   // input frame width
-    int inFrameH;   // input frame height
+    int inFrameW = 0;   // input frame width
+    int inFrameH = 0;   // input frame height
 
-    int outFrameW;  // output frame width
-    int outFrameH;  // output frame height
+    int outFrameW = 0;  // output frame width
+    int outFrameH = 0;  // output frame height
 };
 
 }

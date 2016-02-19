@@ -120,6 +120,16 @@ public:
      * Get the output frame height.
      */
     virtual int getOutFrameH() const;
+    
+    /**
+     * Get the input frame width.
+     */
+    virtual int getInFrameW() const;
+    
+    /**
+     * Get the input frame height.
+     */
+    virtual int getInFrameH() const;
 
     /**
      * Returns true if output size < input size.
