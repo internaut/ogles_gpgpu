@@ -29,4 +29,5 @@ sugar_files(
     ${OGLES_GPGPU_COMMON_PUBLIC_HDRS}
     core.cpp
     tools.cpp
+    types.cpp
 )
