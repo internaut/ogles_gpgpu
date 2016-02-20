@@ -133,6 +133,7 @@ void MultiPassProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target) {
         } else {            // all other passes
             it->useTexture(prevProc->getOutputTexId(), prevProc->getTextureUnit());
         }
+        prevProc = it;
     }
 }
 
