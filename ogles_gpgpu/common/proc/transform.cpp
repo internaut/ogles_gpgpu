@@ -109,7 +109,7 @@ TransformProc::TransformProc() {
 }
 
 
-const char *TransformProc::getFragmentShaderSoure() {
+const char *TransformProc::getFragmentShaderSource() {
     return (interpolation == BILINEAR) ? fshaderTransformSrc : fshaderTransformBicubicSrc;
 }
 
