@@ -31,12 +31,34 @@ void main()
     vec4 pxR1 = texture2D(uInputTex, vTexCoord + vec2(uPxD, 0.0));
     vec4 pxR2 = texture2D(uInputTex, vTexCoord + vec2(2.0 * uPxD, 0.0));
     vec4 pxR3 = texture2D(uInputTex, vTexCoord + vec2(3.0 * uPxD, 0.0));
-    gl_FragColor = 0.006 * (pxL3 + pxR3)
-                   + 0.061 * (pxL2 + pxR2)
-                   + 0.242 * (pxL1 + pxR1)
-                   + 0.382 * pxC;
+    gl_FragColor = 0.006 * (pxL3 + pxR3) + 0.061 * (pxL2 + pxR2) + 0.242 * (pxL1 + pxR1) + 0.382 * pxC;
 }
 );
+
+
+const char *GaussProcPass::fshaderGaussSrcR = OG_TO_STR(
+                                                       
+#if defined(OGLES_GPGPU_OPENGLES)
+precision mediump float;
+#endif
+
+uniform sampler2D uInputTex;
+uniform float uPxD;
+varying vec2 vTexCoord;
+// 7x1 Gauss kernel
+void main()
+{
+    vec4 pxC  = texture2D(uInputTex, vTexCoord);
+    float pxL1 = texture2D(uInputTex, vTexCoord - vec2(uPxD, 0.0)).r;
+    float pxL2 = texture2D(uInputTex, vTexCoord - vec2(2.0 * uPxD, 0.0)).r;
+    float pxL3 = texture2D(uInputTex, vTexCoord - vec2(3.0 * uPxD, 0.0)).r;
+    float pxR1 = texture2D(uInputTex, vTexCoord + vec2(uPxD, 0.0)).r;
+    float pxR2 = texture2D(uInputTex, vTexCoord + vec2(2.0 * uPxD, 0.0)).r;
+    float pxR3 = texture2D(uInputTex, vTexCoord + vec2(3.0 * uPxD, 0.0)).r;
+    
+    pxC.r = (0.006 * (pxL3 + pxR3) + 0.061 * (pxL2 + pxR2) + 0.242 * (pxL1 + pxR1) + 0.382 * pxC.r);
+    gl_FragColor = pxC;
+});
 
 int GaussProcPass::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
     OG_LOGINF(getProcName(), "render pass %d", renderPass);
@@ -52,7 +74,7 @@ int GaussProcPass::init(int inW, int inH, unsigned int order, bool prepareForExt
     pxDy = 1.0f / (float)outFrameH;
 
     // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    filterInit(vshaderDefault, fshaderGaussSrc, RenderOrientationDiagonal);
+    filterInit(vshaderDefault, getFragmentShaderSource(), RenderOrientationDiagonal);
 
     // get additional shader params
     shParamUPxD = shader->getParam(UNIF, "uPxD");
