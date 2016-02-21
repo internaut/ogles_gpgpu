@@ -25,10 +25,12 @@ sugar_files(
     filter3x3.cpp
     filter3x3.h
     gauss.h
+    gauss_opt.h
     grad.cpp
     grad.h
     grayscale.cpp
     grayscale.h
+    lnorm.h
     lbp.cpp
     lbp.h
     nms.cpp

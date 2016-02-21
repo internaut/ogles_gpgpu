@@ -17,4 +17,8 @@ sugar_files(
     adapt_thresh_pass.h
     gauss_pass.cpp
     gauss_pass.h
+    gauss_opt_pass.cpp
+    gauss_opt_pass.h
+    local_norm_pass.cpp
+    local_norm_pass.h
 )
