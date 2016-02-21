@@ -206,7 +206,7 @@ int FilterProcBase::init(int inW, int inH, unsigned int order, bool prepareForEx
     baseInit(inW, inH, order, prepareForExternalInput, procParamOutW, procParamOutH, procParamOutScale);
     
     // FilterProcBase init - create shaders, get shader params, set buffers for OpenGL
-    filterInit(getVertexShaderSource(), getFragmentShaderSoure());
+    filterInit(getVertexShaderSource(), getFragmentShaderSource());
 
     // Get shader specific uniforms
     getUniforms();

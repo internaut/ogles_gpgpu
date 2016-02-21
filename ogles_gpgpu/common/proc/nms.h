@@ -53,7 +53,7 @@ private:
     /**
      * Get the fragment shader source.
      */
-    virtual const char *getFragmentShaderSoure() { return fshaderNmsSrc; }
+    virtual const char *getFragmentShaderSource() { return fshaderNmsSrc; }
     
     /**
      * Get uniform indices.

@@ -60,7 +60,7 @@ protected:
     /**
      * Get the fragment shader source.
      */
-    virtual const char *getFragmentShaderSoure() { return 0; }
+    virtual const char *getFragmentShaderSource() { return 0; }
     
     /**
      * Set additional uniforms.

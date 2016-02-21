@@ -27,12 +27,12 @@ public:
     /**
      * Construct as render pass <pass> (1 or 2).
      */
-    GaussProcPass(int pass) : FilterProcBase(),
-        renderPass(pass),
-        pxDx(0.0f),
-        pxDy(0.0f) {
-        assert(renderPass == 1 || renderPass == 2);
-    }
+    GaussProcPass(int pass, bool doR=false)
+    : FilterProcBase()
+    , renderPass(pass)
+    , pxDx(0.0f)
+    , pxDy(0.0f)
+    , doR(doR) {  assert(renderPass == 1 || renderPass == 2); }
 
     /**
      * Return the processors name.
@@ -52,6 +52,10 @@ public:
      */
     virtual void render();
 
+    virtual const char *getFragmentShaderSource() {
+        return doR ? fshaderGaussSrcR : fshaderGaussSrc;
+    }
+    
     /**
      * Create a texture that is attached to the FBO and will contain the processing result.
      * Set <genMipmap> to true to generate a mipmap (usually only works with POT textures).
@@ -63,11 +67,13 @@ private:
     int renderPass; // render pass number. must be 1 or 2
 
     GLint shParamUPxD;		// pixel delta values for texture lookup in the fragment shader. only used for adapt. thresholding
-
     float pxDx;	// pixel delta value for texture access
     float pxDy;	// pixel delta value for texture access
-
+    bool doR = false; // do r channel only
+    
     static const char *fshaderGaussSrc;  // fragment shader source for gaussian smoothing for both passes
+    
+    static const char *fshaderGaussSrcR; // shader for R channel
 };
 
 }

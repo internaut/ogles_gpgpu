@@ -43,7 +43,7 @@ private:
     /**
      * Get the fragment shader source.
      */
-    virtual const char *getFragmentShaderSoure() { return fshaderTensorSrc; }
+    virtual const char *getFragmentShaderSource() { return fshaderTensorSrc; }
     
     /**
      * Set uniform values;

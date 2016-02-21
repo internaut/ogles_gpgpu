@@ -45,7 +45,7 @@ public:
     /**
      * Get the fragment shader source.
      */
-    virtual const char *getFragmentShaderSoure();
+    virtual const char *getFragmentShaderSource();
 
     /**
      * Get the vertex shader source.

@@ -51,7 +51,7 @@ private:
     /**
      * Get the fragment shader source.
      */
-    virtual const char *getFragmentShaderSoure() { return fshaderFIFOSrc; }
+    virtual const char *getFragmentShaderSource() { return fshaderFIFOSrc; }
     
     /**
      * Set additional uniforms.

@@ -78,7 +78,7 @@ protected:
     GLint texelWidthUniform, texelHeightUniform;
     float texelWidth, texelHeight;
     
-    static const char *vshaderFilter3x3Src;   // fragment shader source
+    static const char *vshaderFilter3x3Src;   // vertex shader source
     static const char *fshaderFilter3x3Src;   // fragment shader source
 };
 }

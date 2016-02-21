@@ -50,7 +50,7 @@ private:
     /**
      * Get the fragment shader source.
      */
-    virtual const char *getFragmentShaderSoure() { return fshaderTwoInputSrc; }
+    virtual const char *getFragmentShaderSource() { return fshaderTwoInputSrc; }
     
     /**
      * Set additional uniforms.

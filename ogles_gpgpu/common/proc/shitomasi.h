@@ -74,7 +74,7 @@ private:
     /**
      * Get the fragment shader source.
      */
-    virtual const char *getFragmentShaderSoure() { return fshaderShiTomasiSrc; }
+    virtual const char *getFragmentShaderSource() { return fshaderShiTomasiSrc; }
     
     static const char *fshaderShiTomasiSrc;         // fragment shader source
 
