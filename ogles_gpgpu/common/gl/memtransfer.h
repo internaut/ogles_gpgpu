@@ -51,6 +51,11 @@ public:
      * Prepare for output frames of size <outTexW>x<outTexH>. Return a texture id for the output frames.
      */
     virtual GLuint prepareOutput(int outTexW, int outTexH);
+    
+    /**
+     * Set output pixel format.
+     */
+    virtual void setOutputPixelFormat(GLenum outputPxFormat);
 
     /**
      * Delete input texture.
@@ -136,6 +141,7 @@ protected:
     GLuint chrominanceTexId = 0;
 
     GLenum inputPixelFormat;    // input texture pixel format
+    GLenum outputPixelFormat;
     
     bool useRawPixels = false;
 };

@@ -29,7 +29,7 @@ MemTransfer::MemTransfer() {
     initialized = false;
     preparedInput = false;
     preparedOutput = false;
-    inputPixelFormat = GL_RGBA;
+    inputPixelFormat = outputPixelFormat = GL_RGBA;
 }
 
 MemTransfer::~MemTransfer() {
@@ -54,7 +54,7 @@ GLuint MemTransfer::prepareInput(int inTexW, int inTexH, GLenum inputPxFormat, v
     // set attributes
     inputW = inTexW;
     inputH = inTexH;
-    inputPixelFormat = inputPxFormat;
+    inputPixelFormat = outputPixelFormat = inputPxFormat;
     
     // generate texture id
     glGenTextures(1, &inputTexId);
@@ -157,11 +157,15 @@ void MemTransfer::fromGPU(unsigned char *buf) {
     glBindTexture(GL_TEXTURE_2D, outputTexId);
 
     // default (and slow) way using glReadPixels:
-    glReadPixels(0, 0, outputW, outputH, inputPixelFormat, GL_UNSIGNED_BYTE, buf);
+    glReadPixels(0, 0, outputW, outputH, outputPixelFormat, GL_UNSIGNED_BYTE, buf);
 
     // check for error
     Tools::checkGLErr("MemTransfer", "fromGPU (glReadPixels)");
 }
+
+void MemTransfer::setOutputPixelFormat(GLenum outputPxFormat) {
+    outputPixelFormat = outputPxFormat;
+}                                       
 
 #pragma mark protected methods
 
