@@ -39,7 +39,7 @@ public:
     
     void operator()(const Size2d &size, void* pixelBuffer, bool useRawPixels, GLuint inputTexture=0, GLenum inputPixFormat=DFLT_PIX_FORMAT);
 
-    void set(ProcBase *p) {
+    void set(ProcInterface *p) {
         pipeline = p;
     }
     
@@ -53,7 +53,7 @@ protected:
     
     Size2d frameSize;
     
-    ProcBase* pipeline = nullptr;
+    ProcInterface* pipeline = nullptr;
 
     std::shared_ptr<ogles_gpgpu::Yuv2RgbProc> yuv2RgbProc;
 
