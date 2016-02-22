@@ -27,11 +27,13 @@ public:
     /**
      * Construct as render pass <pass> (1 or 2).
      */
-    GaussOptProcPass(int pass, float radius)
+    GaussOptProcPass(int pass, float radius, bool doNorm=false, float normConst=0.005f)
     : FilterProcBase()
+    , doNorm(doNorm)
     , renderPass(pass)
     , pxDx(0.0f)
     , pxDy(0.0f)
+    , normConst(normConst)
     {
         setRadius(radius);
         assert(renderPass == 1 || renderPass == 2);
@@ -51,21 +53,16 @@ public:
     virtual void getUniforms();
     virtual const char *getFragmentShaderSource();
     virtual const char *getVertexShaderSource();
-  
-#if 0
-    /**
-     * Create a texture that is attached to the FBO and will contain the processing result.
-     * Set <genMipmap> to true to generate a mipmap (usually only works with POT textures).
-     * Overrides ProcBase's method.
-     */
-    virtual void createFBOTex(bool genMipmap);
-#endif
 
 private:
+    
+    bool doNorm = false;
     int renderPass; // render pass number. must be 1 or 2
 
     float pxDx;	// pixel delta value for texture access
     float pxDy;	// pixel delta value for texture access
+    
+    float normConst = 0.005;
     
     float _blurRadiusInPixels = 0.0; // start 0 (uninitialized)
     

@@ -58,7 +58,7 @@ void getOptimizedGaussian(int blurRadius, float sigma, std::vector<GLfloat> &wei
     offsets = optimizedGaussianOffsets;
 }
 
-std::string fragmentShaderForOptimizedBlur(int blurRadius, float sigma)
+std::string fragmentShaderForOptimizedBlur(int blurRadius, float sigma, bool doNorm = false, int pass = 1, float normConst=0.005f)
 {
     std::vector<GLfloat> standardGaussianWeights;
     std::vector<GLfloat> optimizedGaussianOffsets;
@@ -75,8 +75,9 @@ std::string fragmentShaderForOptimizedBlur(int blurRadius, float sigma)
     ss << "varying vec2 blurCoordinates[" << (1 + (numberOfOptimizedOffsets * 2)) << "];\n\n";
     ss << "void main()\n";
     ss << "{\n";
-    ss << "  vec4 sum = vec4(0.0);\n";
-    ss << "  sum += texture2D(inputImageTexture, blurCoordinates[0]) * " << standardGaussianWeights[0] << ";\n";
+    ss << "   vec4 sum = vec4(0.0);\n";
+    ss << "   vec4 center = texture2D(inputImageTexture, blurCoordinates[0]);\n";
+    ss << "   sum += center * " << standardGaussianWeights[0] << ";\n";
     
     for (int currentBlurCoordinateIndex = 0; currentBlurCoordinateIndex < numberOfOptimizedOffsets; currentBlurCoordinateIndex++)
     {
@@ -88,7 +89,6 @@ std::string fragmentShaderForOptimizedBlur(int blurRadius, float sigma)
         ss << "   sum += texture2D(inputImageTexture, blurCoordinates[" << index1 << "]) * " << optimizedWeight <<";\n";
         ss << "   sum += texture2D(inputImageTexture, blurCoordinates[" << index2 << "]) * " << optimizedWeight <<";\n";
     }
-    
     
     // If the number of required samples exceeds the amount we can pass in via varyings, we have to do dependent texture reads in the fragment shader
     if (trueNumberOfOptimizedOffsets > numberOfOptimizedOffsets)
@@ -107,9 +107,21 @@ std::string fragmentShaderForOptimizedBlur(int blurRadius, float sigma)
         }
     }
 
-    ss << "   gl_FragColor = sum;\n";
-    
-    //ss << "   gl_FragColor = texture2D(inputImageTexture, position.xy);\n";
+    if(doNorm)
+    {
+        if(pass == 1)
+        {
+            ss << "   gl_FragColor = vec4(center.rgb, sum.r);\n";
+        }
+        else
+        {
+            ss << "   gl_FragColor = vec4( center.r/(sum.a + " << std::fixed << normConst << "), center.gb, 1.0);\n";
+        }
+    }
+    else
+    {
+        ss << "   gl_FragColor = sum;\n";
+    }
     
     ss << "}\n";
     
@@ -149,8 +161,6 @@ std::string vertexShaderForOptimizedBlur(int blurRadius, float sigma)
     return ss.str();
 }
 
-//+ (NSString *)fragmentShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
-//+ (NSString *)fragmentShaderForOptimizedBlurOfRadius:(NSUInteger)blurRadius sigma:(CGFloat)sigma;
 
 void GaussOptProcPass::setRadius(float newValue)
 {
@@ -172,10 +182,10 @@ void GaussOptProcPass::setRadius(float newValue)
         //std::cout << "===" << std::endl;
 
         vshaderGaussSrc = vertexShaderForOptimizedBlur(calculatedSampleRadius, _blurRadiusInPixels);
-        fshaderGaussSrc = fragmentShaderForOptimizedBlur(calculatedSampleRadius, _blurRadiusInPixels);
+        fshaderGaussSrc = fragmentShaderForOptimizedBlur(calculatedSampleRadius, _blurRadiusInPixels, doNorm, renderPass, normConst);
         
-        //std::cout << vshaderGaussSrc << std::endl;
-        //std::cout << fshaderGaussSrc << std::endl;
+        std::cout << vshaderGaussSrc << std::endl;
+        std::cout << fshaderGaussSrc << std::endl;
     }
 }
 
@@ -216,21 +226,11 @@ const char *GaussOptProcPass::getFragmentShaderSource()
 {
     return fshaderGaussSrc.c_str();
 }
+
 const char *GaussOptProcPass::getVertexShaderSource()
 {
     return vshaderGaussSrc.c_str();
 }
 
-#if 0
-void GaussOptProcPass::createFBOTex(bool genMipmap) {
-    assert(fbo);
-
-    fbo->createAttachedTex(outFrameW, outFrameH, genMipmap);
-
-    // update frame size, because it might be set to a POT size because of mipmapping
-    outFrameW = fbo->getTexWidth();
-    outFrameH = fbo->getTexHeight();
-}
-#endif
 
 
