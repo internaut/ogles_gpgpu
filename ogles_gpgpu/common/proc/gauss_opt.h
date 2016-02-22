@@ -21,9 +21,9 @@
 namespace ogles_gpgpu {
 class GaussOptProc : public MultiPassProc {
 public:
-    GaussOptProc(float blurRadius = 5.0) {
-        GaussOptProcPass *gaussPass1 = new GaussOptProcPass(1, blurRadius);
-        GaussOptProcPass *gaussPass2 = new GaussOptProcPass(2, blurRadius);
+    GaussOptProc(float blurRadius = 5.0, bool doNorm=false, float normConst=0.005f) {
+        GaussOptProcPass *gaussPass1 = new GaussOptProcPass(1, blurRadius, doNorm);
+        GaussOptProcPass *gaussPass2 = new GaussOptProcPass(2, blurRadius, doNorm, normConst);
 
         procPasses.push_back(gaussPass1);
         procPasses.push_back(gaussPass2);
