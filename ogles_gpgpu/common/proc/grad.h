@@ -25,7 +25,7 @@ public:
     /**
      * Constructor.
      */
-    GradProc();
+    GradProc(float strength=1.f);
 
     /**
      * Return the processors name.
@@ -45,9 +45,17 @@ private:
      * Get uniform indices.
      */
     virtual void getUniforms();
+    
+    /**
+     * Set uniform indices.
+     */
+    virtual void setUniforms();
 
     static const char *fshaderGradSrc;   // fragment shader source
     
+    GLint shParamUStrength;
+    
+    float strength = 1.f;
 };
 }
 

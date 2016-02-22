@@ -13,15 +13,11 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-const char *GradProc::fshaderGradSrc = OG_TO_STR(
-
+const char *GradProc::fshaderGradSrc = OG_TO_STR
+(
 #if defined(OGLES_GPGPU_OPENGLES)
 precision highp float;
 #endif
-
-//uniform sampler2D uInputTex;
-//uniform vec3 uInputConvVec;
-//varying vec2 vTexCoord;
  
  varying vec2 textureCoordinate;
  varying vec2 leftTextureCoordinate;
@@ -36,6 +32,8 @@ precision highp float;
  varying vec2 bottomRightTextureCoordinate;
  
  uniform sampler2D inputImageTexture;
+ 
+ uniform float strength;
  
  void main()
  {
@@ -53,27 +51,38 @@ precision highp float;
      y = y / 8.0;
      x = x / 8.0;
      
+     //y = (bottomIntensity - topIntensity) / 2.0;
+     //x = (rightIntensity - leftIntensity) / 2.0;
+     
      float mag = length(vec2(x, y));
      float theta = atan(y, x);
      if(theta < 0.0)
+     {
          theta = theta + 3.14159;
+     }
      
      float dx = (x + 1.0) / 2.0;
      float dy = (y + 1.0) / 2.0;
      
-     mag = clamp(mag, 0.0, 1.0);
+     mag = clamp(mag * strength, 0.0, 1.0);
      
      //gl_FragColor = vec4(mag, mag, mag, 1.0);
      //gl_FragColor = vec4(bottomLeftIntensity,bottomLeftIntensity,bottomLeftIntensity,1.0);
-     gl_FragColor = vec4(clamp(mag, 0.0, 1.0), theta/3.14159, clamp(dx, 0.0, 1.0), clamp(dy, 0.0, 1.0));
+     gl_FragColor = vec4(mag, theta/3.14159, clamp(dx, 0.0, 1.0), clamp(dy, 0.0, 1.0));
  }
  );
 
-GradProc::GradProc() {
+GradProc::GradProc(float strength) : strength(strength) {
 
+}
+
+void GradProc::setUniforms() {
+    Filter3x3Proc::setUniforms();
+    glUniform1f(shParamUStrength, strength);
 }
 
 void GradProc::getUniforms() {
     Filter3x3Proc::getUniforms();
     shParamUInputTex = shader->getParam(UNIF, "inputImageTexture");
+    shParamUStrength = shader->getParam(UNIF, "strength");
 }
