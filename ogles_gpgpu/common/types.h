@@ -46,6 +46,13 @@ inline bool operator!=(const Size2d& lhs, const Size2d& rhs)
     return !(lhs == rhs);
 }
     
+struct Rect2d
+{
+    Rect2d() {}
+    Rect2d(int x, int y, int width, int height) : x(x), y(y), width(width), height(height) {}
+    int x = 0, y = 0, width = 0, height = 0;
+};
+    
 struct Vec3f
 {
     GLfloat data[3];
