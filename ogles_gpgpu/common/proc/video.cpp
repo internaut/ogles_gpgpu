@@ -38,6 +38,10 @@ void VideoSource::configurePipeline(const Size2d &size, GLenum inputPixFormat)
 
 void VideoSource::operator()(const Size2d &size, void* pixelBuffer, bool useRawPixels, GLuint inputTexture, GLenum inputPixFormat)
 {
+    preConfig();
+    
+    if(m_logger) m_logger("begin");
+    
     assert(pipeline);
     
     if (firstFrame || size != frameSize)
@@ -84,8 +88,14 @@ void VideoSource::operator()(const Size2d &size, void* pixelBuffer, bool useRawP
         }
     }
     
+    if(m_logger) m_logger("process");
+    
     assert(inputTexture); // inputTexture must be defined at this point
-    pipeline->process(inputTexture, 1, GL_TEXTURE_2D);
+    pipeline->process(inputTexture, 1, GL_TEXTURE_2D, 0, m_logger);
+    
+    if(m_logger) m_logger("end");
+    
+    postConfig();
 }
 
 void VideoSource::setInputData(const unsigned char *data) {
