@@ -184,8 +184,8 @@ void GaussOptProcPass::setRadius(float newValue)
         vshaderGaussSrc = vertexShaderForOptimizedBlur(calculatedSampleRadius, _blurRadiusInPixels);
         fshaderGaussSrc = fragmentShaderForOptimizedBlur(calculatedSampleRadius, _blurRadiusInPixels, doNorm, renderPass, normConst);
         
-        std::cout << vshaderGaussSrc << std::endl;
-        std::cout << fshaderGaussSrc << std::endl;
+        //std::cout << vshaderGaussSrc << std::endl;
+        //std::cout << fshaderGaussSrc << std::endl;
     }
 }
 
