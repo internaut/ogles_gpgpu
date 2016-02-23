@@ -13,9 +13,9 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-PyramidProc::PyramidProc()
+PyramidProc::PyramidProc(int levels) : m_levels(levels)
 {
-    //ProcBase::setOutputSize(1.5);
+
 }
 
 void PyramidProc::setOutputSize(float scaleFactor)
@@ -26,6 +26,17 @@ void PyramidProc::setOutputSize(float scaleFactor)
 void PyramidProc::setScales(const std::vector<Size2d> &scales)
 {
     m_scales = scales;
+}
+
+void PyramidProc::setLevels(int levels)
+{
+    m_scales.clear();
+    m_levels = levels;
+}
+
+const std::vector<Rect2d> & PyramidProc::getLevelCrops() const
+{
+    return m_crops;
 }
 
 void PyramidProc::PyramidProc::render()
@@ -53,17 +64,19 @@ void PyramidProc::PyramidProc::render()
         renderPyramid();
     }
     
- 
     filterRenderCleanup();
     Tools::checkGLErr(getProcName(), "render cleanup");
 }
 
 void PyramidProc::renderPyramid()
 {
+    m_crops.clear();
     int x = 0, y = 0, w = inFrameW, h = inFrameH;
-    for(int i = 0; i < 8; i++)
+    for(int i = 0; i < m_levels; i++)
     {
         glViewport(x, y, w, h);
+        m_crops.emplace_back(x, y, w, h);
+        
         if(i % 2)
         {
             y += h;
@@ -79,15 +92,16 @@ void PyramidProc::renderPyramid()
         filterRenderDraw();
         Tools::checkGLErr(getProcName(), "render draw");
     }
-
 }
 
 void PyramidProc::renderMultiscale()
 {
+    m_crops.clear();
     int x = 0, y = 0;
     for(int i = 0; i < m_scales.size(); i++)
     {
         glViewport(x, y, m_scales[i].width, m_scales[i].height);
+        m_crops.emplace_back(x, y, m_scales[i].width, m_scales[i].height);
         x += m_scales[i].width;
         filterRenderDraw();
         Tools::checkGLErr(getProcName(), "render draw");
@@ -111,7 +125,7 @@ int PyramidProc::init(int inW, int inH, unsigned int order, bool prepareForExter
         height = inH;
     }
 
-    ProcBase::setOutputSize(width, height);
+    FilterProcBase::setOutputSize(width, height);
     return FilterProcBase::init(inW, inH, order, prepareForExternalInput);
 }
 

@@ -31,8 +31,7 @@ public:
     /**
      * Constructor.
      */
-    PyramidProc();
-    
+    PyramidProc(int levels = 4);
 
     /**
      * Render a flat pyramid
@@ -54,6 +53,16 @@ public:
      */
     void setScales(const std::vector<Size2d> &scales);
     
+    /**
+     * Set the # of pyramid levels.
+     */
+    void setLevels(int levels);
+    
+    /**
+     * Get level crops.
+     */
+    const std::vector<Rect2d> & getLevelCrops() const;
+    
 private:
 
     /**
@@ -69,6 +78,10 @@ private:
     virtual void setOutputSize(float scaleFactor);
 
     std::vector<Size2d> m_scales;
+    
+    int m_levels = 4;
+    
+    std::vector<Rect2d> m_crops;
     
 };
 }
