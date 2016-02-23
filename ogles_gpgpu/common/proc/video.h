@@ -32,18 +32,26 @@ namespace ogles_gpgpu {
 
 class VideoSource {
 public:
+    
+    typedef std::function<void(const std::string &tag)> Logger;
 
     VideoSource();
     
     VideoSource(const Size2d &size, GLenum inputPixFormat);
     
     void operator()(const Size2d &size, void* pixelBuffer, bool useRawPixels, GLuint inputTexture=0, GLenum inputPixFormat=DFLT_PIX_FORMAT);
-
-    void set(ProcInterface *p) {
-        pipeline = p;
-    }
+    
+    virtual void preConfig() {}
+    
+    virtual void postConfig() {}
+    
+    void set(ProcInterface *p) { pipeline = p; }
+    
+    void setLogger(Logger &logger) { m_logger = logger; }
     
 protected:
+    
+    Logger m_logger;
 
     void setInputData(const unsigned char *data);
     
