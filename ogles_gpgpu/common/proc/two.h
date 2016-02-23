@@ -31,26 +31,26 @@ public:
     /**
      * Return the processors name.
      */
-    virtual const char *getProcName() {
-        return "TwoInputProc";
-    }
+    virtual const char *getProcName() { return "TwoInputProc";  }
     
     /**
-     * render
+     * Use texture id <id> as input texture at texture <useTexUnit> with texture target <target>.
      */
-    virtual void render();
-    
-    /**
-     * init
-     */    
-    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput);
+    virtual void useTexture2(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D);
     
 private:
+    
+    virtual void filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target);
     
     /**
      * Get the fragment shader source.
      */
     virtual const char *getFragmentShaderSource() { return fshaderTwoInputSrc; }
+    
+    /**
+     * Get the vertex shader source.
+     */
+    virtual const char *getVertexShaderSource() { return vshaderTwoInputSrc; }
     
     /**
      * Set additional uniforms.
@@ -62,6 +62,17 @@ private:
      */
     virtual void getUniforms();
 
+    /**
+     * Bind all input textures
+     */
+    virtual void filterRenderPrepare();
+
+    GLuint texId2;       // input texture id
+    GLuint texUnit2;     // input texture unit (glActiveTexture())
+    GLenum texTarget2;   // input texture target
+    
+    GLint shParamUInputTex2;
+    
     static const char *fshaderTwoInputSrc; // fragment shader source
 
     static const char *vshaderTwoInputSrc; // vertex shader source
