@@ -24,6 +24,9 @@ namespace ogles_gpgpu {
  */
 class ProcInterface {
 public:
+    
+    typedef std::function<void(const std::string &tag)> Logger;
+    
     /**
      * Important: deconstructor must be virtual
      */
@@ -74,6 +77,16 @@ public:
      */
     virtual const char *getProcName() = 0;
 
+    /**
+     * Set a custom tag name.
+     */
+    virtual void setProcTitle(const std::string &name) { title = name; }
+    
+    /**
+     * Return the custom tag name.
+     */
+    virtual const char *getProcTitle() { return title.c_str(); }
+    
     /**
      * Print some information about the processor's setup.
      */
@@ -169,9 +182,11 @@ public:
     /**
      * Process a filter chain:
      */
-    virtual void process(GLuint id, GLuint useTexUnit, GLenum target, int index = 0);
+    virtual void process(GLuint id, GLuint useTexUnit, GLenum target, int index = 0, Logger logger=0);
     
 protected:
+    
+    std::string title;
     
     std::vector<ProcInterface*> subscribers;
 };

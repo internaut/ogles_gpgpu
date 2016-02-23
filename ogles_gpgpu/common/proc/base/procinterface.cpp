@@ -8,8 +8,9 @@ void ProcInterface::add(ProcInterface *filter) {
     subscribers.push_back(filter);
 }
     
-void ProcInterface::process(GLuint id, GLuint useTexUnit, GLenum target, int index) {
-        
+void ProcInterface::process(GLuint id, GLuint useTexUnit, GLenum target, int index, Logger logger) {
+    
+    if(logger) logger(std::string(getProcName()) + " begin");
     if(index == 0) {
         // set input texture id
         useTexture(id, useTexUnit, target);
@@ -17,9 +18,10 @@ void ProcInterface::process(GLuint id, GLuint useTexUnit, GLenum target, int ind
         
     render();
     glFinish();
+    if(logger) logger(std::string(getProcName()) + " end");
         
     for(auto &subscriber : subscribers) {
-        subscriber->process(id, useTexUnit, target, index + 1);
+        subscriber->process(id, useTexUnit, target, index + 1, logger);
     }
 }
     
