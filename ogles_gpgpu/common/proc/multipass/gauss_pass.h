@@ -24,15 +24,23 @@ namespace ogles_gpgpu {
  */
 class GaussProcPass : public FilterProcBase {
 public:
+    
+    enum KernelSize
+    {
+        k5Tap,
+        k7Tap
+    };
+    
     /**
      * Construct as render pass <pass> (1 or 2).
      */
-    GaussProcPass(int pass, bool doR=false)
+    GaussProcPass(int pass, KernelSize kernel=k5Tap, bool doR=false)
     : FilterProcBase()
     , renderPass(pass)
+    , kernel(kernel)
+    , doR(doR)
     , texelWidth(0.0f)
     , texelHeight(0.0f)
-    , doR(doR)
     {  assert(renderPass == 1 || renderPass == 2); }
 
     /**
@@ -50,11 +58,14 @@ public:
     
 private:
     int renderPass; // render pass number. must be 1 or 2
-
+    
+    KernelSize kernel = k5Tap;
+    
     bool doR = false; // do r channel only
     
     GLint texelWidthUniform, texelHeightUniform;
     float texelWidth, texelHeight;
+
     
     static const char *vshaderGauss7Src;
     static const char *fshaderGauss7Src;  // fragment shader source for gaussian smoothing for both passes

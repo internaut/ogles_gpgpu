@@ -12,6 +12,8 @@
 
 using namespace ogles_gpgpu;
 
+// #### 7 tap filters ####
+
 const char *GaussProcPass::vshaderGauss7Src = OG_TO_STR
 (
  attribute vec4 position;
@@ -47,7 +49,6 @@ const char *GaussProcPass::vshaderGauss7Src = OG_TO_STR
 
 const char *GaussProcPass::fshaderGauss7Src = OG_TO_STR
 (
-
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
 #endif
@@ -73,14 +74,19 @@ void main()
     vec4 pxR2 = texture2D(inputImageTexture, textureCoordinateP2);
     vec4 pxR3 = texture2D(inputImageTexture, textureCoordinateP3);
     
-    gl_FragColor = 0.006 * (pxL3 + pxR3) + 0.061 * (pxL2 + pxR2) + 0.242 * (pxL1 + pxR1) + 0.382 * pxC;
+    gl_FragColor = 0.015625 * (pxL3 + pxR3) + 0.09375 * (pxL2 + pxR2) + 0.234375 * (pxL1 + pxR1) + 0.3125 * pxC;
 }
 );
 
+// 1 6 15 20 15 6 1
+// 20+30+12+2 = 64
+// 20/64 = 0.3125
+// 15/64 = 0.234375
+// 6/64 = 0.09375
+// 1/64 = 0.015625
 
 const char *GaussProcPass::fshaderGauss7SrcR = OG_TO_STR
 (
-                                                       
 #if defined(OGLES_GPGPU_OPENGLES)
 precision mediump float;
 #endif
@@ -110,7 +116,7 @@ void main()
     gl_FragColor = pxC;
 });
 
-/////////
+// #### 5 tap filters ####
 
 const char *GaussProcPass::vshaderGauss5Src = OG_TO_STR
 (
@@ -165,9 +171,15 @@ const char *GaussProcPass::fshaderGauss5Src = OG_TO_STR
     vec4 pxR1 = texture2D(inputImageTexture, textureCoordinateP1);
     vec4 pxR2 = texture2D(inputImageTexture, textureCoordinateP2);
     
-    gl_FragColor = (0.0625 * (pxL2 + pxR2) + 0.25 * (pxL1 + pxR1) + 0.375 * pxC);
-}
- );
+    vec4 result = (0.0625 * (pxL2 + pxR2) + 0.25 * (pxL1 + pxR1) + 0.375 * pxC);
+    gl_FragColor = result;
+});
+
+// 1 4 6 4 1
+// 1+4+6+4+1 = 16
+// 6/16 = 0.375
+// 4/16 = 0.25
+// 1/16 = 0.0625
 
 const char *GaussProcPass::fshaderGauss5SrcR = OG_TO_STR
 (
@@ -230,28 +242,23 @@ void GaussProcPass::getUniforms()
     shParamUInputTex = shader->getParam(UNIF, "inputImageTexture");
 }
 
-#if 0
 const char *GaussProcPass::getFragmentShaderSource()
 {
-    return doR ? fshaderGauss7SrcR : fshaderGauss7Src;
+    switch(kernel)
+    {
+        case k5Tap: return doR ? fshaderGauss5SrcR : fshaderGauss5Src;
+        case k7Tap: return doR ? fshaderGauss7SrcR : fshaderGauss7Src;
+        default: assert(false);
+    }
 }
 
 const char *GaussProcPass::getVertexShaderSource()
 {
-    return vshaderGauss7Src;
+    switch(kernel)
+    {
+        case k5Tap: return vshaderGauss5Src;
+        case k7Tap: return vshaderGauss7Src;
+        default: assert(false);
+    }
 }
-
-#else
-
-const char *GaussProcPass::getFragmentShaderSource()
-{
-    return doR ? fshaderGauss5SrcR : fshaderGauss5Src;
-}
-
-const char *GaussProcPass::getVertexShaderSource()
-{
-    return vshaderGauss5Src;
-}
-#endif
-
 
