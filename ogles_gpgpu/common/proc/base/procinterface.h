@@ -184,7 +184,14 @@ public:
      */
     virtual void process(GLuint id, GLuint useTexUnit, GLenum target, int index = 0, Logger logger=0);
     
+    /**
+     * Allow this proc to use mipmaps
+     */
+    virtual void setUseMipmaps(bool flag) { useMipmaps = flag; }
+    
 protected:
+    
+    bool useMipmaps = false; // TODO:
     
     std::string title;
     

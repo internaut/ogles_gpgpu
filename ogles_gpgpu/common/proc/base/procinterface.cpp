@@ -37,7 +37,6 @@ void ProcInterface::prepare(int inW, int inH, GLenum inFmt, int index) {
         reinit(inW, inH, (index == 0) && (inFmt != GL_NONE));
     }
     
-    bool useMipmaps = false; // TODO:
     bool willDownScale = false;
     if(subscribers.size() != 0) {
         for(auto &subscriber : subscribers) {
