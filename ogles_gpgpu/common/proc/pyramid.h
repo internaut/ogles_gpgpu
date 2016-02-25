@@ -29,9 +29,14 @@ class PyramidProc : public TransformProc {
 public:
 
     /**
-     * Constructor.
+     * Constructor for pyramid.
      */
     PyramidProc(int levels = 4);
+    
+    /**
+     * Constructor for multiscale.
+     */
+    PyramidProc(const std::vector<Size2d> &scales);
 
     /**
      * Render a flat pyramid
@@ -64,16 +69,6 @@ public:
     const std::vector<Rect2d> & getLevelCrops() const;
     
 private:
-
-    /**
-     * Render pyramid
-     */
-    void renderPyramid();
-    
-    /**
-     * Render preset scales
-     */
-    void renderMultiscale();
     
     virtual void setOutputSize(float scaleFactor);
 
