@@ -35,6 +35,8 @@ precision highp float;
  
  uniform float strength;
  
+ const float pi = 3.14159265359;
+ 
  void main()
  {
      float bottomLeftIntensity = texture2D(inputImageTexture, bottomLeftTextureCoordinate).r;
@@ -58,17 +60,15 @@ precision highp float;
      float theta = atan(y, x);
      if(theta < 0.0)
      {
-         theta = theta + 3.14159;
+         theta = theta + pi;
      }
      
      float dx = (x + 1.0) / 2.0;
      float dy = (y + 1.0) / 2.0;
      
-     mag = clamp(mag * strength, 0.0, 1.0);
-     
      //gl_FragColor = vec4(mag, mag, mag, 1.0);
      //gl_FragColor = vec4(bottomLeftIntensity,bottomLeftIntensity,bottomLeftIntensity,1.0);
-     gl_FragColor = vec4(mag, theta/3.14159, clamp(dx, 0.0, 1.0), clamp(dy, 0.0, 1.0));
+     gl_FragColor = vec4(mag, clamp(theta/pi, 0.0, 1.0), clamp(dx, 0.0, 1.0), clamp(dy, 0.0, 1.0));
  }
  );
 
