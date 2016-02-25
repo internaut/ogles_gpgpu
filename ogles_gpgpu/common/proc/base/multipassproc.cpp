@@ -191,6 +191,11 @@ MemTransfer *MultiPassProc::getMemTransferObj() const {
     return lastProc->getMemTransferObj();
 }
 
+MemTransfer *MultiPassProc::getInputMemTransferObj() const {
+    assert(firstProc);
+    return firstProc->getMemTransferObj();
+}
+
 GLuint MultiPassProc::getInputTexId() const {
     assert(firstProc);
     return firstProc->getInputTexId();

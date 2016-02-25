@@ -50,7 +50,7 @@ void VideoSource::operator()(const Size2d &size, void* pixelBuffer, bool useRawP
         firstFrame = false;
     }
     
-    auto gpgpuInputHandler = pipeline->getMemTransferObj();
+    auto gpgpuInputHandler = pipeline->getInputMemTransferObj();
     gpgpuInputHandler->setUseRawPixels(useRawPixels);
     
     // on each new frame, this will release the input buffers and textures, and prepare new ones

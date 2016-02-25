@@ -147,6 +147,11 @@ public:
     virtual MemTransfer *getMemTransferObj() const;
 
     /**
+     * Return pointer to the input MemTransfer object of this processor.
+     */
+    virtual MemTransfer *getInputMemTransferObj() const;
+
+    /**
      * Return input texture id.
      */
     virtual GLuint getInputTexId() const;
