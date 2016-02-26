@@ -81,7 +81,7 @@ void Filter3x3Proc::getUniforms() {
 
 void Filter3x3Proc::setUniforms() {
     // Set texel width/height uniforms:
-    glUniform1f(texelWidthUniform, (1.0f/ float(inFrameW)));
-    glUniform1f(texelHeightUniform, (1.0f/ float(inFrameH)));
+    glUniform1f(texelWidthUniform, (1.0f/ float(outFrameW)));
+    glUniform1f(texelHeightUniform, (1.0f/ float(outFrameH)));
 }
 
