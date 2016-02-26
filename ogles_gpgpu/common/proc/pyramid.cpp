@@ -140,7 +140,7 @@ int PyramidProc::init(int inW, int inH, unsigned int order, bool prepareForExter
         for(const auto &c : m_crops)
         {
             width = std::max(width, c.x + c.width);
-            height = std::max(height, c.y + c.width);
+            height = std::max(height, c.y + c.height);
         }
     }
     else
