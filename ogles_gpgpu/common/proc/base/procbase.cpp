@@ -186,11 +186,11 @@ void ProcBase::setInOutFrameSizes(int inW, int inH, int outW, int outH, float sc
     bool isFirst = (outW <= 0 && outH <= 0);
     
     if (outW <= 0) {
-        outW = (int)((float)inW * scaleFactor);
+        outW = (int)((float)inW * scaleFactor + 0.5f);
     }
 
     if (outH <= 0) {
-        outH = (int)((float)inH * scaleFactor);
+        outH = (int)((float)inH * scaleFactor + 0.5f);
     }
 
     // For transpose operatinos we need swap outW and outH
