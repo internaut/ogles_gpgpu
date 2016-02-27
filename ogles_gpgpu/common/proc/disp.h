@@ -68,6 +68,13 @@ public:
     virtual void getResultData(unsigned char *data) const {
         assert(false);
     }
+    
+    /**
+     * Not implemented - no output is returned because Disp renders on screen.
+     */
+    virtual void getResultData(FrameDelegate &frameDelegate) const {
+        assert(false);
+    }
 
     /**
      * Not implemented - no MemTransferObj for output is set because Disp renders on screen.
