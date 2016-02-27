@@ -105,7 +105,6 @@ Disp *Core::createRenderDisplay(int dispW, int dispH, RenderOrientation orientat
 }
 
 void Core::init(void *glContext) {
-    assert(!initialized);
 
     checkGLExtensions();
 
