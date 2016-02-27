@@ -26,6 +26,8 @@ class ProcInterface {
 public:
     
     typedef std::function<void(const std::string &tag)> Logger;
+
+    using FrameDelegate = MemTransfer::FrameDelegate;
     
     /**
      * Important: deconstructor must be virtual
@@ -152,6 +154,11 @@ public:
      */
     virtual void getResultData(unsigned char *data) const = 0;
 
+    /**
+     * Return the result data from the FBO (zero copy).
+     */
+    virtual void getResultData(FrameDelegate &) const = 0;
+    
     /**
      * Return pointer to MemTransfer object of this processor.
      */
