@@ -156,6 +156,11 @@ public:
     virtual void getResultData(unsigned char *data) const;
 
     /**
+     * Return the result data from the FBO.
+     */
+    virtual void getResultData(FrameDelegate &delegate) const;
+    
+    /**
      * Return pointer to MemTransfer object of this processor.
      */
     virtual MemTransfer *getMemTransferObj() const;

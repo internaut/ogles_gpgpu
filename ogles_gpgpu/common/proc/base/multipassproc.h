@@ -24,6 +24,7 @@ namespace ogles_gpgpu {
 
 class MultiPassProc : public ProcInterface {
 public:
+    
     /**
      * Deconstructor.
      * Removes all pass instances.
@@ -140,6 +141,11 @@ public:
      * Return the result data from the FBO.
      */
     virtual void getResultData(unsigned char *data) const;
+
+    /**
+     * Apply callback to output FBO texture.
+     */
+    virtual void getResultData(FrameDelegate &delegate) const;
 
     /**
      * Return pointer to MemTransfer object of this processor.

@@ -127,6 +127,20 @@ void FBO::readBuffer(unsigned char *buf) {
     unbind();
 }
 
+void FBO::readBuffer(FrameDelegate &delegate)
+{
+    assert(memTransfer && attachedTexId > 0 && texW > 0 && texH > 0);
+    
+    // bind the FBO
+    bind();
+    
+    // get the contents of its attached texture
+    memTransfer->fromGPU(delegate);
+    
+    // unbind again
+    unbind();
+}
+
 void FBO::generateIds() {
     glGenFramebuffers(1, &id);
 }

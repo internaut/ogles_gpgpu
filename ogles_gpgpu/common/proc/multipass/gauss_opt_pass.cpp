@@ -69,6 +69,10 @@ std::string fragmentShaderForOptimizedBlur(int blurRadius, float sigma, bool doN
     int trueNumberOfOptimizedOffsets = blurRadius / 2 + (blurRadius % 2);
     
     std::stringstream ss;
+#if defined(OGLES_GPGPU_OPENGLES)
+    ss << "precision highp float;\n";
+    ss << "\n";
+#endif
     ss << "uniform sampler2D inputImageTexture;\n";
     ss << "uniform float texelWidthOffset;\n";
     ss << "uniform float texelHeightOffset;\n\n";

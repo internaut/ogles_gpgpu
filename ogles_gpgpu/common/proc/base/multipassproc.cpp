@@ -186,6 +186,11 @@ void MultiPassProc::getResultData(unsigned char *data) const {
     return lastProc->getResultData(data);
 }
 
+void MultiPassProc::getResultData(FrameDelegate &delegate) const {
+    assert(lastProc);
+    return lastProc->getResultData(delegate);
+}
+
 MemTransfer *MultiPassProc::getMemTransferObj() const {
     assert(lastProc);
     return lastProc->getMemTransferObj();
