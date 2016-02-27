@@ -29,7 +29,7 @@ MemTransfer::MemTransfer() {
     initialized = false;
     preparedInput = false;
     preparedOutput = false;
-    inputPixelFormat = outputPixelFormat = GL_RGBA;
+    inputPixelFormat = outputPixelFormat = GL_BGRA;
 }
 
 MemTransfer::~MemTransfer() {
@@ -161,6 +161,15 @@ void MemTransfer::fromGPU(unsigned char *buf) {
 
     // check for error
     Tools::checkGLErr("MemTransfer", "fromGPU (glReadPixels)");
+}
+
+// The zero copy fromGPU() call is not possibly with generic glReadPixels() access
+void MemTransfer::fromGPU(FrameDelegate &delegate) {
+    assert(false);
+}
+
+size_t MemTransfer::bytesPerRow() {
+    return outputW * 4; // assume GL_{BGRA,RGBA}
 }
 
 void MemTransfer::setOutputPixelFormat(GLenum outputPxFormat) {

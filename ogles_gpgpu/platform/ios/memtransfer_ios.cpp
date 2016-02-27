@@ -394,7 +394,7 @@ GLuint MemTransferIOS::prepareOutput(int outTexW, int outTexH) {
             GL_RGBA, // opengl format
             outputW,
             outputH,
-            GL_RGBA, // opengl format
+            outputPixelFormat, // opengl format (was GL_RGBA)
             GL_UNSIGNED_BYTE,
             0,
             &texRef);
@@ -442,6 +442,22 @@ void MemTransferIOS::fromGPU(unsigned char *buf) {
     const void *pixelBufferAddr = lockBufferAndGetPtr(BUF_TYPE_OUTPUT);
     memcpy(buf, pixelBufferAddr, outputPixelBufferSize);
     unlockBuffer(BUF_TYPE_OUTPUT);
+}
+
+void MemTransferIOS::fromGPU(FrameDelegate &delegate)
+{
+    // bind the texture
+    glBindTexture(GL_TEXTURE_2D, outputTexId);
+    
+    const void *pixelBufferAddr = lockBufferAndGetPtr(BUF_TYPE_OUTPUT);
+    delegate({outputW, outputH}, pixelBufferAddr, bytesPerRow());
+
+    unlockBuffer(BUF_TYPE_OUTPUT);
+}
+
+size_t MemTransferIOS::bytesPerRow()
+{
+    return CVPixelBufferGetBytesPerRow(outputPixelBuffer);
 }
 
 #pragma mark private methods
