@@ -118,6 +118,11 @@ void ProcBase::getResultData(unsigned char *data) const {
     fbo->readBuffer(data);
 }
 
+void ProcBase::getResultData(FrameDelegate &delegate) const {
+    assert(fbo != NULL);
+    fbo->readBuffer(delegate);
+}
+
 MemTransfer *ProcBase::getMemTransferObj() const {
     assert(fbo);
 
