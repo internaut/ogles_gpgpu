@@ -35,9 +35,15 @@ public:
     
     typedef std::function<void(const std::string &tag)> Logger;
 
-    VideoSource();
+    VideoSource(void *glContext=nullptr);
+
+    VideoSource(void *glContext, const Size2d &size, GLenum inputPixFormat);
     
     VideoSource(const Size2d &size, GLenum inputPixFormat);
+    
+    virtual ~VideoSource();
+    
+    void init(void *glContext);
     
     void operator()(const Size2d &size, void* pixelBuffer, bool useRawPixels, GLuint inputTexture=0, GLenum inputPixFormat=DFLT_PIX_FORMAT);
     
@@ -45,13 +51,17 @@ public:
     
     virtual void postConfig() {}
     
-    void set(ProcInterface *p) { pipeline = p; }
+    void set(ProcInterface *p);
     
     void setLogger(Logger &logger) { m_logger = logger; }
+    
+    GLuint getInputTexId();
     
 protected:
     
     Logger m_logger;
+
+    void *glContext = nullptr;
 
     void setInputData(const unsigned char *data);
     

@@ -3,14 +3,40 @@
 
 using namespace ogles_gpgpu;
 
-VideoSource::VideoSource()
+VideoSource::VideoSource(void *glContext)
 {
-    
+    init(glContext);
+}
+
+VideoSource::VideoSource(void *glContext, const Size2d &size, GLenum inputPixFormat)
+{
+    init(glContext);
+    configurePipeline(size, inputPixFormat);
+}
+
+VideoSource::~VideoSource()
+{
+    Core::getInstance()->reset();
+}
+
+void VideoSource::init(void *glContext)
+{
+    auto *gpgpu = Core::getInstance();
+    Core::tryEnablePlatformOptimizations();
+    Core::getInstance()->setUseMipmaps(false); // TODO
+    // pipeline
+    gpgpu->init(glContext);
 }
 
 VideoSource::VideoSource(const Size2d &size, GLenum inputPixFormat)
 {
     configurePipeline(size, inputPixFormat);
+}
+
+GLuint VideoSource::getInputTexId()
+{
+    assert(pipeline);
+    return pipeline->getInputTexId();
 }
 
 void VideoSource::configurePipeline(const Size2d &size, GLenum inputPixFormat)
@@ -31,9 +57,17 @@ void VideoSource::configurePipeline(const Size2d &size, GLenum inputPixFormat)
 
         yuv2RgbProc->createFBOTex(false); // TODO: mipmapping?
     }
+
+    ogles_gpgpu::Core::tryEnablePlatformOptimizations();
     
     pipeline->prepare(size.width, size.height, inputPixFormat);
     frameSize = size;
+}
+
+void VideoSource::set(ProcInterface *p)
+{
+    pipeline = p;
+    // set glContext
 }
 
 void VideoSource::operator()(const Size2d &size, void* pixelBuffer, bool useRawPixels, GLuint inputTexture, GLenum inputPixFormat)
@@ -58,9 +92,7 @@ void VideoSource::operator()(const Size2d &size, void* pixelBuffer, bool useRawP
     if(pixelBuffer)
     {
         if(inputPixFormat == 0)
-        {
-            yuv2RgbProc = std::make_shared<ogles_gpgpu::Yuv2RgbProc>();
-            
+        {            
             // YUV: Special case NV12=>BGR
             auto manager = yuv2RgbProc->getMemTransferObj();
             if (useRawPixels)
@@ -79,9 +111,6 @@ void VideoSource::operator()(const Size2d &size, void* pixelBuffer, bool useRawP
         else
         {
             gpgpuInputHandler->prepareInput(frameSize.width, frameSize.height, inputPixFormat, pixelBuffer);
-            
-            // gpgpuMngr->setInputData(reinterpret_cast< const unsigned char *>(pixelBuffer));
-            
             setInputData(reinterpret_cast< const unsigned char *>(pixelBuffer));
             
             inputTexture = gpgpuInputHandler->getInputTexId();
