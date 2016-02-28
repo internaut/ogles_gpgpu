@@ -29,6 +29,22 @@ typedef enum {
     RenderOrientationDiagonalMirrored
 } RenderOrientation;
     
+    
+// Map camera orientation (in degrees) to RenderOrientation enum
+inline RenderOrientation degreesToOrientation(int degrees)
+{
+    switch(degrees)
+    {
+        case 360:
+        case 0: return ogles_gpgpu::RenderOrientationStd;
+        case 90: return ogles_gpgpu::RenderOrientationDiagonalFlipped;
+        case 180: return ogles_gpgpu::RenderOrientationFlipped;
+        case 270: return ogles_gpgpu::RenderOrientationDiagonalMirrored;
+        default: assert(false);
+    }
+    return ogles_gpgpu::RenderOrientationStd;
+}
+    
 struct Size2d
 {
     Size2d();
