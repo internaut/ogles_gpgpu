@@ -17,7 +17,7 @@ void ProcInterface::process(GLuint id, GLuint useTexUnit, GLenum target, int ind
     }
         
     render();
-    glFinish();
+    //glFinish();
     if(logger) logger(std::string(getProcName()) + " end");
         
     for(auto &subscriber : subscribers) {
