@@ -55,7 +55,8 @@ void main()
     float xx = horizontalDerivative * horizontalDerivative;
     float yy = verticalDerivative * verticalDerivative;
     float xy = horizontalDerivative * verticalDerivative;
-    // Scaling the X * Y operation so that negative numbers are not clipped in the 0..1 range. This will be expanded in the corner detection filter
+    // Scaling the X * Y operation so that negative numbers are not clipped in the 0..1 range.
+    // This will be expanded in the corner detection filter
     gl_FragColor = vec4(xx, yy, (xy + 1.0) / 2.0, 1.0);
 });
 
