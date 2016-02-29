@@ -52,7 +52,7 @@ int FifoProc::getIn() const {
 }
 
 int FifoProc::getOut() const {
-    return m_inputIndex;
+    return m_outputIndex;
 }
 
 FifoProc::FifoProc(int size) {
@@ -142,16 +142,19 @@ void FifoProc::createFBOTex(bool genMipmap) {
 //     [O][ ][ ]
 //     [ ][ ][I]
 
+// negative modulo arithmetic
+static int modulo(int a, int b) { return (((a % b) + b) % b); }
+
 void FifoProc::render() {
     // Render into input FBO
     assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
     procPasses[m_inputIndex]->render();
     
-    m_inputIndex = (m_inputIndex + 1) % procPasses.size();
+    m_inputIndex = (m_inputIndex + 1) % size();
+    m_count = std::min(m_count + 1, int(size()));
     if(m_count == procPasses.size()) {
-        m_outputIndex = (m_outputIndex + 1) % procPasses.size();
+        m_outputIndex = modulo(m_inputIndex - size() + 1, size());
     }
-    m_count = std::min(m_count + 1, int(procPasses.size()));
 }
 
 void FifoProc::printInfo() {
