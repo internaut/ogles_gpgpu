@@ -21,6 +21,12 @@ bool MemTransfer::initPlatformOptimizations() {
 
 #pragma mark constructor/deconstructor
 
+#if ANDROID
+#  define DFLT_TEXTURE_FORMAT GL_RGBA
+#else
+#  define DFLT_TEXTURE_FORMAT GL_BGRA
+#endif
+
 MemTransfer::MemTransfer() {
     // set defaults
     inputW = inputH = outputW = outputH = 0;
@@ -29,7 +35,7 @@ MemTransfer::MemTransfer() {
     initialized = false;
     preparedInput = false;
     preparedOutput = false;
-    inputPixelFormat = outputPixelFormat = GL_BGRA;
+    inputPixelFormat = outputPixelFormat = DFLT_TEXTURE_FORMAT;
 }
 
 MemTransfer::~MemTransfer() {
@@ -100,11 +106,7 @@ GLuint MemTransfer::prepareOutput(int outTexW, int outTexH) {
 
     Tools::checkGLErr("MemTransfer", "fbo texture parameters");
 
-#if OGLES_GPGPU_OSX
-    GLenum rgbFormat = GL_BGRA;
-#else
-    GLenum rgbFormat = GL_RGBA;
-#endif
+    GLenum rgbFormat = DFLT_TEXTURE_FORMAT;
     
     // create empty texture space on GPU
     glTexImage2D(GL_TEXTURE_2D, 0,

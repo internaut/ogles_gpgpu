@@ -18,6 +18,8 @@
 #include "base/procbase.h"
 #include "yuv2rgb.h"
 
+#include <memory>
+
 namespace ogles_gpgpu {
 
 #if __ANDROID__
