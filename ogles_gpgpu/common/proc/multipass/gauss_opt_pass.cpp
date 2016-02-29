@@ -168,9 +168,9 @@ std::string vertexShaderForOptimizedBlur(int blurRadius, float sigma)
 
 void GaussOptProcPass::setRadius(float newValue)
 {
-    if (std::round(newValue) != _blurRadiusInPixels)
+    if (round(newValue) != _blurRadiusInPixels)
     {
-        _blurRadiusInPixels = std::round(newValue); // For now, only do integral sigmas
+        _blurRadiusInPixels = round(newValue); // For now, only do integral sigmas
         
         int calculatedSampleRadius = 0;
         if (_blurRadiusInPixels >= 1) // Avoid a divide-by-zero error here
