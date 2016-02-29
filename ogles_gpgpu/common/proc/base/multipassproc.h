@@ -100,17 +100,12 @@ public:
      * Set the render orientation to <o>.
      * Not implemented for multipass processors!
      */
-    virtual void setOutputRenderOrientation(RenderOrientation o) {
-        assert(false);
-    }
-
+    virtual void setOutputRenderOrientation(RenderOrientation o);
     /**
      * Get the render orientation.
      * Not implemented for multipass processors!
      */
-    virtual RenderOrientation getOutputRenderOrientation() const {
-        return RenderOrientationNone;
-    }
+    virtual RenderOrientation getOutputRenderOrientation() const;
 
     /**
      * Get the output frame width.
