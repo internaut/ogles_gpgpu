@@ -186,7 +186,9 @@ public:
     std::vector<ProcInterface *>& getProcPasses() { return procPasses; }
     const std::vector<ProcInterface *>& getProcPasses() const { return procPasses; }
     
-    size_t getBufferCount() { return m_count; }
+    size_t size() const { return procPasses.size(); }
+    bool isFull() const { return m_count == size(); }
+    size_t getBufferCount() const { return m_count; }
     
     virtual int getIn() const;
     virtual int getOut() const;

@@ -181,6 +181,17 @@ bool MultiPassProc::getWillDownscale() const {
     return false;
 }
 
+
+void MultiPassProc::setOutputRenderOrientation(RenderOrientation o) {
+    assert(lastProc);
+    lastProc->setOutputRenderOrientation(o);
+}
+
+RenderOrientation MultiPassProc::getOutputRenderOrientation() const {
+    assert(lastProc);
+    return lastProc->getOutputRenderOrientation();
+}
+
 void MultiPassProc::getResultData(unsigned char *data) const {
     assert(lastProc);
     return lastProc->getResultData(data);
