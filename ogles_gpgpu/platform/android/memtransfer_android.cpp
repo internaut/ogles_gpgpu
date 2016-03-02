@@ -4,6 +4,51 @@
 
 #include "../../common/tools.h"
 
+#include <android/native_window.h>
+
+typedef struct android_native_base_t
+{
+    /* a magic value defined by the actual EGL native type */
+    int magic;
+
+    /* the sizeof() of the actual EGL native type */
+    int version;
+
+    void* reserved[4];
+
+    /* reference-counting interface */
+    void (*incRef)(struct android_native_base_t* base);
+    void (*decRef)(struct android_native_base_t* base);
+} android_native_base_t;
+
+typedef struct native_handle
+{
+    int version;        /* sizeof(native_handle_t) */
+    int numFds;         /* number of file-descriptors at &data[0] */
+    int numInts;        /* number of ints at &data[numFds] */
+    int data[0];        /* numFds + numInts ints */
+} native_handle_t;
+
+typedef const native_handle_t* buffer_handle_t;
+
+typedef struct ANativeWindowBuffer
+{
+    struct android_native_base_t common;
+
+    int width;
+    int height;
+    int stride;
+    int format;
+    int usage;
+
+    void* reserved[2];
+
+    buffer_handle_t handle;
+
+    void* reserved_proc[8];
+    
+} ANativeWindowBuffer_t;
+
 using namespace ogles_gpgpu;
 
 // necessary definitions for Android GraphicBuffer
@@ -340,6 +385,27 @@ void MemTransferAndroid::fromGPU(unsigned char *buf) {
 
     // unlock the graphics buffer again
     unlockBuffer(BUF_TYPE_OUTPUT);
+}
+
+// TODO: Move this to mem_transfer_optimized
+void MemTransferAndroid::fromGPU(FrameDelegate &delegate) {
+    // bind the texture
+    glBindTexture(GL_TEXTURE_2D, outputTexId);
+
+    // activate the image KHR for the output
+    glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, outputImage);
+
+    Tools::checkGLErr("MemTransferAndroid", "call to glEGLImageTargetTexture2DOES() for output");
+    
+    const void *pixelBufferAddr = lockBufferAndGetPtr(BUF_TYPE_OUTPUT);
+    delegate({outputW, outputH}, pixelBufferAddr, bytesPerRow());
+
+    unlockBuffer(BUF_TYPE_OUTPUT);
+}
+
+size_t MemTransferAndroid::bytesPerRow() {
+    std::stringstream ss;
+    return (outputNativeBuf->stride * 4);
 }
 
 void *MemTransferAndroid::lockBufferAndGetPtr(BufType bufType) {
