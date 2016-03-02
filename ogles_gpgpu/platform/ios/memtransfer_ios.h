@@ -103,7 +103,7 @@ public:
     /**
      * Get bytes per row in underlying FBO.
      */
-    virtual size_t bytesPerRow() ;
+    virtual size_t bytesPerRow();
 
     /**
      * Lock the input or output buffer and return its base address.

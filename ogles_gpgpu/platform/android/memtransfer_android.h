@@ -129,6 +129,22 @@ public:
     virtual void fromGPU(unsigned char *buf);
 
     /**
+     * Inidcates whether or not this MemTransfer implementation
+     * support zero copy texture access (i.e., MemTransferIOS)
+     */
+    virtual bool hasDirectTextureAccess() const { return true; }
+    
+    /**
+     * Apply callback to FBO texture.
+     */
+    virtual void fromGPU(FrameDelegate &delegate);
+
+    /**
+     * Get bytes per row in underlying FBO.
+     */
+    virtual size_t bytesPerRow();
+
+    /**
      * Lock the input or output buffer and return its base address.
      * The input buffer will be locked for reading AND writing, while the
      * output buffer will be locked for reading only.
