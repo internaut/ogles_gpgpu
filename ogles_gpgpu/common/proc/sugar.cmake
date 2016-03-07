@@ -24,12 +24,16 @@ sugar_files(
     fifo.h
     filter3x3.cpp
     filter3x3.h
+    flow.cpp
+    flow.h
     gauss.h
     gauss_opt.h
     grad.cpp
     grad.h
     grayscale.cpp
     grayscale.h
+    ixyt.cpp
+    ixyt.h
     lnorm.h
     lbp.cpp
     lbp.h
