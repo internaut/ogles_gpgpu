@@ -20,13 +20,30 @@
 
 #include <memory>
 
-namespace ogles_gpgpu {
+BEGIN_OGLES_GPGPU
 
 #if __ANDROID__
 #  define DFLT_PIX_FORMAT GL_RGBA
 #else
 #  define DFLT_PIX_FORMAT GL_BGRA
 #endif
+
+struct FrameInput
+{
+    FrameInput(const Size2d &size, void *pixelBuffer, bool useRawPixels, GLuint inputTexture, GLenum textureFormat)
+    : size(size)
+    , pixelBuffer(pixelBuffer)
+    , useRawPixels(useRawPixels)
+    , inputTexture(inputTexture)
+    , textureFormat(textureFormat)
+    {}
+    
+    Size2d size;
+    void *pixelBuffer = nullptr;
+    bool useRawPixels = false;
+    GLuint inputTexture = 0;
+    GLenum textureFormat = 0;
+};
 
 /**
  * Image source class
@@ -46,6 +63,8 @@ public:
     virtual ~VideoSource();
     
     void init(void *glContext);
+    
+    void operator()(const FrameInput &frame);
     
     void operator()(const Size2d &size, void* pixelBuffer, bool useRawPixels, GLuint inputTexture=0, GLenum inputPixFormat=DFLT_PIX_FORMAT);
     
@@ -76,8 +95,8 @@ protected:
     ProcInterface* pipeline = nullptr;
 
     std::shared_ptr<ogles_gpgpu::Yuv2RgbProc> yuv2RgbProc;
-
 };
-}
+
+END_OGLES_GPGPU
 
 #endif // OGLES_GPGPU_COMMON_VIDEO

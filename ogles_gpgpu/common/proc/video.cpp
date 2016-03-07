@@ -67,7 +67,11 @@ void VideoSource::configurePipeline(const Size2d &size, GLenum inputPixFormat)
 void VideoSource::set(ProcInterface *p)
 {
     pipeline = p;
-    // set glContext
+}
+
+void VideoSource::operator()(const FrameInput &frame)
+{
+    return (*this)(frame.size, frame.pixelBuffer, frame.useRawPixels, frame.inputTexture, frame.textureFormat);
 }
 
 void VideoSource::operator()(const Size2d &size, void* pixelBuffer, bool useRawPixels, GLuint inputTexture, GLenum inputPixFormat)
