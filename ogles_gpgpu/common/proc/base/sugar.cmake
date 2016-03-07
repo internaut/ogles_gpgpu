@@ -21,4 +21,7 @@ sugar_files(
     procbase.h
     procinterface.cpp
     procinterface.h
-)
+    multiprocinterface.cpp
+    multiprocinterface.h
+    )
+  

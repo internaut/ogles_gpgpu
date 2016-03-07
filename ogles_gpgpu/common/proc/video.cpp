@@ -74,7 +74,7 @@ void VideoSource::operator()(const Size2d &size, void* pixelBuffer, bool useRawP
 {
     preConfig();
     
-    if(m_logger) m_logger("begin");
+    if(m_timer) m_timer("begin");
     
     assert(pipeline);
     
@@ -117,12 +117,12 @@ void VideoSource::operator()(const Size2d &size, void* pixelBuffer, bool useRawP
         }
     }
     
-    if(m_logger) m_logger("process");
+    if(m_timer) m_timer("process");
     
     assert(inputTexture); // inputTexture must be defined at this point
-    pipeline->process(inputTexture, 1, GL_TEXTURE_2D, 0, m_logger);
+    pipeline->process(inputTexture, 1, GL_TEXTURE_2D, 0, 0, m_timer);
     
-    if(m_logger) m_logger("end");
+    if(m_timer) m_timer("end");
     
     postConfig();
 }

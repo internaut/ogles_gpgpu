@@ -37,13 +37,14 @@ public:
     /**
      * Use texture id <id> as input texture at texture <useTexUnit> with texture target <target>.
      */
-    virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D);
+    virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D, int position = 0);
 
     /**
      * Render a result, i.e. run the shader on the input texture.
-     * Abstract method.
+     * Abstract method.  The optional position parameter is used
+     * to specify the input index for multi-texture filters.
      */
-    virtual void render();
+    virtual void render(int position=0);
     
 protected:
     
@@ -95,6 +96,7 @@ protected:
     virtual void filterRenderDraw();
     virtual void filterRenderCleanup();
 
+    static const char *vshaderFilter3x3Src; // GPUImage vertex shader (3x3 access)
     static const char *vshaderGPUImage; // GPUImage vertex shader (shader compatibility)
     static const char *vshaderDefault;  // default vertex shader to render a fullscreen quad
 

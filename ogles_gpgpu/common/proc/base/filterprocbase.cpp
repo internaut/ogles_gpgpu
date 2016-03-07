@@ -24,6 +24,48 @@ const char *FilterProcBase::vshaderGPUImage = OG_TO_STR(
  }
 );
 
+const char *FilterProcBase::vshaderFilter3x3Src = OG_TO_STR(
+                                                           
+    attribute vec4 position;
+    attribute vec4 inputTextureCoordinate;
+
+    uniform float texelWidth;
+    uniform float texelHeight;
+
+    varying vec2 textureCoordinate;
+    varying vec2 leftTextureCoordinate;
+    varying vec2 rightTextureCoordinate;
+
+    varying vec2 topTextureCoordinate;
+    varying vec2 topLeftTextureCoordinate;
+    varying vec2 topRightTextureCoordinate;
+
+    varying vec2 bottomTextureCoordinate;
+    varying vec2 bottomLeftTextureCoordinate;
+    varying vec2 bottomRightTextureCoordinate;
+
+    void main()
+    {
+        gl_Position = position;
+
+        vec2 widthStep = vec2(texelWidth, 0.0);
+        vec2 heightStep = vec2(0.0, texelHeight);
+        vec2 widthHeightStep = vec2(texelWidth, texelHeight);
+        vec2 widthNegativeHeightStep = vec2(texelWidth, -texelHeight);
+
+        textureCoordinate = inputTextureCoordinate.xy;
+        leftTextureCoordinate = inputTextureCoordinate.xy - widthStep;
+        rightTextureCoordinate = inputTextureCoordinate.xy + widthStep;
+
+        topTextureCoordinate = inputTextureCoordinate.xy - heightStep;
+        topLeftTextureCoordinate = inputTextureCoordinate.xy - widthHeightStep;
+        topRightTextureCoordinate = inputTextureCoordinate.xy + widthNegativeHeightStep;
+
+        bottomTextureCoordinate = inputTextureCoordinate.xy + heightStep;
+        bottomLeftTextureCoordinate = inputTextureCoordinate.xy - widthNegativeHeightStep;
+        bottomRightTextureCoordinate = inputTextureCoordinate.xy + widthHeightStep;
+});
+
 
 const char *FilterProcBase::vshaderDefault = OG_TO_STR(
 attribute vec4 aPos;
@@ -44,7 +86,7 @@ void FilterProcBase::setOutputRenderOrientation(RenderOrientation o) {
     initTexCoordBuf();
 }
 
-void FilterProcBase::useTexture(GLuint id, GLuint useTexUnit, GLenum target) {
+void FilterProcBase::useTexture(GLuint id, GLuint useTexUnit, GLenum target, int position) {
     texId = id;
     texUnit = useTexUnit;
 
@@ -92,14 +134,14 @@ void FilterProcBase::getUniforms() {
  * Render a result, i.e. run the shader on the input texture.
  * Abstract method.
  */
-void FilterProcBase::render() {
+void FilterProcBase::render(int position) {
     OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
     
     filterRenderPrepare();
+    Tools::checkGLErr(getProcName(), "render prepare");
 
     setUniforms();
-
-    Tools::checkGLErr(getProcName(), "render prepare");
+    Tools::checkGLErr(getProcName(), "setUniforms");
     
     filterRenderSetCoords();
     Tools::checkGLErr(getProcName(), "render set coords");
@@ -147,18 +189,22 @@ void FilterProcBase::initTexCoordBuf(RenderOrientation overrideRenderOrientation
 
 void FilterProcBase::filterRenderPrepare() {
     shader->use();
+    Tools::checkGLErr(getProcName(), "shader->use()");
 
     // set the viewport
     glViewport(0, 0, outFrameW, outFrameH);
 
     glClear(GL_COLOR_BUFFER_BIT);
 
+    texTarget = GL_TEXTURE_2D;
     // set input texture
     glActiveTexture(GL_TEXTURE0 + texUnit);
     glBindTexture(texTarget, texId);	// bind input texture
+    Tools::checkGLErr(getProcName(), "A");
 
     // set common uniforms
     glUniform1i(shParamUInputTex, texUnit);
+    Tools::checkGLErr(getProcName(), "B");
 }
 
 void FilterProcBase::filterRenderSetCoords() {

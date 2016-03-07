@@ -35,7 +35,7 @@ namespace ogles_gpgpu {
 class VideoSource {
 public:
     
-    typedef std::function<void(const std::string &tag)> Logger;
+    typedef std::function<void(const std::string &tag)> Timer;
 
     VideoSource(void *glContext=nullptr);
 
@@ -55,13 +55,13 @@ public:
     
     void set(ProcInterface *p);
     
-    void setLogger(Logger &logger) { m_logger = logger; }
+    void setLogger(Timer &timer) { m_timer = timer; }
     
     GLuint getInputTexId();
     
 protected:
     
-    Logger m_logger;
+    Timer m_timer;
 
     void *glContext = nullptr;
 

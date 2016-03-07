@@ -41,7 +41,7 @@ public:
     /**
      * Render a flat pyramid
      */
-    void render();
+    virtual void render(int position=0);
     
     /**
      * Return the processors name.

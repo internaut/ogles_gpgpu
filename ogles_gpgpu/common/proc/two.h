@@ -1,8 +1,8 @@
 //
 // ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
-// http://www.mkonrad.net
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015, http://www.mkonrad.net
+//         David Hirvonen <dhirvonen@elucideye.com>
 //
 // See LICENSE file in project repository root for the license.
 //
@@ -36,9 +36,14 @@ public:
     /**
      * Use texture id <id> as input texture at texture <useTexUnit> with texture target <target>.
      */
+    virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D, int position = 0);
+    
+    /**
+     * Use texture id <id> as input texture at texture <useTexUnit> with texture target <target>.
+     */
     virtual void useTexture2(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D);
     
-private:
+protected:
     
     virtual void filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target);
     

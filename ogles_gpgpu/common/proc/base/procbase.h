@@ -60,6 +60,7 @@ public:
      */
     virtual void setExternalInputDataFormat(GLenum fmt) {
         inputDataFmt = fmt;
+        texTarget = fmt; // TODO: review
     }
 
     /**
@@ -176,7 +177,14 @@ public:
      * Return the output texture id (= texture that is attached to the FBO).
      */
     virtual GLuint getOutputTexId() const;
-
+    
+    /**
+     * Return the texture target (i.e., GL_TEXTURE_2D, ...)
+     */
+    virtual GLenum getTextureTarget() const {
+        return texTarget;
+    }
+    
 protected:
     /**
      * Common initializations with input size <inW>x<inH>, pipeline processing <order>, output size <outW>x<outH> and

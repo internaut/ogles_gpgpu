@@ -56,6 +56,8 @@
 /* #error platform not supported. either __APPLE__ or __ANDROID__ must be defined. */
 /* #endif */
 
+#define BEGIN_OGLES_GPGPU namespace ogles_gpgpu {
+#define END_OGLES_GPGPU }
 
 #include "tools.h"
 #include "types.h"

@@ -50,7 +50,7 @@ public:
     /**
      * Render the output.
      */
-    virtual void render();
+    virtual void render(int position=0);
     
     /**
      * Create a texture that is attached to the FBO and will contain the processing result.

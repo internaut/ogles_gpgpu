@@ -42,6 +42,7 @@ void main()
     float topRightIntensity = texture2D(inputImageTexture, topRightTextureCoordinate).r;
     float topLeftIntensity = texture2D(inputImageTexture, topLeftTextureCoordinate).r;
     float bottomIntensity = texture2D(inputImageTexture, bottomTextureCoordinate).r;
+    float centerIntensity = texture2D(inputImageTexture, textureCoordinate).r;
     float bottomLeftIntensity = texture2D(inputImageTexture, bottomLeftTextureCoordinate).r;
     float bottomRightIntensity = texture2D(inputImageTexture, bottomRightTextureCoordinate).r;
     float leftIntensity = texture2D(inputImageTexture, leftTextureCoordinate).r;
@@ -57,7 +58,10 @@ void main()
     float xy = horizontalDerivative * verticalDerivative;
     // Scaling the X * Y operation so that negative numbers are not clipped in the 0..1 range.
     // This will be expanded in the corner detection filter
-    gl_FragColor = vec4(xx, yy, (xy + 1.0) / 2.0, 1.0);
+    
+    // Also pass through the center intensity in teh alpha channel, which
+    // is useful for optical flow.
+    gl_FragColor = vec4(xx, yy, (xy + 1.0) / 2.0, centerIntensity);
 });
 
 TensorProc::TensorProc() {

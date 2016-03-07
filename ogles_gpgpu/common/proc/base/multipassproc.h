@@ -14,7 +14,7 @@
 #define OGLES_GPGPU_COMMON_PROC_MULTIPASSPROC
 
 #include "../../common_includes.h"
-#include "procinterface.h"
+#include "multiprocinterface.h"
 
 #include <list>
 
@@ -22,8 +22,13 @@ using namespace std;
 
 namespace ogles_gpgpu {
 
-class MultiPassProc : public ProcInterface {
+class MultiPassProc : public MultiProcInterface {
 public:
+
+    virtual ProcInterface* getInputFilter() const;
+    virtual ProcInterface* getOutputFilter() const;
+    virtual ProcInterface * operator[](int i) const;
+    virtual size_t size() const;
     
     /**
      * Deconstructor.
@@ -49,17 +54,6 @@ public:
     virtual void cleanup();
 
     /**
-     * Set pixel data format for input data to <fmt>. Must be set before init() / reinit().
-     */
-    virtual void setExternalInputDataFormat(GLenum fmt);
-
-    /**
-     * Insert external data into this processor. It will be used as input texture.
-     * Note: init() must have been called with prepareForExternalInput = true for that.
-     */
-    virtual void setExternalInputData(const unsigned char *data);
-
-    /**
      * Create a texture that is attached to the FBO and will contain the processing result.
      * Set <genMipmap> to true to generate a mipmap (usually only works with POT textures).
      */
@@ -69,63 +63,12 @@ public:
      * Render a result, i.e. run the shader on the input texture.
      * Abstract method.
      */
-    virtual void render();
-
-    /**
-     * Print some information about the processor's setup.
-     */
-    virtual void printInfo();
+    virtual void render(int position=0);
 
     /**
      * Use texture id <id> as input texture at texture <useTexUnit> with texture target <target>.
      */
-    virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D);
-
-    /**
-     * Return used texture unit.
-     */
-    virtual GLuint getTextureUnit() const;
-
-    /**
-     * Set output size by scaling down or up the input frame size by factor <scaleFactor>.
-     */
-    virtual void setOutputSize(float scaleFactor);
-
-    /**
-     * Set output size by scaling down or up the input frame to size <outW>x<outH>.
-     */
-    virtual void setOutputSize(int outW, int outH);
-
-    /**
-     * Set the render orientation to <o>.
-     * Not implemented for multipass processors!
-     */
-    virtual void setOutputRenderOrientation(RenderOrientation o);
-    /**
-     * Get the render orientation.
-     * Not implemented for multipass processors!
-     */
-    virtual RenderOrientation getOutputRenderOrientation() const;
-
-    /**
-     * Get the output frame width.
-     */
-    virtual int getOutFrameW() const;
-
-    /**
-     * Get the output frame height.
-     */
-    virtual int getOutFrameH() const;
-    
-    /**
-     * Get the input frame width.
-     */
-    virtual int getInFrameW() const;
-    
-    /**
-     * Get the input frame height.
-     */
-    virtual int getInFrameH() const;
+    virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D, int position=0);
 
     /**
      * Returns true if output size < input size.
@@ -133,60 +76,18 @@ public:
     virtual bool getWillDownscale() const;
 
     /**
-     * Return the result data from the FBO.
-     */
-    virtual void getResultData(unsigned char *data) const;
-
-    /**
-     * Apply callback to output FBO texture.
-     */
-    virtual void getResultData(FrameDelegate &delegate) const;
-
-    /**
-     * Return pointer to MemTransfer object of this processor.
-     */
-    virtual MemTransfer *getMemTransferObj() const;
-
-    /**
-     * Return pointer to the input MemTransfer object of this processor.
-     */
-    virtual MemTransfer *getInputMemTransferObj() const;
-
-    /**
-     * Return input texture id.
-     */
-    virtual GLuint getInputTexId() const;
-
-    /**
-     * Return the output texture id (= texture that is attached to the FBO).
-     */
-    virtual GLuint getOutputTexId() const;
-
-    /**
      * Get number of passes for this multipass processor.
      */
-    size_t getNumPasses() const {
-        return procPasses.size();
-    }
+    size_t getNumPasses() const { return size(); }
 
     /**
      * Return te list of processor instances of each pass of this multipass processor.
      */
-    list<ProcInterface *> getProcPasses() const {
-        return procPasses;
-    }
+    std::vector<ProcInterface *> getProcPasses() const { return procPasses; }
 
 protected:
-    /**
-     * This method should be called whenever <procPasses> changed.
-     */
-    void multiPassInit();
 
-
-    list<ProcInterface *> procPasses;   // holds all instances to the single processing passes. strong ref!
-
-    ProcInterface *firstProc;
-    ProcInterface *lastProc;
+    std::vector<ProcInterface *> procPasses;   // holds all instances to the single processing passes. strong ref!
 };
 
 }
