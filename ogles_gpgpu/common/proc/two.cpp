@@ -51,8 +51,23 @@ precision mediump float;
 
 TwoInputProc::TwoInputProc()
 {
-
+    
 }
+
+/**
+ * Use texture id <id> as input texture at texture <useTexUnit> with texture target <target>.
+ */
+
+void TwoInputProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target, int position)
+{
+    switch(position)
+    {
+        case 0: FilterProcBase::useTexture(id, useTexUnit, target, position); break;
+        case 1: useTexture2(id, useTexUnit, target); break;
+        default: assert(false);
+    }
+}
+
 
 void TwoInputProc::useTexture2(GLuint id, GLuint useTexUnit, GLenum target)
 {
@@ -64,6 +79,7 @@ void TwoInputProc::useTexture2(GLuint id, GLuint useTexUnit, GLenum target)
 void TwoInputProc::filterRenderPrepare()
 {
     shader->use();
+    Tools::checkGLErr(getProcName(), "shader->use()");
     
     // set the viewport
     glViewport(0, 0, outFrameW, outFrameH);
@@ -74,10 +90,14 @@ void TwoInputProc::filterRenderPrepare()
     glActiveTexture(GL_TEXTURE0 + texUnit);
     glBindTexture(texTarget, texId);
     glUniform1i(shParamUInputTex, texUnit);
+    Tools::checkGLErr(getProcName(), "A");
     
+    texUnit2 = texUnit + 1;
     glActiveTexture(GL_TEXTURE0 + texUnit2);
     glBindTexture(texTarget2, texId2);
     glUniform1i(shParamUInputTex2, texUnit2);
+    
+    Tools::checkGLErr(getProcName(), "B");
 }
 
 void TwoInputProc::filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target)
@@ -105,6 +125,5 @@ void TwoInputProc::setUniforms()
 {
     FilterProcBase::setUniforms();
 }
-
 
 

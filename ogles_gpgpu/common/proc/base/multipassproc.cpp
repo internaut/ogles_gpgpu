@@ -11,6 +11,11 @@
 
 using namespace ogles_gpgpu;
 
+ProcInterface* MultiPassProc::getInputFilter() const { return procPasses.front(); }
+ProcInterface* MultiPassProc::getOutputFilter() const { return procPasses.back(); }
+ProcInterface * MultiPassProc::operator[](int i) const { return procPasses[i]; }
+size_t MultiPassProc::size() const { return procPasses.size(); }
+
 #pragma mark constructor/deconstructor
 
 MultiPassProc::~MultiPassProc() {
@@ -92,16 +97,6 @@ void MultiPassProc::cleanup() {
     }
 }
 
-void MultiPassProc::setExternalInputDataFormat(GLenum fmt) {
-    assert(firstProc);
-    firstProc->setExternalInputDataFormat(fmt);
-}
-
-void MultiPassProc::setExternalInputData(const unsigned char *data) {
-    assert(firstProc);
-    firstProc->setExternalInputData(data);
-}
-
 void MultiPassProc::createFBOTex(bool genMipmap) {
     bool first = true;
     for(auto &it : procPasses) {
@@ -110,66 +105,25 @@ void MultiPassProc::createFBOTex(bool genMipmap) {
     }
 }
 
-void MultiPassProc::render() {
+void MultiPassProc::render(int position) {
     for(auto &it : procPasses) {
-        it->render();
+        it->render(position);
     }
 }
 
-void MultiPassProc::printInfo() {
-    OG_LOGINF(getProcName(), "begin info for %u passes", (unsigned int)procPasses.size());
-    for(auto &it : procPasses) {
-        it->printInfo();
-    }
-    OG_LOGINF(getProcName(), "end info");
-}
-
-void MultiPassProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target) {
+void MultiPassProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target, int position) {
     ProcInterface *prevProc = NULL;
 
+    assert(position == 0); // for now no multi-texture multi-pass filters are supported
+    
     for(auto &it : procPasses) {
         if (!prevProc) {    // means this is the first proc pass
             it->useTexture(id, useTexUnit, target);
         } else {            // all other passes
-            it->useTexture(prevProc->getOutputTexId(), prevProc->getTextureUnit());
+            it->useTexture(prevProc->getOutputTexId(), prevProc->getTextureUnit(), prevProc->getTextureTarget());
         }
         prevProc = it;
     }
-}
-
-GLuint MultiPassProc::getTextureUnit() const {
-    assert(firstProc);
-    return firstProc->getTextureUnit();
-}
-
-void MultiPassProc::setOutputSize(float scaleFactor) {
-    assert(firstProc);
-    firstProc->setOutputSize(scaleFactor);
-}
-
-void MultiPassProc::setOutputSize(int outW, int outH) {
-    assert(firstProc);
-    firstProc->setOutputSize(outW, outH);
-}
-
-int MultiPassProc::getOutFrameW() const {
-    assert(lastProc);
-    return lastProc->getOutFrameW();
-}
-
-int MultiPassProc::getOutFrameH() const {
-    assert(lastProc);
-    return lastProc->getOutFrameH();
-}
-
-int MultiPassProc::getInFrameW() const {
-    assert(firstProc);
-    return firstProc->getInFrameW();
-}
-
-int MultiPassProc::getInFrameH() const {
-    assert(firstProc);
-    return firstProc->getInFrameH();
 }
 
 bool MultiPassProc::getWillDownscale() const {
@@ -179,52 +133,4 @@ bool MultiPassProc::getWillDownscale() const {
         }
     }
     return false;
-}
-
-
-void MultiPassProc::setOutputRenderOrientation(RenderOrientation o) {
-    assert(lastProc);
-    lastProc->setOutputRenderOrientation(o);
-}
-
-RenderOrientation MultiPassProc::getOutputRenderOrientation() const {
-    assert(lastProc);
-    return lastProc->getOutputRenderOrientation();
-}
-
-void MultiPassProc::getResultData(unsigned char *data) const {
-    assert(lastProc);
-    return lastProc->getResultData(data);
-}
-
-void MultiPassProc::getResultData(FrameDelegate &delegate) const {
-    assert(lastProc);
-    return lastProc->getResultData(delegate);
-}
-
-MemTransfer *MultiPassProc::getMemTransferObj() const {
-    assert(lastProc);
-    return lastProc->getMemTransferObj();
-}
-
-MemTransfer *MultiPassProc::getInputMemTransferObj() const {
-    assert(firstProc);
-    return firstProc->getMemTransferObj();
-}
-
-GLuint MultiPassProc::getInputTexId() const {
-    assert(firstProc);
-    return firstProc->getInputTexId();
-}
-
-GLuint MultiPassProc::getOutputTexId() const {
-    assert(lastProc);
-    return lastProc->getOutputTexId();
-}
-
-#pragma mark protected methods
-
-void MultiPassProc::multiPassInit() {
-    firstProc = procPasses.front();
-    lastProc = procPasses.back();
 }

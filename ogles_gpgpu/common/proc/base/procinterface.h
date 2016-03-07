@@ -17,7 +17,7 @@
 
 #include "../../gl/memtransfer.h"
 
-namespace ogles_gpgpu {
+BEGIN_OGLES_GPGPU
 
 /**
  * GPGPU processor interface
@@ -72,7 +72,7 @@ public:
      * Render a result, i.e. run the shader on the input texture.
      * Abstract method.
      */
-    virtual void render() = 0;
+    virtual void render(int position=0) = 0;
 
     /**
      * Return the processors name.
@@ -97,13 +97,18 @@ public:
     /**
      * Use texture id <id> as input texture at texture <useTexUnit> with texture target <target>.
      */
-    virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D) = 0;
+    virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D, int position=0) = 0;
 
     /**
      * Return used texture unit.
      */
     virtual GLuint getTextureUnit() const = 0;
 
+    /**
+     * Return the texture target (i.e., GL_TEXTURE_2D, ...)
+     */
+    virtual GLenum getTextureTarget() const { return GL_TEXTURE_2D; }
+    
     /**
      * Set output size by scaling down or up the input frame size by factor <scaleFactor>.
      */
@@ -186,17 +191,17 @@ public:
     /**
      * Add a subscriber
      */
-    virtual void add(ProcInterface *filter) ;
+    virtual void add(ProcInterface *filter, int position=0);
     
     /**
-     * Prepare teh filter chain
+     * Prepare the filter chain
      */
-    virtual void prepare(int inW, int inH, GLenum inFmt, int index = 0);
+    virtual void prepare(int inW, int inH, GLenum inFmt, int index = 0, int position = 0);
     
     /**
      * Process a filter chain:
      */
-    virtual void process(GLuint id, GLuint useTexUnit, GLenum target, int index = 0, Logger logger=0);
+    virtual void process(GLuint id, GLuint useTexUnit, GLenum target, int index = 0, int position = 0, Logger logger=0);
     
     /**
      * Allow this proc to use mipmaps
@@ -205,13 +210,18 @@ public:
     
 protected:
     
+    /**
+     * Process filter chain filter[i] : i >= 1
+     */
+    virtual void process(int position, Logger logger=0);
+    
     bool useMipmaps = false; // TODO:
     
     std::string title;
     
-    std::vector<ProcInterface*> subscribers;
+    std::vector<std::pair<ProcInterface*, int>> subscribers;
 };
 
-}
+END_OGLES_GPGPU
 
 #endif

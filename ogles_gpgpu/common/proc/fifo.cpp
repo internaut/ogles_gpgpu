@@ -8,6 +8,7 @@
 //
 
 #include "../common_includes.h"
+#include "base/filterprocbase.h"
 #include "fifo.h"
 
 using namespace std;
@@ -42,20 +43,8 @@ const char * NoopProc::fshaderNoopSrc = OG_TO_STR
 
 // #################### FIFO ####################
 
-GLuint FifoProc::getTexId(int index) const {
-    assert(index >= 0 && index < procPasses.size());
-    return procPasses[index]->getOutputTexId();
-}
-
-int FifoProc::getIn() const {
-    return m_inputIndex;
-}
-
-int FifoProc::getOut() const {
-    return m_outputIndex;
-}
-
 FifoProc::FifoProc(int size) {
+    m_inputIndex = m_outputIndex = 0;
     for(int i = 0; i < size; i++) {
         procPasses.push_back( new NoopProc );
     }
@@ -66,16 +55,26 @@ FifoProc::~FifoProc() {
     for(auto &it : procPasses) {
         delete it;
     }
-    
     procPasses.clear();
 }
+
+int FifoProc::getIn() const {
+    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
+    return m_inputIndex;
+}
+
+int FifoProc::getOut() const {
+    assert(m_outputIndex >= 0 && m_outputIndex < procPasses.size());
+    return m_outputIndex;
+}
+
+ProcInterface* FifoProc::getInputFilter() const { return procPasses[getIn()]; }
+ProcInterface* FifoProc::getOutputFilter() const { return procPasses[getOut()]; }
 
 #pragma mark ProcInterface methods
 
 int FifoProc::init(int inW, int inH, unsigned int order, bool prepareForExternalInput) {
-    
     m_inputIndex = m_outputIndex = m_count = 0;
-    
     int num = 0;
     for(auto &it : procPasses) {
         num += it->init(inW, inH, num, prepareForExternalInput);
@@ -84,9 +83,7 @@ int FifoProc::init(int inW, int inH, unsigned int order, bool prepareForExternal
 }
 
 int FifoProc::reinit(int inW, int inH, bool prepareForExternalInput) {
-    
     m_inputIndex = m_outputIndex = m_count = 0;
-    
     int num = 0;
     for(auto &it : procPasses) {
         num += it->reinit(inW, inH, prepareForExternalInput);
@@ -98,18 +95,6 @@ void FifoProc::cleanup() {
     for(auto &it : procPasses) {
         it->cleanup();
     }
-}
-
-void FifoProc::setExternalInputDataFormat(GLenum fmt) {
-    // Render into input FBO
-    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    return procPasses[m_inputIndex]->setExternalInputDataFormat(fmt);
-}
-
-void FifoProc::setExternalInputData(const unsigned char *data) {
-    // Render into input FBO
-    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    return procPasses[m_inputIndex]->setExternalInputData(data);
 }
 
 void FifoProc::createFBOTex(bool genMipmap) {
@@ -145,10 +130,11 @@ void FifoProc::createFBOTex(bool genMipmap) {
 // negative modulo arithmetic
 static int modulo(int a, int b) { return (((a % b) + b) % b); }
 
-void FifoProc::render() {
+void FifoProc::render(int position) {
     // Render into input FBO
     assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    procPasses[m_inputIndex]->render();
+    assert(position == 0); // no multi-input filters
+    getInputFilter()->render();
     
     m_inputIndex = (m_inputIndex + 1) % size();
     m_count = std::min(m_count + 1, int(size()));
@@ -157,87 +143,23 @@ void FifoProc::render() {
     }
 }
 
-void FifoProc::printInfo() {
-    OG_LOGINF(getProcName(), "begin info for %u passes", (unsigned int)procPasses.size());
+void FifoProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target, int position) {
+    assert(position == 0); // no multi-input filters for FIFO
     for(auto &it : procPasses) {
-        it->printInfo();
+        it->useTexture(id, useTexUnit, target, position);
     }
-    OG_LOGINF(getProcName(), "end info");
 }
 
-void FifoProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target) {
-    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    return procPasses[m_inputIndex] ->useTexture(id, useTexUnit, target);
-}
-
-GLuint FifoProc::getTextureUnit() const {
-    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    return procPasses[m_inputIndex] ->getTextureUnit();
-}
-
+// All output sizes will be the same
 void FifoProc::setOutputSize(float scaleFactor) {
     for(auto &it : procPasses) {
         it->setOutputSize(scaleFactor);
     }
 }
 
+// All output sizes will be the same
 void FifoProc::setOutputSize(int outW, int outH) {
     for(auto &it : procPasses) {
         it->setOutputSize(outW, outH);
     }
-}
-
-int FifoProc::getOutFrameW() const {
-    assert(m_outputIndex >= 0 && m_outputIndex < procPasses.size());
-    return procPasses[m_outputIndex]->getOutFrameW(); // any will do
-}
-
-int FifoProc::getOutFrameH() const {
-    assert(m_outputIndex >= 0 && m_outputIndex < procPasses.size());
-    return procPasses[m_outputIndex]->getOutFrameH();
-}
-
-int FifoProc::getInFrameW() const {
-    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    return procPasses[m_inputIndex]->getInFrameW(); // any will do
-}
-
-int FifoProc::getInFrameH() const {
-    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    return procPasses[m_inputIndex]->getInFrameH(); // any will do
-}
-
-bool FifoProc::getWillDownscale() const {
-    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    return procPasses[m_inputIndex]->getWillDownscale(); // any will do
-}
-
-void FifoProc::getResultData(unsigned char *data) const {
-    assert(m_outputIndex >= 0 && m_outputIndex < procPasses.size());
-    return procPasses[m_outputIndex]->getResultData(data);
-}
-
-void FifoProc::getResultData(FrameDelegate &delegate) const {
-    assert(m_outputIndex >= 0 && m_outputIndex < procPasses.size());
-    return procPasses[m_outputIndex]->getResultData(delegate);
-}
-
-MemTransfer *FifoProc::getMemTransferObj() const {
-    assert(m_outputIndex >= 0 && m_outputIndex < procPasses.size());
-    return procPasses[m_outputIndex]->getMemTransferObj();
-}
-
-MemTransfer *FifoProc::getInputMemTransferObj() const {
-    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    return procPasses[m_inputIndex]->getMemTransferObj();
-}
-
-GLuint FifoProc::getInputTexId() const {
-    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    return procPasses[m_inputIndex]->getInputTexId();
-}
-
-GLuint FifoProc::getOutputTexId() const {
-    assert(m_outputIndex >= 0 && m_outputIndex < procPasses.size());
-    return procPasses[m_inputIndex]->getOutputTexId();
 }

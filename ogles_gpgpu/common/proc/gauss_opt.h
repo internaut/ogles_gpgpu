@@ -27,8 +27,6 @@ public:
 
         procPasses.push_back(gaussPass1);
         procPasses.push_back(gaussPass2);
-
-        multiPassInit();
     }
 
     /**

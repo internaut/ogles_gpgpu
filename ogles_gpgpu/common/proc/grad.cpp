@@ -43,20 +43,21 @@ precision highp float;
      float topRightIntensity = texture2D(inputImageTexture, topRightTextureCoordinate).r;
      float topLeftIntensity = texture2D(inputImageTexture, topLeftTextureCoordinate).r;
      float bottomRightIntensity = texture2D(inputImageTexture, bottomRightTextureCoordinate).r;
+     float centerIntenssity = texture2D(inputImageTexture, textureCoordinate).r;
      float leftIntensity = texture2D(inputImageTexture, leftTextureCoordinate).r;
      float rightIntensity = texture2D(inputImageTexture, rightTextureCoordinate).r;
      float bottomIntensity = texture2D(inputImageTexture, bottomTextureCoordinate).r;
      float topIntensity = texture2D(inputImageTexture, topTextureCoordinate).r;
-     float y = -topLeftIntensity - (2.0 * topIntensity) - topRightIntensity + bottomLeftIntensity + (2.0 * bottomIntensity) + bottomRightIntensity;
-     float x = -bottomLeftIntensity - (2.0 * leftIntensity) - topLeftIntensity + bottomRightIntensity + (2.0 * rightIntensity) + topRightIntensity;
+
+     //float y = -topLeftIntensity - (2.0 * topIntensity) - topRightIntensity + bottomLeftIntensity + (2.0 * bottomIntensity) + bottomRightIntensity;
+     //float x = -bottomLeftIntensity - (2.0 * leftIntensity) - topLeftIntensity + bottomRightIntensity + (2.0 * rightIntensity) + topRightIntensity;
+     //y = y / 8.0;
+     //x = x / 8.0;
      
-     y = y / 8.0;
-     x = x / 8.0;
+     float x = (rightIntensity - leftIntensity) / 2.0;
+     float y = (bottomIntensity - topIntensity) / 2.0;
      
-     //y = (bottomIntensity - topIntensity) / 2.0;
-     //x = (rightIntensity - leftIntensity) / 2.0;
-     
-     float mag = length(vec2(x, y));
+     float mag = length(vec2(x, y)) * strength;
      float theta = atan(y, x);
      if(theta < 0.0)
      {
@@ -66,8 +67,6 @@ precision highp float;
      float dx = (x + 1.0) / 2.0;
      float dy = (y + 1.0) / 2.0;
      
-     //gl_FragColor = vec4(mag, mag, mag, 1.0);
-     //gl_FragColor = vec4(bottomLeftIntensity,bottomLeftIntensity,bottomLeftIntensity,1.0);
      gl_FragColor = vec4(mag, clamp(theta/pi, 0.0, 1.0), clamp(dx, 0.0, 1.0), clamp(dy, 0.0, 1.0));
  }
  );
@@ -78,6 +77,10 @@ GradProc::GradProc(float strength) : strength(strength) {
 
 void GradProc::setUniforms() {
     Filter3x3Proc::setUniforms();
+    
+    glUniform1f(texelWidthUniform, (1.0f/ float(outFrameW)));
+    glUniform1f(texelHeightUniform, (1.0f/ float(outFrameH)));
+    
     glUniform1f(shParamUStrength, strength);
 }
 

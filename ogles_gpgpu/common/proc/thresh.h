@@ -67,7 +67,7 @@ public:
     /**
      * Render the output.
      */
-    virtual void render();
+    virtual void render(int position=0);
 
 private:
     float threshVal;            // thresholding value [0.0 .. 1.0]

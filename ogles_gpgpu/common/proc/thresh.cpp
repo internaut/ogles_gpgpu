@@ -55,7 +55,7 @@ int ThreshProc::init(int inW, int inH, unsigned int order, bool prepareForExtern
     return 1;
 }
 
-void ThreshProc::render() {
+void ThreshProc::render(int position) {
     OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
 
     filterRenderPrepare();
