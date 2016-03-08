@@ -48,11 +48,12 @@ class FlowPipeline /* : public FilterProcBase */
 {
 public:
     
-    FlowPipeline(float tau = 0.004f, float strength = 1.0f);
+    FlowPipeline(float tau = 0.004f, float strength = 1.0f, bool doGray=false);
     virtual ~FlowPipeline();
-    
-    virtual FilterProcBase * first();
-    virtual FilterProcBase * last();
+
+    virtual float getStrength() const;
+    virtual ProcInterface * first();
+    virtual ProcInterface * last();
     
     /**
      * Return the processors name.
@@ -61,11 +62,9 @@ public:
     
 protected:
     
-    struct Impl;
-    
+    struct Impl;    
     std::unique_ptr<Impl> m_pImpl;
 };
-
 
 
 END_OGLES_GPGPU
