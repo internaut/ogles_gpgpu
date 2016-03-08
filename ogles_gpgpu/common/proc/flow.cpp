@@ -86,7 +86,6 @@ const char *FlowProc::fshaderFlowSrc = OG_TO_STR
  uniform float tau; // noise threshold (0.004)
  
  const int wSize = 5;
-
  
  void main()
  {
@@ -96,14 +95,12 @@ const char *FlowProc::fshaderFlowSrc = OG_TO_STR
      float B = 0.0;
      float C = 0.0;
      
-     vec4 center = texture2D(inputImageTexture, textureCoordinate) * 2.0 - 1.0;
-     
      // Build the 2x2 matrix and the Intensity vector:
-     for(int i=-wSize; i<=wSize; i++)
+     for(int y=-wSize; y<=wSize; y++)
      {
-         for(int j=-wSize; j<=wSize; j++)
+         for(int x=-wSize; x<=wSize; x++)
          {
-             vec2 delta = vec2( float(i)*texelHeight, float(j)*texelWidth );
+             vec2 delta = vec2( float(x)*texelWidth, float(y)*texelHeight );
              vec2 pos = textureCoordinate + delta;
              vec4 pix = texture2D(inputImageTexture, pos) * 2.0 - 1.0;
              float w = cos(dot(delta,delta)*40.0);
@@ -132,11 +129,11 @@ const char *FlowProc::fshaderFlowSrc = OG_TO_STR
          D = 0.0;
      }
      
+     vec4 center = texture2D(inputImageTexture, textureCoordinate);
      vec2 uv = vec2(X*B - C*Y, A*Y - X*C) * D;
      vec4 flow = vec4(strength * ((-uv + 1.0) / 2.0), (center.xy + 1.0) / 2.0);
      gl_FragColor = flow;
  });
-
 
 const char *FlowProc::fshaderFlowSrcOpt = OG_TO_STR
 (
@@ -154,7 +151,6 @@ const char *FlowProc::fshaderFlowSrcOpt = OG_TO_STR
  
  void main()
  {
-     
      vec4 pix = texture2D(inputImageTexture, textureCoordinate) * 2.0 - 1.0;
      float A = pix.x * pix.x;
      float B = pix.y * pix.y;
@@ -180,6 +176,7 @@ END_OGLES_GPGPU
 #include "gauss_opt.h"
 #include "fifo.h"
 #include "ixyt.h"
+#include "transform.h"
 
 // #################
 
@@ -187,15 +184,27 @@ BEGIN_OGLES_GPGPU
 
 struct FlowPipeline::Impl
 {
-    Impl(float tau, float strength) : gaussProc(1.0f), flowProc(tau, strength)
+    Impl(float tau, float strength, bool doGray)
+    : doGray(doGray)
+    , gaussProc(1.0f)
+    , flowProc(tau, strength)
     {
-        grayProc.add(&diffProc, 0);
-        grayProc.add(&fifoProc);
-        fifoProc.add(&diffProc, 1);
-        diffProc.add(&gaussProc);
-        gaussProc.add(&flowProc);
+        if(!doGray)
+        {
+            grayProc.setGrayscaleConvType(GRAYSCALE_INPUT_CONVERSION_NONE);
+        }
+
+        { // flow processing
+            grayProc.add(&diffProc, 0);
+            grayProc.add(&fifoProc);
+            fifoProc.add(&diffProc, 1);
+            diffProc.add(&gaussProc);
+            gaussProc.add(&flowProc);
+        }
      }
 
+    bool doGray = true;
+    
     GrayscaleProc grayProc;
     FifoProc fifoProc;
     IxytProc diffProc;
@@ -203,9 +212,9 @@ struct FlowPipeline::Impl
     FlowProc flowProc;
 };
 
-FlowPipeline::FlowPipeline(float tau, float strength)
+FlowPipeline::FlowPipeline(float tau, float strength, bool doGray)
 {
-    m_pImpl = std::unique_ptr<Impl>(new Impl(tau, strength));
+    m_pImpl = std::unique_ptr<Impl>(new Impl(tau, strength, doGray));
 };
 
 FlowPipeline::~FlowPipeline()
@@ -213,16 +222,20 @@ FlowPipeline::~FlowPipeline()
     // Don't delete weak refs:
 }
 
-FilterProcBase * FlowPipeline::first()
+ProcInterface * FlowPipeline::first()
 {
     return &m_pImpl->grayProc;
 }
 
-FilterProcBase * FlowPipeline::last()
+ProcInterface * FlowPipeline::last()
 {
-    return &m_pImpl->flowProc;
+    return &m_pImpl->flowProc; // fifoProc;
 }
 
+float FlowPipeline::getStrength() const
+{
+    return m_pImpl->flowProc.getStrength();
+}
+
+
 END_OGLES_GPGPU
-
-
