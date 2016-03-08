@@ -38,18 +38,40 @@ void main()
 }
 );
 
+const char *GrayscaleProc::fshaderNoopSrc = OG_TO_STR(
+ 
+#if defined(OGLES_GPGPU_OPENGLES)
+ precision mediump float;
+#endif
+ 
+ varying vec2 vTexCoord;
+ uniform sampler2D uInputTex;
+ void main()
+ {
+     gl_FragColor = vec4(texture2D(uInputTex, vTexCoord).rgba);
+ }
+);
+
 GrayscaleProc::GrayscaleProc() {
     // set defaults
     inputConvType = GRAYSCALE_INPUT_CONVERSION_NONE;
     setGrayscaleConvType(GRAYSCALE_INPUT_CONVERSION_RGB);
 }
 
+void GrayscaleProc::setIdentity() {
+    
+}
+
 void GrayscaleProc::setUniforms() {
-    glUniform3fv(shParamUInputConvVec, 1, grayscaleConvVec);        // set additional uniforms
+    if(inputConvType != GRAYSCALE_INPUT_CONVERSION_NONE) {
+        glUniform3fv(shParamUInputConvVec, 1, grayscaleConvVec);  // set additional uniforms
+    }
 }
 
 void GrayscaleProc::getUniforms() {
-    shParamUInputConvVec = shader->getParam(UNIF, "uInputConvVec");
+    if(inputConvType != GRAYSCALE_INPUT_CONVERSION_NONE) {
+        shParamUInputConvVec = shader->getParam(UNIF, "uInputConvVec");
+    }
 }
 
 void GrayscaleProc::setGrayscaleConvVec(const GLfloat v[3]) {

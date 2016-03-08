@@ -48,6 +48,11 @@ public:
     }
 
     /**
+     * Make this a noop/pass-through shader.
+     */
+    void setIdentity();
+    
+    /**
      * Set weighted channel grayscale conversion vector directly to <v>.
      */
     void setGrayscaleConvVec(const GLfloat v[3]);
@@ -76,7 +81,9 @@ private:
     /**
      * Get the fragment shader source.
      */
-    virtual const char *getFragmentShaderSource() { return fshaderGrayscaleSrc; }
+    virtual const char *getFragmentShaderSource() {
+        return inputConvType == GRAYSCALE_INPUT_CONVERSION_NONE ? fshaderNoopSrc : fshaderGrayscaleSrc;
+    }
     
     /**
      * Set additional uniforms.
@@ -88,7 +95,7 @@ private:
      */
     virtual void getUniforms();
     
-    
+    static const char *fshaderNoopSrc;              // Noop pass through shader
     static const char *fshaderGrayscaleSrc;         // fragment shader source
     static const GLfloat grayscaleConvVecRGB[3];    // weighted channel grayscale conversion for RGB input (default)
     static const GLfloat grayscaleConvVecBGR[3];    // weighted channel grayscale conversion for BGR input
