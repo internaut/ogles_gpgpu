@@ -132,15 +132,14 @@ static int modulo(int a, int b) { return (((a % b) + b) % b); }
 
 void FifoProc::render(int position) {
     // Render into input FBO
-    assert(m_inputIndex >= 0 && m_inputIndex < procPasses.size());
-    assert(position == 0); // no multi-input filters
+    if(m_count == int(size())) {
+        m_outputIndex = modulo(m_inputIndex + 1, size());
+    }
+
     getInputFilter()->render();
     
-    m_inputIndex = (m_inputIndex + 1) % size();
     m_count = std::min(m_count + 1, int(size()));
-    if(m_count == procPasses.size()) {
-        m_outputIndex = modulo(m_inputIndex - size() + 1, size());
-    }
+    m_inputIndex = modulo(m_inputIndex + 1, size());
 }
 
 void FifoProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target, int position) {
