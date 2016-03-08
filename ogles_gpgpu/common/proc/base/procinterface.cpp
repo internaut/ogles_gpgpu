@@ -34,6 +34,8 @@ void ProcInterface::process(int position, Logger logger) {
     if(logger) logger(std::string(getProcName()) + " end");
     
     for(auto &subscriber : subscribers) {
+        // Update: FIFO and other filters may change the output texture id on each step:
+        subscriber.first->useTexture(getOutputTexId(), getTextureUnit(), GL_TEXTURE_2D, subscriber.second);
         subscriber.first->process(position, logger);
     }
 }
@@ -69,7 +71,7 @@ void ProcInterface::prepare(int inW, int inH, GLenum inFmt, int index, int posit
         
         for(auto &subscriber : subscribers) {
             subscriber.first->prepare(getOutFrameW(), getOutFrameH(), inFmt, index+1, subscriber.second);
-            subscriber.first->useTexture(getOutputTexId(), getTextureUnit(), getTextureTarget(), subscriber.second);
+            subscriber.first->useTexture(getOutputTexId(), getTextureUnit(), GL_TEXTURE_2D, subscriber.second);
         }
     }
 }
