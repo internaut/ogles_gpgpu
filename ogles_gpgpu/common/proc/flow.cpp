@@ -1,6 +1,14 @@
 #include "../common_includes.h"
 #include "flow.h"
 
+// For the full pipeline
+#include "grayscale.h"
+#include "gauss_opt.h"
+#include "fifo.h"
+#include "ixyt.h"
+#include "diff.h"
+#include "tensor.h"
+
 BEGIN_OGLES_GPGPU
 
 FlowProc::FlowProc(float tau, float strength) : tau(tau), strength(strength) {}
@@ -26,8 +34,10 @@ void FlowProc::getUniforms()
 void FlowProc::setUniforms()
 {
     FilterProcBase::setUniforms();
-    glUniform1f(texelWidthUniform, (1.0f/ float(outFrameW)));
-    glUniform1f(texelHeightUniform, (1.0f/ float(outFrameH)));
+
+    const float offset = 1.0f;
+    glUniform1f(texelWidthUniform, (offset/float(outFrameW)));
+    glUniform1f(texelHeightUniform, (offset/float(outFrameH)));
     glUniform1f(shParamUStrength, strength);
     glUniform1f(shParamUTau, tau);
 }
@@ -71,6 +81,14 @@ void FlowProc::setUniforms()
 
 // TODO: slow, avoid dependent texture lookups!!!!
 
+// -------------
+// | |*| + |*| |
+// -------------
+// | |*| + |*| |
+// -------------
+// | |*| + |*| |
+// -------------
+
 const char *FlowProc::fshaderFlowSrc = OG_TO_STR
 (
 #if defined(OGLES_GPGPU_OPENGLES)
@@ -85,7 +103,7 @@ const char *FlowProc::fshaderFlowSrc = OG_TO_STR
  uniform float strength;
  uniform float tau; // noise threshold (0.004)
  
- const int wSize = 5;
+ const int wSize = 6;
  
  void main()
  {
@@ -103,7 +121,7 @@ const char *FlowProc::fshaderFlowSrc = OG_TO_STR
              vec2 delta = vec2( float(x)*texelWidth, float(y)*texelHeight );
              vec2 pos = textureCoordinate + delta;
              vec4 pix = texture2D(inputImageTexture, pos) * 2.0 - 1.0;
-             float w = cos(dot(delta,delta)*40.0);
+             float w = 1.0; // cos(dot(delta,delta)*40.0);
              A 	= A + w * pix.x * pix.x;
              B 	= B + w * pix.y * pix.y;
              C 	= C + w * pix.x * pix.y;
@@ -130,57 +148,12 @@ const char *FlowProc::fshaderFlowSrc = OG_TO_STR
      }
      
      vec4 center = texture2D(inputImageTexture, textureCoordinate);
-     vec2 uv = vec2(X*B - C*Y, A*Y - X*C) * D;
-     vec4 flow = vec4(strength * ((-uv + 1.0) / 2.0), (center.xy + 1.0) / 2.0);
+     vec2 uv = strength * (vec2(X*B - C*Y, A*Y - X*C) * D);
+     vec4 flow = vec4(((-uv + 1.0) / 2.0), (center.xy + 1.0) / 2.0);
      gl_FragColor = flow;
  });
 
-const char *FlowProc::fshaderFlowSrcOpt = OG_TO_STR
-(
-#if defined(OGLES_GPGPU_OPENGLES)
- precision highp float;
-#endif
- 
- varying vec2 textureCoordinate;
- uniform sampler2D inputImageTexture;
- 
- uniform float texelWidth;
- uniform float texelHeight;
- uniform float strength;
- uniform float tau; // noise threshold (0.004)
- 
- void main()
- {
-     vec4 pix = texture2D(inputImageTexture, textureCoordinate) * 2.0 - 1.0;
-     float A = pix.x * pix.x;
-     float B = pix.y * pix.y;
-     float C = pix.x * pix.y;
-     float X = pix.x * pix.z;
-     float Y = pix.y * pix.z;
-     
-     float D = 1.0/(A*B-C*C);
-     
-     if(D > 100.0)
-     {
-         D = 0.0;
-     }
-     
-     vec2 uv = vec2( X*B - C*Y, A*Y - X*C ) * D;
-     vec4 flow = vec4( strength * ((-uv + 1.0) / 2.0), (pix.xy + 1.0) / 2.0 );
-     gl_FragColor = flow;
- });
-
-END_OGLES_GPGPU
-
-#include "grayscale.h"
-#include "gauss_opt.h"
-#include "fifo.h"
-#include "ixyt.h"
-#include "transform.h"
-
-// #################
-
-BEGIN_OGLES_GPGPU
+// ============== convenience =========================
 
 struct FlowPipeline::Impl
 {
@@ -193,7 +166,7 @@ struct FlowPipeline::Impl
         {
             grayProc.setGrayscaleConvType(GRAYSCALE_INPUT_CONVERSION_NONE);
         }
-
+        
         { // flow processing
             grayProc.add(&diffProc, 0);
             grayProc.add(&fifoProc);
@@ -201,8 +174,8 @@ struct FlowPipeline::Impl
             diffProc.add(&gaussProc);
             gaussProc.add(&flowProc);
         }
-     }
-
+    }
+    
     bool doGray = true;
     
     GrayscaleProc grayProc;
@@ -216,26 +189,208 @@ FlowPipeline::FlowPipeline(float tau, float strength, bool doGray)
 {
     m_pImpl = std::unique_ptr<Impl>(new Impl(tau, strength, doGray));
 };
+FlowPipeline::~FlowPipeline() { }
+ProcInterface * FlowPipeline::first() { return &m_pImpl->grayProc; }
+ProcInterface * FlowPipeline::last() { return &m_pImpl->flowProc; }
+float FlowPipeline::getStrength() const { return m_pImpl->flowProc.getStrength(); }
 
-FlowPipeline::~FlowPipeline()
+// ====================================================
+// ======= Test two input smoothed tensor output ======
+// ====================================================
+
+FlowImplProc::FlowImplProc(bool isX, float strength) : isX(isX), strength(strength) {}
+
+void FlowImplProc::filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target)
 {
-    // Don't delete weak refs:
+    ProcBase::createShader(vShaderSrc, fShaderSrc, target);
+    shParamAPos = shader->getParam(ATTR, "position");
+    shParamATexCoord = shader->getParam(ATTR, "inputTextureCoordinate");
 }
 
-ProcInterface * FlowPipeline::first()
+void FlowImplProc::getUniforms()
 {
-    return &m_pImpl->grayProc;
+    FilterProcBase::getUniforms();
+    shParamUInputTex = shader->getParam(UNIF, "inputImageTexture");
+    shParamUStrength = shader->getParam(UNIF, "strength");
 }
 
-ProcInterface * FlowPipeline::last()
+void FlowImplProc::setUniforms()
 {
-    return &m_pImpl->flowProc; // fifoProc;
+    FilterProcBase::setUniforms();
+    glUniform1f(shParamUStrength, strength);
 }
 
-float FlowPipeline::getStrength() const
+const char * FlowImplProc::fshaderFlowXSrc = OG_TO_STR
+(
+#if defined(OGLES_GPGPU_OPENGLES)
+ precision highp float;
+#endif
+ varying vec2 textureCoordinate;
+ uniform sampler2D inputImageTexture;
+ uniform float strength;
+ void main()
+ {
+     vec4 val = texture2D(inputImageTexture, textureCoordinate);
+     vec4 pix = (val * 2.0) - 1.0;
+     vec3 t = vec3(pix.x*pix.x, pix.y*pix.y, (pix.x*pix.y+1.0)/2.0);
+     vec4 x = vec4(t, (pix.x*pix.z+1.0)/2.0);
+     gl_FragColor = x;
+ });
+
+const char *FlowImplProc::fshaderFlowYSrc = OG_TO_STR
+(
+#if defined(OGLES_GPGPU_OPENGLES)
+ precision highp float;
+#endif
+ 
+ varying vec2 textureCoordinate;
+ uniform sampler2D inputImageTexture;
+ uniform float strength;
+ 
+ void main()
+ {
+     vec4 val = texture2D(inputImageTexture, textureCoordinate);
+     vec4 pix = (val * 2.0) - 1.0;
+     vec3 t = vec3(pix.x*pix.x, pix.y*pix.y, (pix.x*pix.y+1.0)/2.0);
+     vec4 y = vec4(t, (pix.y*pix.z+1.0)/2.0);
+     gl_FragColor = y;
+ });
+
+// =============================================
+// Input:
+// A) smoothed([Ix^2 Ix*Iy; Ix*Iy Iy^2])
+// B) smoothed([Ix*Iz Iy*Iz])
+// ==============================================
+
+Flow2Proc::Flow2Proc(float tau, float strength) : tau(tau), strength(strength) {}
+
+void Flow2Proc::filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target)
 {
-    return m_pImpl->flowProc.getStrength();
+    ProcBase::createShader(vShaderSrc, fShaderSrc, target);
+    shParamAPos = shader->getParam(ATTR, "position");
+    shParamATexCoord = shader->getParam(ATTR, "inputTextureCoordinate");
 }
+
+void Flow2Proc::getUniforms()
+{
+    TwoInputProc::getUniforms();
+    shParamUStrength = shader->getParam(UNIF, "strength");
+    shParamUTau = shader->getParam(UNIF, "tau");
+}
+
+void Flow2Proc::setUniforms()
+{
+    TwoInputProc::setUniforms();
+    glUniform1f(shParamUStrength, strength);
+    glUniform1f(shParamUTau, tau);
+}
+
+const char *Flow2Proc::fshaderFlowSrc = OG_TO_STR
+(
+#if defined(OGLES_GPGPU_OPENGLES)
+ precision highp float;
+#endif
+ 
+ varying vec2 textureCoordinate;
+ uniform sampler2D inputImageTexture;
+ uniform sampler2D inputImageTexture2;
+
+ uniform float strength;
+ uniform float tau; // noise threshold (0.004)
+ 
+ void main()
+ {
+     vec4 pix1 = texture2D(inputImageTexture, textureCoordinate);
+     vec4 pix2 = texture2D(inputImageTexture2, textureCoordinate);
+     
+     float A = pix1.x;             // Ix^2
+     float B = pix1.y;             // Iy^2
+     float C = pix1.z * 2.0 - 1.0; // Ix*Iy
+     float X = pix1.w * 2.0 - 1.0; // Ix * It
+     float Y = pix2.w * 2.0 - 1.0; // Iy * It
+     
+     // T1 = (A+B)/2.0
+     // T2 = sqrt(4*C^2 + (A-B)^2)/2.0
+     // lambda_1 = T1 + T2
+     // lambda_2 = T1 - T2
+     float TMP = (A-B);
+     float T1 = (A+B)/2.0;
+     float T2 = sqrt(4.0 * C*C + TMP*TMP)/2.0;
+     float L1 = T1 + T2;
+     float L2 = T1 - T2;
+     
+     float D = 1.0/(A*B-C*C);
+     
+     if(L1 <= tau || L2 <= tau)
+     {
+         D = 0.0;
+     }
+     
+     vec2 uv = strength * (vec2(X*B - C*Y, A*Y - X*C) * D);
+     vec4 flow = vec4(((-uv + 1.0) / 2.0), L1, L2); // TODO: L1,L2 need scaling
+     gl_FragColor = flow;
+ });
+
+
+// =========================================
+
+struct Flow2Pipeline::Impl
+{
+    Impl(float tau, float strength, bool doGray)
+    : diffProc(8.0)
+    , flowXProc(true, 1.0f)
+    , flowXSmoothProc(5.0)
+    , flowYProc(false, 1.0f)
+    , flowYSmoothProc(5.0)
+    , flowProc(tau, strength)
+    {
+        if(!doGray)
+        {
+            grayProc.setGrayscaleConvType(GRAYSCALE_INPUT_CONVERSION_NONE);
+        }
+        
+        { // flow processing
+            grayProc.add(&fifoProc);
+            fifoProc.add(&diffProc, 1);
+            
+            grayProc.add(&diffProc, 0);
+
+            diffProc.add(&flowXProc);
+            flowXProc.add(&flowXSmoothProc);
+            flowXSmoothProc.add(&flowProc, 0);
+            
+            diffProc.add(&flowYProc);
+            flowYProc.add(&flowYSmoothProc);
+            flowYSmoothProc.add(&flowProc, 1);
+        }
+    }
+    
+    GrayscaleProc grayProc;
+    FIFOPRoc fifoProc;
+    IxytProc diffProc;
+    
+    FlowImplProc flowXProc;
+    GaussOptProc flowXSmoothProc;
+    
+    FlowImplProc flowYProc;
+    GaussOptProc flowYSmoothProc;
+    
+    Flow2Proc flowProc;
+};
+
+Flow2Pipeline::Flow2Pipeline(float tau, float strength, bool doGray)
+{
+    m_pImpl = std::unique_ptr<Impl>(new Impl(tau, strength, doGray));
+};
+
+Flow2Pipeline::~Flow2Pipeline() {}
+ProcInterface * Flow2Pipeline::first() { return &m_pImpl->grayProc; }
+ProcInterface * Flow2Pipeline::last() { return &m_pImpl->flowProc; } // fifoProc;
+float Flow2Pipeline::getStrength() const { return m_pImpl->flowProc.getStrength(); }
 
 
 END_OGLES_GPGPU
+
+
+
+
