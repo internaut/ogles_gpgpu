@@ -8,6 +8,7 @@ void IxytProc::getUniforms()
     TwoInputProc::getUniforms();
     texelWidthUniform = shader->getParam(UNIF, "texelWidth");
     texelHeightUniform = shader->getParam(UNIF, "texelHeight");
+    shParamUStrength = shader->getParam(UNIF, "strength");
 }
 
 void IxytProc::setUniforms()
@@ -15,6 +16,7 @@ void IxytProc::setUniforms()
     TwoInputProc::setUniforms();
     glUniform1f(texelWidthUniform, (1.0f/ float(outFrameW)));
     glUniform1f(texelHeightUniform, (1.0f/ float(outFrameH)));
+    glUniform1f(shParamUStrength, strength);
 }
 
 const char *IxytProc::fshaderIxytSrc = OG_TO_STR
@@ -37,6 +39,8 @@ const char *IxytProc::fshaderIxytSrc = OG_TO_STR
  
  uniform sampler2D inputImageTexture;
  uniform sampler2D inputImageTexture2;
+ 
+ uniform float strength;
 
  void main()
  {
@@ -54,15 +58,12 @@ const char *IxytProc::fshaderIxytSrc = OG_TO_STR
      float x = -bottomLeftIntensity - (2.0 * leftIntensity) - topLeftIntensity + bottomRightIntensity + (2.0 * rightIntensity) + topRightIntensity;
      y = y / 8.0;
      x = x / 8.0;
-
+     
      float centerIntensity2 = texture2D(inputImageTexture2, textureCoordinate).r;
      float t = (centerIntensity-centerIntensity2) / 2.0; // TODO: smooth dt
     
-     //vec4 tmp = vec4(vec3((t+1.0)/2.0), 1.0);
-     //gl_FragColor = tmp;
+     vec3 d = vec3(x, y, t) * strength;
      
-     //gl_FragColor = vec4((vec3(x, y, t) + 1.0)/2.0, centerIntensity);
-     
-    gl_FragColor = vec4((x+1.0)/2.0, (y+1.0)/2.0, (t+1.0)/2.0, centerIntensity);
+    gl_FragColor = vec4((d+1.0)/2.0, centerIntensity);
  }
  );

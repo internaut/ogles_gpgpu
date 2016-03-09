@@ -16,14 +16,18 @@ class IxytProc : public TwoInputProc
 {
 public:
     
-    IxytProc() {}
+    IxytProc(float strength = 1.0f) : strength(strength) {}
     virtual const char *getProcName() { return "IxytProc"; }
     virtual void getUniforms();
     virtual void setUniforms();
+    virtual void setStrength(float value) { strength = value; }
 private:
     
     GLint texelWidthUniform;
     GLint texelHeightUniform;
+    
+    GLint shParamUStrength;
+    float strength = 1.f;
     
     virtual const char *getVertexShaderSource() { return vshaderFilter3x3Src; }
     virtual const char *getFragmentShaderSource() { return fshaderIxytSrc; }
