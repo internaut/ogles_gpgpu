@@ -4,11 +4,17 @@ using namespace ogles_gpgpu;
 
 // ########## Filter chain
 
+void ProcInterface::setActive(bool state) {
+    active = state;
+}
+
 void ProcInterface::add(ProcInterface *filter, int position) {
     subscribers.emplace_back(filter, position);
 }
     
 void ProcInterface::process(GLuint id, GLuint useTexUnit, GLenum target, int index, int position, Logger logger) {
+    
+    if(!active) return;
     
     if(logger) logger(std::string(getProcName()) + " begin");
     if(index == 0)

@@ -208,6 +208,12 @@ public:
      */
     virtual void setUseMipmaps(bool flag) { useMipmaps = flag; }
     
+    /**
+     * Turn this filter on/off:
+     */
+    
+    virtual void setActive(bool active);
+    
 protected:
     
     /**
@@ -218,6 +224,8 @@ protected:
     bool useMipmaps = false; // TODO:
     
     std::string title;
+    
+    bool active = true;
     
     std::vector<std::pair<ProcInterface*, int>> subscribers;
 };
