@@ -330,21 +330,23 @@ const char *Flow2Proc::fshaderFlowSrc = OG_TO_STR
      }
      
      vec2 uv = strength * (vec2(X*B - C*Y, A*Y - X*C) * D);
-     vec4 flow = vec4(((-uv + 1.0) / 2.0), L1, L2); // TODO: L1,L2 need scaling
+     vec4 flow = vec4(((-uv + 1.0) / 2.0), 0.0, 1.0); // TODO: L1,L2 need scaling
      gl_FragColor = flow;
  });
 
 
 // =========================================
 
+#define USE_MEDIAN 1
+
 struct Flow2Pipeline::Impl
 {
     Impl(float tau, float strength, bool doGray)
-    : diffProc(8.0)
-    , flowXProc(true, 1.0f)
-    , flowXSmoothProc(5.0)
-    , flowYProc(false, 1.0f)
-    , flowYSmoothProc(5.0)
+    : diffProc(40.0)
+    , flowXProc(true, 1.f)
+    , flowXSmoothProc(4.0)
+    , flowYProc(false, 1.f)
+    , flowYSmoothProc(4.0)
     , flowProc(tau, strength)
     {
         if(!doGray)
