@@ -14,7 +14,8 @@
 using namespace std;
 using namespace ogles_gpgpu;
 
-Filter3x3Proc::Filter3x3Proc() {
+Filter3x3Proc::Filter3x3Proc()
+{
 
 }
 
@@ -32,11 +33,13 @@ void Filter3x3Proc::filterShaderSetup(const char *vShaderSrc, const char *fShade
     Tools::checkGLErr(getProcName(), "filterShaderSetup");
 }
 
-void Filter3x3Proc::getUniforms() {
+void Filter3x3Proc::getUniforms()
+{
     
 }
 
-void Filter3x3Proc::setUniforms() {
+void Filter3x3Proc::setUniforms()
+{
     // Set texel width/height uniforms:
     glUniform1f(texelWidthUniform, (1.0f/ float(outFrameW)));
     glUniform1f(texelHeightUniform, (1.0f/ float(outFrameH)));
