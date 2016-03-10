@@ -59,11 +59,15 @@ const char *IxytProc::fshaderIxytSrc = OG_TO_STR
      y = y / 8.0;
      x = x / 8.0;
      
+     //float x = (rightIntensity - leftIntensity) / 2.0;
+     //float y = (bottomIntensity - topIntensity) / 2.0;
+     
      float centerIntensity2 = texture2D(inputImageTexture2, textureCoordinate).r;
      float t = (centerIntensity-centerIntensity2) / 2.0; // TODO: smooth dt
     
      vec3 d = vec3(x, y, t) * strength;
-     
-    gl_FragColor = vec4((d+1.0)/2.0, centerIntensity);
+     vec3 d2 = (d + 1.0) / 2.0;
+
+     gl_FragColor = vec4(d2, centerIntensity);
  }
  );
