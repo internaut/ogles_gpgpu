@@ -79,10 +79,6 @@ protected:
 //                    +=> [Ix^2; Ix*Iy; Iy^2; Iy*It] => SMOOTH ===+
 //##########################################################################
 
-// Input:
-// A) smoothed([Ix^2 Ix*Iy; Ix*Iy Iy^2])
-// B) smoothed([Ix*Iz Iy*Iz])
-
 class FlowImplProc : public FilterProcBase
 {
 public:
@@ -151,6 +147,9 @@ protected:
     struct Impl;
     std::unique_ptr<Impl> m_pImpl;
 };
+
+typedef Flow2Pipeline FlowOptPipeline;
+//typedef FlowPipeline FlowOptPipeline;
 
 END_OGLES_GPGPU
 

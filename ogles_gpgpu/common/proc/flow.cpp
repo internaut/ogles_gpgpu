@@ -8,6 +8,8 @@
 #include "ixyt.h"
 #include "diff.h"
 #include "tensor.h"
+#include "median.h"
+#include "box_opt.h"
 
 BEGIN_OGLES_GPGPU
 
@@ -256,11 +258,12 @@ const char *FlowImplProc::fshaderFlowYSrc = OG_TO_STR
      gl_FragColor = y;
  });
 
-// =============================================
-// Input:
-// A) smoothed([Ix^2 Ix*Iy; Ix*Iy Iy^2])
-// B) smoothed([Ix*Iz Iy*Iz])
-// ==============================================
+
+//##########################################################################
+//                   +=> [Ix^2; Ix*Iy; Iy^2; Ix*It] => SMOOTH ===+
+//  [Ix; Iy; It; .]  |                                           | => FLOW
+//                   +=> [Ix^2; Ix*Iy; Iy^2; Iy*It] => SMOOTH ===+
+//##########################################################################
 
 Flow2Proc::Flow2Proc(float tau, float strength) : tau(tau), strength(strength) {}
 
@@ -362,6 +365,10 @@ struct Flow2Pipeline::Impl
             diffProc.add(&flowYProc);
             flowYProc.add(&flowYSmoothProc);
             flowYSmoothProc.add(&flowProc, 1);
+            
+#if USE_MEDIAN
+            flowProc.add(&medianProc);
+#endif
         }
     }
     
@@ -370,12 +377,18 @@ struct Flow2Pipeline::Impl
     IxytProc diffProc;
     
     FlowImplProc flowXProc;
-    GaussOptProc flowXSmoothProc;
+    //GaussOptProc flowXSmoothProc;
+    BoxOptProc flowXSmoothProc;
     
     FlowImplProc flowYProc;
-    GaussOptProc flowYSmoothProc;
+    //GaussOptProc flowYSmoothProc;
+    BoxOptProc flowYSmoothProc;
     
     Flow2Proc flowProc;
+    
+#if USE_MEDIAN
+    MedianProc medianProc;
+#endif
 };
 
 Flow2Pipeline::Flow2Pipeline(float tau, float strength, bool doGray)
@@ -385,7 +398,11 @@ Flow2Pipeline::Flow2Pipeline(float tau, float strength, bool doGray)
 
 Flow2Pipeline::~Flow2Pipeline() {}
 ProcInterface * Flow2Pipeline::first() { return &m_pImpl->grayProc; }
-ProcInterface * Flow2Pipeline::last() { return &m_pImpl->flowProc; } // fifoProc;
+#if USE_MEDIAN
+ProcInterface * Flow2Pipeline::last() { return &m_pImpl->medianProc; }
+#else
+ProcInterface * Flow2Pipeline::last() { return &m_pImpl->flowProc; }
+#endif
 float Flow2Pipeline::getStrength() const { return m_pImpl->flowProc.getStrength(); }
 
 
