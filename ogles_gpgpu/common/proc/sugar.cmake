@@ -18,6 +18,9 @@ sugar_include(multipass)
 sugar_files(
     OGLES_GPGPU_SRCS
     adapt_thresh.h
+    box_opt.h
+    diff.cpp
+    diff.h
     disp.cpp
     disp.h
     fifo.cpp
@@ -37,6 +40,8 @@ sugar_files(
     lnorm.h
     lbp.cpp
     lbp.h
+    median.cpp
+    median.h
     nms.cpp
     nms.h
     pyramid.cpp

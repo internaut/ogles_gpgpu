@@ -19,6 +19,8 @@ sugar_files(
     gauss_pass.h
     gauss_opt_pass.cpp
     gauss_opt_pass.h
+    box_opt_pass.cpp
+    box_opt_pass.h
     local_norm_pass.cpp
     local_norm_pass.h
 )
