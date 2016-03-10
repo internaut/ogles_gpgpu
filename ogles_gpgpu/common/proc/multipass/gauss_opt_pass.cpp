@@ -158,7 +158,7 @@ std::string vertexShaderForOptimizedBlur(int blurRadius, float sigma)
         const auto &optOffset = optimizedGaussianOffsets[currentOptimizedOffset];
         
         ss << "   blurCoordinates[" << x1 << "] = inputTextureCoordinate.xy + singleStepOffset * " << optOffset << ";\n";
-        ss << "   blurCoordinates[" << x2 << "] = inputTextureCoordinate.xy + singleStepOffset * " << optOffset << ";\n";
+        ss << "   blurCoordinates[" << x2 << "] = inputTextureCoordinate.xy - singleStepOffset * " << optOffset << ";\n";
     }
     ss << "}\n";
     
