@@ -30,6 +30,7 @@ BEGIN_OGLES_GPGPU
 
 struct FrameInput
 {
+    FrameInput() {}
     FrameInput(const Size2d &size, void *pixelBuffer, bool useRawPixels, GLuint inputTexture, GLenum textureFormat)
     : size(size)
     , pixelBuffer(pixelBuffer)
