@@ -91,6 +91,12 @@ protected:
      */
     void initTexCoordBuf(RenderOrientation overrideRenderOrientation = RenderOrientationNone);
 
+    /**
+     * Return texture coordinates cooresponding to a particular orientation: buffer according to member variable
+     * <renderOrientation> or override member variable by <overrideRenderOrientation>.
+     */
+    static const GLfloat * getTexCoordBuf(RenderOrientation o);
+    
     virtual void filterRenderPrepare();
     virtual void filterRenderSetCoords();
     virtual void filterRenderDraw();

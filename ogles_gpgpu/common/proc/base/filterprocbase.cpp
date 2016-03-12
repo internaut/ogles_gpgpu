@@ -153,12 +153,13 @@ void FilterProcBase::render(int position) {
     Tools::checkGLErr(getProcName(), "render cleanup");
 }
 
-void FilterProcBase::initTexCoordBuf(RenderOrientation overrideRenderOrientation) {
-    RenderOrientation o = overrideRenderOrientation == RenderOrientationNone ?
-                          renderOrientation : overrideRenderOrientation;
-
+/**
+ * Initialize texture coordinate buffer according to member variable
+ * <renderOrientation> or override member variable by <overrideRenderOrientation>.
+ */
+const GLfloat * FilterProcBase::getTexCoordBuf(RenderOrientation o) {
     const GLfloat *coordsPtr;
-
+    
     switch (o) {
         default:
         case RenderOrientationStd:
@@ -183,8 +184,13 @@ void FilterProcBase::initTexCoordBuf(RenderOrientation overrideRenderOrientation
             coordsPtr = ProcBase::quadTexCoordsDiagonalMirrored;
             break;
     }
+    
+    return coordsPtr;
+}
 
-    memcpy(texCoordBuf, coordsPtr, OGLES_GPGPU_QUAD_TEX_BUFSIZE * sizeof(GLfloat));
+void FilterProcBase::initTexCoordBuf(RenderOrientation overrideRenderOrientation) {
+    RenderOrientation o = (overrideRenderOrientation == RenderOrientationNone) ? renderOrientation : overrideRenderOrientation;
+    memcpy(texCoordBuf, getTexCoordBuf(o), OGLES_GPGPU_QUAD_TEX_BUFSIZE * sizeof(GLfloat));
 }
 
 void FilterProcBase::filterRenderPrepare() {
@@ -196,15 +202,14 @@ void FilterProcBase::filterRenderPrepare() {
 
     glClear(GL_COLOR_BUFFER_BIT);
 
-    texTarget = GL_TEXTURE_2D;
+    assert(texTarget == GL_TEXTURE_2D); // texTarget = GL_TEXTURE_2D;
+    
     // set input texture
     glActiveTexture(GL_TEXTURE0 + texUnit);
     glBindTexture(texTarget, texId);	// bind input texture
-    Tools::checkGLErr(getProcName(), "A");
 
     // set common uniforms
     glUniform1i(shParamUInputTex, texUnit);
-    Tools::checkGLErr(getProcName(), "B");
 }
 
 void FilterProcBase::filterRenderSetCoords() {
