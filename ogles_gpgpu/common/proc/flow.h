@@ -74,8 +74,8 @@ protected:
 };
 
 //##########################################################################
-// => [Ix; Iy; It; A] +=> [Ix^2; Ix*Iy; Iy^2; Ix*It] => SMOOTH ===+
-//                    |                                           | => FLOW
+//                    +=> [Ix^2; Ix*Iy; Iy^2; Ix*It] => SMOOTH ===+
+// [Ix; Iy; It; A] ==>|                                           | => FLOW
 //                    +=> [Ix^2; Ix*Iy; Iy^2; Iy*It] => SMOOTH ===+
 //##########################################################################
 
@@ -104,7 +104,7 @@ class Flow2Proc : public TwoInputProc
 {
 public:
     Flow2Proc(float tau=0.004, float strength = 1.0f);
-    virtual const char *getProcName() { return "FlowProc"; }
+    virtual const char *getProcName() { return "Flow2Proc"; }
     virtual void filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target);
     virtual void getUniforms();
     virtual void setUniforms();
@@ -136,6 +136,8 @@ public:
     virtual float getStrength() const;
     virtual ProcInterface * first();
     virtual ProcInterface * last();
+    
+    virtual ProcInterface * corners(); // corner output
     
     /**
      * Return the processors name.

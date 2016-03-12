@@ -9,6 +9,7 @@
 #include "diff.h"
 #include "tensor.h"
 #include "median.h"
+#include "nms.h"
 #include "box_opt.h"
 
 BEGIN_OGLES_GPGPU
@@ -324,29 +325,37 @@ const char *Flow2Proc::fshaderFlowSrc = OG_TO_STR
      
      float D = 1.0/(A*B-C*C);
      
-     if(L1 <= tau || L2 <= tau)
+     // Sort such that L1 < L2
+     if(L1 > L2)
+     {
+         float L = L1;
+         L1 = L2;
+         L2 = L;
+     }
+     
+     if(L1 <= tau)
      {
          D = 0.0;
      }
      
      vec2 uv = strength * (vec2(X*B - C*Y, A*Y - X*C) * D);
-     vec4 flow = vec4(((-uv + 1.0) / 2.0), 0.0, 1.0); // TODO: L1,L2 need scaling
+     vec4 flow = vec4(((-uv + 1.0) / 2.0), L1, L2); // TODO: L1,L2 need scaling
      gl_FragColor = flow;
  });
 
 
 // =========================================
 
-#define USE_MEDIAN 1
+#define USE_MEDIAN 0
 
 struct Flow2Pipeline::Impl
 {
     Impl(float tau, float strength, bool doGray)
     : diffProc(40.0)
     , flowXProc(true, 1.f)
-    , flowXSmoothProc(4.0)
+    , flowXSmoothProc(2.0)
     , flowYProc(false, 1.f)
-    , flowYSmoothProc(4.0)
+    , flowYSmoothProc(2.0)
     , flowProc(tau, strength)
     {
         if(!doGray)
@@ -367,6 +376,11 @@ struct Flow2Pipeline::Impl
             diffProc.add(&flowYProc);
             flowYProc.add(&flowYSmoothProc);
             flowYSmoothProc.add(&flowProc, 1);
+        
+            nmsProc.swizzle(2); // b channel
+            nmsProc.setThreshold(0.1f);
+            
+            flowProc.add(&nmsProc);
             
 #if USE_MEDIAN
             flowProc.add(&medianProc);
@@ -379,14 +393,16 @@ struct Flow2Pipeline::Impl
     IxytProc diffProc;
     
     FlowImplProc flowXProc;
-    //GaussOptProc flowXSmoothProc;
-    BoxOptProc flowXSmoothProc;
+    GaussOptProc flowXSmoothProc;
+    //BoxOptProc flowXSmoothProc;
     
     FlowImplProc flowYProc;
-    //GaussOptProc flowYSmoothProc;
-    BoxOptProc flowYSmoothProc;
+    GaussOptProc flowYSmoothProc;
+    //BoxOptProc flowYSmoothProc;
     
     Flow2Proc flowProc;
+    
+    NmsProc nmsProc; // corners!
     
 #if USE_MEDIAN
     MedianProc medianProc;
@@ -400,13 +416,16 @@ Flow2Pipeline::Flow2Pipeline(float tau, float strength, bool doGray)
 
 Flow2Pipeline::~Flow2Pipeline() {}
 ProcInterface * Flow2Pipeline::first() { return &m_pImpl->grayProc; }
+
 #if USE_MEDIAN
 ProcInterface * Flow2Pipeline::last() { return &m_pImpl->medianProc; }
 #else
-ProcInterface * Flow2Pipeline::last() { return &m_pImpl->flowProc; }
+ProcInterface * Flow2Pipeline::last() { return &m_pImpl->nmsProc; }
 #endif
+
 float Flow2Pipeline::getStrength() const { return m_pImpl->flowProc.getStrength(); }
 
+ProcInterface * Flow2Pipeline::corners() { return &m_pImpl->nmsProc; }
 
 END_OGLES_GPGPU
 
