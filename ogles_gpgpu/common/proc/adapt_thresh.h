@@ -27,8 +27,6 @@ public:
 
         procPasses.push_back(adaptThreshPass1);
         procPasses.push_back(adaptThreshPass2);
-
-        multiPassInit();
     }
 
     /**
