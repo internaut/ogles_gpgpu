@@ -47,13 +47,17 @@ public:
     float getThreshold() const {
         return threshold;
     }
+    
+    void swizzle(int channel);
 
 private:
     
     /**
      * Get the fragment shader source.
      */
-    virtual const char *getFragmentShaderSource() { return fshaderNmsSrc; }
+    virtual const char *getFragmentShaderSource() {
+        return fshaderNmsSwizzleSrc.empty() ? fshaderNmsSrc : fshaderNmsSwizzleSrc.c_str();
+    }
     
     /**
      * Get uniform indices.
@@ -66,6 +70,8 @@ private:
     virtual void setUniforms();
 
     static const char *fshaderNmsSrc;   // fragment shader source
+    
+    std::string fshaderNmsSwizzleSrc;
     
     GLuint shParamUThreshold;
     
