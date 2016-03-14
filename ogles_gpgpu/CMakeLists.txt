@@ -11,6 +11,10 @@ set_property(TARGET ${library} PROPERTY FOLDER "libs/ogles_gpgpu")
 # Provide interface lib for clean package config use
 #
 
+if(NOT OGLES_GPGPU_INSTALL)
+  return()
+endif()
+
 ### Install ###
 set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
