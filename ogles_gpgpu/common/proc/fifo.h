@@ -30,7 +30,7 @@ public:
     virtual void cleanup();    
     virtual const char *getProcName() { return "FifoProc"; }
     virtual void createFBOTex(bool genMipmap);
-    virtual void render(int position = 0);
+    virtual int render(int position = 0);
     virtual void useTexture(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D, int position = 0);
     virtual void setOutputRenderOrientation(RenderOrientation o) { assert(false); }
     virtual RenderOrientation getOutputRenderOrientation() const { return RenderOrientationNone; }

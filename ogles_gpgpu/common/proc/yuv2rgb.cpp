@@ -199,7 +199,7 @@ void Yuv2RgbProc::filterRenderPrepare()
     glUniformMatrix3fv(yuvConversionMatrixUniform, 1, GL_FALSE, _preferredConversion);
 }
 
-void Yuv2RgbProc::render(int position)
+int Yuv2RgbProc::render(int position)
 {
     OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
 
@@ -214,5 +214,7 @@ void Yuv2RgbProc::render(int position)
 
     filterRenderCleanup();
     Tools::checkGLErr(getProcName(), "render cleanup");
+    
+    return 0;
 }
 

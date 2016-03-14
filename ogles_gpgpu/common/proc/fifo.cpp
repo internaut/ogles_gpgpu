@@ -130,7 +130,7 @@ void FifoProc::createFBOTex(bool genMipmap) {
 // negative modulo arithmetic
 static int modulo(int a, int b) { return (((a % b) + b) % b); }
 
-void FifoProc::render(int position) {
+int FifoProc::render(int position) {
     // Render into input FBO
     if(m_count == int(size())) {
         m_outputIndex = modulo(m_inputIndex + 1, size());
@@ -140,6 +140,8 @@ void FifoProc::render(int position) {
     
     m_count = std::min(m_count + 1, int(size()));
     m_inputIndex = modulo(m_inputIndex + 1, size());
+    
+    return 0;
 }
 
 void FifoProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target, int position) {

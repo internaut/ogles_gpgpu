@@ -70,9 +70,9 @@ public:
 
     /**
      * Render a result, i.e. run the shader on the input texture.
-     * Abstract method.
+     * Abstract method.  Return 0 on success.
      */
-    virtual void render(int position=0) = 0;
+    virtual int render(int position=0) = 0;
 
     /**
      * Return the processors name.
@@ -192,16 +192,26 @@ public:
      * Add a subscriber
      */
     virtual void add(ProcInterface *filter, int position=0);
-    
+
     /**
      * Prepare the filter chain
      */
     virtual void prepare(int inW, int inH, GLenum inFmt, int index = 0, int position = 0);
+
+    /**
+     *  Prepare the filter chain filter[i] : i >= 1
+     */
+    virtual void prepare(int inW, int inH, int index = 0, int position = 0);
     
     /**
      * Process a filter chain:
      */
     virtual void process(GLuint id, GLuint useTexUnit, GLenum target, int index = 0, int position = 0, Logger logger=0);
+    
+    /**
+     * Process filter chain filter[i] : i >= 1
+     */
+    virtual void process(int position, Logger logger=0);
     
     /**
      * Allow this proc to use mipmaps
@@ -211,15 +221,9 @@ public:
     /**
      * Turn this filter on/off:
      */
-    
     virtual void setActive(bool active);
     
 protected:
-    
-    /**
-     * Process filter chain filter[i] : i >= 1
-     */
-    virtual void process(int position, Logger logger=0);
     
     bool useMipmaps = false; // TODO:
     
@@ -227,7 +231,7 @@ protected:
     
     bool active = true;
     
-    std::vector<std::pair<ProcInterface*, int>> subscribers;
+    std::vector<std::pair<ProcInterface *, int>> subscribers;
 };
 
 END_OGLES_GPGPU

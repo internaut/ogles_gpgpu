@@ -44,7 +44,7 @@ public:
      * Abstract method.  The optional position parameter is used
      * to specify the input index for multi-texture filters.
      */
-    virtual void render(int position=0);
+    virtual int render(int position=0);
     
 protected:
     

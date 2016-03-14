@@ -103,7 +103,7 @@ const std::vector<Rect2d> & PyramidProc::getLevelCrops() const
     return m_crops;
 }
 
-void PyramidProc::PyramidProc::render(int position)
+int PyramidProc::PyramidProc::render(int position)
 {
     OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
     filterRenderPrepare();
@@ -128,6 +128,8 @@ void PyramidProc::PyramidProc::render(int position)
     
     filterRenderCleanup();
     Tools::checkGLErr(getProcName(), "render cleanup");
+    
+    return 0;
 }
 
 

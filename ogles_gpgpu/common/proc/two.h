@@ -43,6 +43,10 @@ public:
      */
     virtual void useTexture2(GLuint id, GLuint useTexUnit = 1, GLenum target = GL_TEXTURE_2D);
     
+    virtual int render(int position=0);
+    
+    void setWaitForSecondTexture(bool flag) { waitForSecondTexture = flag; }
+    
 protected:
     
     virtual void filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target);
@@ -71,6 +75,10 @@ protected:
      * Bind all input textures
      */
     virtual void filterRenderPrepare();
+    
+    bool waitForSecondTexture = true;
+    bool hasTex1 = false;
+    bool hasTex2 = false;
 
     GLuint texId2;       // input texture id
     GLuint texUnit2;     // input texture unit (glActiveTexture())

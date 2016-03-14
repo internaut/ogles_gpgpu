@@ -45,7 +45,7 @@ public:
     /**
      * Render the output.
      */
-    virtual void render(int position=0);
+    virtual int render(int position=0);
 
       /**
      * Create the shader program

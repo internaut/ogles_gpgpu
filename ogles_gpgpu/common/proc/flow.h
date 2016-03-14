@@ -126,7 +126,7 @@ private:
     static const char *fshaderFlowSrc;     // fragment shader source
 };
 
-class Flow2Pipeline /* : public FilterProcBase */
+class Flow2Pipeline : public MultiPassProc
 {
 public:
     
@@ -134,15 +134,19 @@ public:
     virtual ~Flow2Pipeline();
     
     virtual float getStrength() const;
-    virtual ProcInterface * first();
-    virtual ProcInterface * last();
-    
     virtual ProcInterface * corners(); // corner output
     
+    virtual ProcInterface* getInputFilter() const;
+    virtual ProcInterface* getOutputFilter() const;
+
     /**
      * Return the processors name.
      */
-    virtual const char *getProcName() { return "FlowPipeline"; }
+    virtual const char *getProcName() { return "Flow2Pipeline"; }
+    
+    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
+    virtual int reinit(int inW, int inH, bool prepareForExternalInput = false);
+    virtual int render(int position);
     
 protected:
     

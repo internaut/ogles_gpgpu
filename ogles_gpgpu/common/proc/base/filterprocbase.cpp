@@ -134,7 +134,7 @@ void FilterProcBase::getUniforms() {
  * Render a result, i.e. run the shader on the input texture.
  * Abstract method.
  */
-void FilterProcBase::render(int position) {
+int FilterProcBase::render(int position) {
     OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
     
     filterRenderPrepare();
@@ -151,6 +151,8 @@ void FilterProcBase::render(int position) {
     
     filterRenderCleanup();
     Tools::checkGLErr(getProcName(), "render cleanup");
+    
+    return 0;
 }
 
 /**

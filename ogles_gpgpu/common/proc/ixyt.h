@@ -12,6 +12,7 @@ namespace ogles_gpgpu {
 
 // ######### Temporal derivative shader #################
 
+    
 class IxytProc : public TwoInputProc
 {
 public:

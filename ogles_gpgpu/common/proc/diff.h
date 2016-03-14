@@ -15,26 +15,18 @@ namespace ogles_gpgpu {
 class DiffProc : public TwoInputProc
 {
 public:
-    
-    DiffProc(float strength = 1.0f, bool squared=false) : strength(strength), squared(squared) {}
+    DiffProc(float strength = 1.f);
     virtual const char *getProcName() { return "DiffProc"; }
     virtual void getUniforms();
     virtual void setUniforms();
     virtual void setStrength(float value) { strength = value; }
+    virtual int render(int position = 0);
 private:
-    
-    GLint texelWidthUniform;
-    GLint texelHeightUniform;
-    
-    GLint shParamUStrength;
-    float strength = 1.f;
-    
-    bool squared = false;
-    
+    GLuint shParamUStrength;
+    float strength;
     virtual const char *getVertexShaderSource() { return vshaderGPUImage; }
-    virtual const char *getFragmentShaderSource() { return squared ? fshaderDiff2Src : fshaderDiffSrc; }
+    virtual const char *getFragmentShaderSource() { return fshaderDiffSrc; }
     static const char *fshaderDiffSrc;   // fragment shader source (diff)
-    static const char *fshaderDiff2Src;  // fragment shader source (squared diff)
 };
 }
 

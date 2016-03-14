@@ -394,12 +394,10 @@ struct Flow2Pipeline::Impl
     
     FlowImplProc flowXProc;
     GaussOptProc flowXSmoothProc;
-    //BoxOptProc flowXSmoothProc;
     
     FlowImplProc flowYProc;
     GaussOptProc flowYSmoothProc;
-    //BoxOptProc flowYSmoothProc;
-    
+
     Flow2Proc flowProc;
     
     NmsProc nmsProc; // corners!
@@ -412,20 +410,49 @@ struct Flow2Pipeline::Impl
 Flow2Pipeline::Flow2Pipeline(float tau, float strength, bool doGray)
 {
     m_pImpl = std::unique_ptr<Impl>(new Impl(tau, strength, doGray));
+    
+    procPasses.push_back(&m_pImpl->grayProc);
+    procPasses.push_back(&m_pImpl->fifoProc);
+    procPasses.push_back(&m_pImpl->diffProc);
+    procPasses.push_back(&m_pImpl->flowXProc);
+    procPasses.push_back(&m_pImpl->flowXSmoothProc);
+    procPasses.push_back(&m_pImpl->flowYProc);
+    procPasses.push_back(&m_pImpl->flowYSmoothProc);
+    procPasses.push_back(&m_pImpl->flowProc);
+    procPasses.push_back(&m_pImpl->nmsProc);
 };
 
 Flow2Pipeline::~Flow2Pipeline() {}
-ProcInterface * Flow2Pipeline::first() { return &m_pImpl->grayProc; }
+ProcInterface * Flow2Pipeline::getInputFilter() const { return &m_pImpl->grayProc; }
 
 #if USE_MEDIAN
-ProcInterface * Flow2Pipeline::last() { return &m_pImpl->medianProc; }
+ProcInterface * Flow2Pipeline::getOutputFilter() const { return &m_pImpl->medianProc; }
 #else
-ProcInterface * Flow2Pipeline::last() { return &m_pImpl->nmsProc; }
+ProcInterface * Flow2Pipeline::getOutputFilter() const { return &m_pImpl->nmsProc; }
 #endif
 
 float Flow2Pipeline::getStrength() const { return m_pImpl->flowProc.getStrength(); }
 
 ProcInterface * Flow2Pipeline::corners() { return &m_pImpl->nmsProc; }
+
+int Flow2Pipeline::render(int position)
+{
+    // Execute internal filter chain
+    getInputFilter()->process(position);
+    return 0;
+}
+
+int Flow2Pipeline::init(int inW, int inH, unsigned int order, bool prepareForExternalInput)
+{
+    getInputFilter()->prepare(inW, inH, 0, INT_MAX, 0);
+    return 0;
+}
+
+int Flow2Pipeline::reinit(int inW, int inH, bool prepareForExternalInput)
+{
+    getInputFilter()->prepare(inW, inH, 0, INT_MAX, 0);
+    return 0;
+}
 
 END_OGLES_GPGPU
 

@@ -39,7 +39,7 @@ int Disp::init(int inW, int inH, unsigned int order, bool prepareForExternalInpu
     return 1;
 }
 
-void Disp::render(int position) {
+int Disp::render(int position) {
     OG_LOGINF(getProcName(), "input tex %d, target %d, framebuffer of size %dx%d", texId, texTarget, outFrameW, outFrameH);
 
     filterRenderPrepare();
@@ -55,4 +55,6 @@ void Disp::render(int position) {
 
     filterRenderCleanup();
     Tools::checkGLErr(getProcName(), "render cleanup");
+    
+    return 0;
 }

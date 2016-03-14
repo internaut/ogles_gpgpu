@@ -63,7 +63,7 @@ public:
      * Render a result, i.e. run the shader on the input texture.
      * Abstract method.
      */
-    virtual void render(int position=0);
+    virtual int render(int position=0);
 
     /**
      * Use texture id <id> as input texture at texture <useTexUnit> with texture target <target>.

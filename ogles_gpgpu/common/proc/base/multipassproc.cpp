@@ -105,10 +105,11 @@ void MultiPassProc::createFBOTex(bool genMipmap) {
     }
 }
 
-void MultiPassProc::render(int position) {
+int MultiPassProc::render(int position) {
     for(auto &it : procPasses) {
         it->render(position);
     }
+    return 0;
 }
 
 void MultiPassProc::useTexture(GLuint id, GLuint useTexUnit, GLenum target, int position) {

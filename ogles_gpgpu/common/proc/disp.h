@@ -53,7 +53,7 @@ public:
     /**
      * Render the output.
      */
-    virtual void render(int position);
+    virtual int render(int position);
 
     /**
      * Not implemented - no output texture needed because Disp renders on screen.

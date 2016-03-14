@@ -45,13 +45,31 @@ precision mediump float;
  {
 	 vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
 	 vec4 textureColor2 = texture2D(inputImageTexture2, textureCoordinate);
-	 
 	 gl_FragColor = vec4(textureColor.rgb - textureColor2.rgb, textureColor.a);
 });
 
 TwoInputProc::TwoInputProc()
 {
     
+}
+
+int TwoInputProc::render(int position)
+{
+    int result = 1;
+    
+    switch(position)
+    {
+        case 0: hasTex1 = true; break;
+        case 1: hasTex2 = true; break;
+        default: assert(false);
+    }
+    
+    if(hasTex1 && (hasTex2 || !waitForSecondTexture))
+    {
+        result = FilterProcBase::render(position);
+        hasTex1 = hasTex2 = false;
+    }
+    return result; // 0 on success
 }
 
 /**
@@ -84,11 +102,12 @@ void TwoInputProc::filterRenderPrepare()
     
     glClear(GL_COLOR_BUFFER_BIT);
     
-    // Bind input textures
+    // Bind input texture 1:
     glActiveTexture(GL_TEXTURE0 + texUnit);
     glBindTexture(texTarget, texId);
     glUniform1i(shParamUInputTex, texUnit);
     
+    // Bind input texture 2:
     texUnit2 = texUnit + 1;
     glActiveTexture(GL_TEXTURE0 + texUnit2);
     glBindTexture(texTarget2, texId2);
@@ -100,7 +119,6 @@ void TwoInputProc::filterShaderSetup(const char *vShaderSrc, const char *fShader
     // create shader object
     FilterProcBase::createShader(vShaderSrc, fShaderSrc, target);
     
-    // TODO: Support uniform reads through virtual API call:
     shParamAPos = shader->getParam(ATTR, "position");
     shParamATexCoord = shader->getParam(ATTR, "inputTextureCoordinate");
     

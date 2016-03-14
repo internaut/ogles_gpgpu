@@ -58,7 +58,7 @@ public:
     /**
      * Render the output.
      */
-    virtual void render(int position=0);
+    virtual int render(int position=0);
 
 private:
     int renderPass; // render pass number. must be 1 or 2

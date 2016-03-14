@@ -111,7 +111,7 @@ void AdaptThreshProcPass::createFBOTex(bool genMipmap) {
     outFrameH = fbo->getTexHeight();
 }
 
-void AdaptThreshProcPass::render(int position) {
+int AdaptThreshProcPass::render(int position) {
     OG_LOGINF(getProcName(), "input tex %d, target %d, render pass %d, framebuffer of size %dx%d", texId, texTarget, renderPass, outFrameW, outFrameH);
 
     filterRenderPrepare();
@@ -128,4 +128,6 @@ void AdaptThreshProcPass::render(int position) {
 
     filterRenderCleanup();
     Tools::checkGLErr(getProcName(), "render cleanup");
+    
+    return 0;
 }
