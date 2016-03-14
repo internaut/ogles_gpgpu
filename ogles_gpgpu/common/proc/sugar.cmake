@@ -18,6 +18,8 @@ sugar_include(multipass)
 sugar_files(
     OGLES_GPGPU_SRCS
     adapt_thresh.h
+    blend.cpp
+    blend.h
     box_opt.h
     diff.cpp
     diff.h
@@ -35,20 +37,24 @@ sugar_files(
     grad.h
     grayscale.cpp
     grayscale.h
+    highpass.h
+    iir.cpp
+    iir.h
     ixyt.cpp
     ixyt.h
     lnorm.h
     lbp.cpp
     lbp.h
+    lowpass.h
     median.cpp
     median.h
     nms.cpp
     nms.h
     pyramid.cpp
     pyramid.h
-    shitomasi.cpp # corner
+    shitomasi.cpp
     shitomasi.h
-    tensor.cpp # tensor
+    tensor.cpp
     tensor.h
     thresh.cpp
     thresh.h
@@ -56,7 +62,7 @@ sugar_files(
     transform.h
     two.cpp
     two.h
-    video.cpp # image source
+    video.cpp
     video.h
     yuv2rgb.cpp
     yuv2rgb.h
