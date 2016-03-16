@@ -106,7 +106,7 @@ const char *FlowProc::fshaderFlowSrc = OG_TO_STR
  uniform float strength;
  uniform float tau; // noise threshold (0.004)
  
- const int wSize = 6;
+ const int wSize = 5;
  
  void main()
  {
@@ -128,8 +128,8 @@ const char *FlowProc::fshaderFlowSrc = OG_TO_STR
              A 	= A + w * pix.x * pix.x;
              B 	= B + w * pix.y * pix.y;
              C 	= C + w * pix.x * pix.y;
-             X 	= X + w * pix.x * pix.z;
-             Y 	= Y + w * pix.y * pix.z;
+             X 	= X + w * pix.x * pix.z * 2.0;
+             Y 	= Y + w * pix.y * pix.z * 2.0;
          }
      }
      
@@ -191,11 +191,26 @@ struct FlowPipeline::Impl
 FlowPipeline::FlowPipeline(float tau, float strength, bool doGray)
 {
     m_pImpl = std::unique_ptr<Impl>(new Impl(tau, strength, doGray));
+    procPasses.push_back(&m_pImpl->grayProc);
+    procPasses.push_back(&m_pImpl->fifoProc);
+    procPasses.push_back(&m_pImpl->gaussProc);
+    procPasses.push_back(&m_pImpl->flowProc);
 };
-FlowPipeline::~FlowPipeline() { }
-ProcInterface * FlowPipeline::first() { return &m_pImpl->grayProc; }
-ProcInterface * FlowPipeline::last() { return &m_pImpl->flowProc; }
+FlowPipeline::~FlowPipeline() {}
 float FlowPipeline::getStrength() const { return m_pImpl->flowProc.getStrength(); }
+ProcInterface * FlowPipeline::getInputFilter() const { return &m_pImpl->grayProc; }
+ProcInterface * FlowPipeline::getOutputFilter() const { return &m_pImpl->flowProc; }
+int FlowPipeline::render(int position) {  getInputFilter()->process(position); return 0; }
+int FlowPipeline::init(int inW, int inH, unsigned int order, bool prepareForExternalInput)
+{
+    getInputFilter()->prepare(inW, inH, 0, INT_MAX, 0);
+    return 0;
+}
+int FlowPipeline::reinit(int inW, int inH, bool prepareForExternalInput)
+{
+    getInputFilter()->prepare(inW, inH, 0, INT_MAX, 0);
+    return 0;
+}
 
 // ====================================================
 // ======= Test two input smoothed tensor output ======
@@ -350,12 +365,14 @@ const char *Flow2Proc::fshaderFlowSrc = OG_TO_STR
 
 struct Flow2Pipeline::Impl
 {
+    typedef GaussOptProc SmoothProc;
+    
     Impl(float tau, float strength, bool doGray)
     : diffProc(40.0)
     , flowXProc(true, 1.f)
-    , flowXSmoothProc(2.0)
+    , flowXSmoothProc(5.0)
     , flowYProc(false, 1.f)
-    , flowYSmoothProc(2.0)
+    , flowYSmoothProc(5.0)
     , flowProc(tau, strength)
     {
         if(!doGray)
@@ -387,16 +404,16 @@ struct Flow2Pipeline::Impl
 #endif
         }
     }
-    
+
     GrayscaleProc grayProc;
     FIFOPRoc fifoProc;
     IxytProc diffProc;
     
     FlowImplProc flowXProc;
-    GaussOptProc flowXSmoothProc;
+    SmoothProc flowXSmoothProc;
     
     FlowImplProc flowYProc;
-    GaussOptProc flowYSmoothProc;
+    SmoothProc flowYSmoothProc;
 
     Flow2Proc flowProc;
     

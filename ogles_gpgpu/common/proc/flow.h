@@ -53,14 +53,22 @@ private:
 
 // Explicit access of first and last filter saves a whole bunch of boilerplate virtual API stuff:
 // TODO: may make this more like a multipass filter in the future
-class FlowPipeline /* : public FilterProcBase */
+class FlowPipeline : public MultiPassProc
 {
 public:
     FlowPipeline(float tau = 0.004f, float strength = 1.0f, bool doGray=false);
     virtual ~FlowPipeline();
     virtual float getStrength() const;
-    virtual ProcInterface * first();
-    virtual ProcInterface * last();
+    
+    //virtual ProcInterface * first();
+    //virtual ProcInterface * last();
+    
+    virtual ProcInterface* getInputFilter() const;
+    virtual ProcInterface* getOutputFilter() const;
+    
+    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
+    virtual int reinit(int inW, int inH, bool prepareForExternalInput = false);
+    virtual int render(int position);
     
     /**
      * Return the processors name.
