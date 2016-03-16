@@ -71,6 +71,13 @@ struct Rect2d
     
 struct Vec3f
 {
+    Vec3f() {}
+    Vec3f(float a, float b, float c)
+    {
+        data[0] = a;
+        data[1] = b;
+        data[2] = c;
+    }
     GLfloat data[3];
 };
     
