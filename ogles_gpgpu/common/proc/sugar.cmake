@@ -29,6 +29,8 @@ sugar_files(
     fifo.h
     filter3x3.cpp
     filter3x3.h
+    fir3.cpp
+    fir3.h
     flow.cpp
     flow.h
     gauss.h
@@ -52,10 +54,14 @@ sugar_files(
     nms.h
     pyramid.cpp
     pyramid.h
+    remap.cpp
+    remap.h
     shitomasi.cpp
     shitomasi.h
     tensor.cpp
     tensor.h
+    three.cpp
+    three.h
     thresh.cpp
     thresh.h
     transform.cpp
