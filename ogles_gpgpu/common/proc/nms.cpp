@@ -106,5 +106,5 @@ void NmsProc::swizzle(int channel) {
     auto fshader2 = std::regex_replace(fshaderNmsSwizzleSrc, pattern2, new2);
     std::swap(fshader2, fshaderNmsSwizzleSrc);
     
-    std::cout << fshaderNmsSwizzleSrc << std::endl;
+    //std::cout << fshaderNmsSwizzleSrc << std::endl;
 }
