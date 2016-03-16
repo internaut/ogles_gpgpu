@@ -43,11 +43,16 @@ const char * NoopProc::fshaderNoopSrc = OG_TO_STR
 
 // #################### FIFO ####################
 
+// negative modulo arithmetic
+static int modulo(int a, int b) { return (((a % b) + b) % b); }
+
 FifoProc::FifoProc(int size) {
     m_inputIndex = m_outputIndex = 0;
     for(int i = 0; i < size; i++) {
         procPasses.push_back( new NoopProc );
     }
+    
+    delayedSubscribers.resize(size);
 }
 
 FifoProc::~FifoProc() {
@@ -56,6 +61,54 @@ FifoProc::~FifoProc() {
         delete it;
     }
     procPasses.clear();
+}
+
+void FifoProc::addWithDelay(ProcInterface *filter, int position, int time)
+{
+    assert(time >= 0 && time < size());
+    delayedSubscribers[time].emplace_back(filter, position);
+}
+
+void FifoProc::prepare(int inW, int inH, int index, int position)
+{
+    assert(position == 0);
+    ProcInterface::prepare(inW, inH, index, position);
+    
+    for(int i = 0; i < delayedSubscribers.size(); i++)
+    {
+        for(auto &subscriber : delayedSubscribers[i])
+        {
+            // At startup we have to initialize with our main processor output
+            subscriber.first->prepare(getOutFrameW(), getOutFrameH(), index+1, subscriber.second);
+            subscriber.first->useTexture(getOutputTexId(), getTextureUnit(), GL_TEXTURE_2D, subscriber.second);
+        }
+    }
+}
+
+void FifoProc::process(int position, Logger logger)
+{
+    assert(position == 0);
+    ProcInterface::process(position, logger);
+    
+    if(isFull())
+    {
+        // Trigger delayed subscribers:
+        for(int i = 0; i < delayedSubscribers.size(); i++)
+        {
+            auto producer = (*this)[i];
+            for(auto &subscriber : delayedSubscribers[i])
+            {
+                subscriber.first->useTexture(producer->getOutputTexId(), producer->getTextureUnit(), GL_TEXTURE_2D, subscriber.second);
+                subscriber.first->process(subscriber.second, logger);
+            }
+        }
+    }
+}
+
+ProcInterface * FifoProc::operator[](int i) const
+{
+    int index = modulo(m_outputIndex+i, procPasses.size());
+    return procPasses[index];
 }
 
 int FifoProc::getIn() const {
@@ -126,9 +179,6 @@ void FifoProc::createFBOTex(bool genMipmap) {
 // 5 : [3][4][5]
 //     [O][ ][ ]
 //     [ ][ ][I]
-
-// negative modulo arithmetic
-static int modulo(int a, int b) { return (((a % b) + b) % b); }
 
 int FifoProc::render(int position) {
     // Render into input FBO

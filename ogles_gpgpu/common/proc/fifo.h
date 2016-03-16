@@ -39,11 +39,13 @@ public:
     
     virtual ProcInterface* getInputFilter() const;
     virtual ProcInterface* getOutputFilter() const;
-    virtual ProcInterface * operator[](int i) const { return procPasses[i]; }    
+    virtual ProcInterface * operator[](int i) const;
     virtual size_t size() const { return procPasses.size(); }
     
     virtual int getIn() const;
     virtual int getOut() const;
+    
+    virtual void addWithDelay(ProcInterface *filter, int position = 0, int time = 0);
     
     /**
      * Return te list of processor instances of each pass of this multipass processor.
@@ -55,9 +57,15 @@ public:
 
 protected:
     
+    virtual void prepare(int inW, int inH, int index = 0, int position = 0);
+    virtual void process(int position, Logger logger=0);
+    
     int m_count = 0;
     int m_inputIndex = -1;
     int m_outputIndex = -1;
+    
+    using FilterTarget = std::pair<ProcInterface *, int>;
+    std::vector<std::vector<FilterTarget>> delayedSubscribers;
     
     std::vector<ProcInterface *> procPasses;   // holds all instances to the single processing passes. strong ref!
 };
