@@ -37,8 +37,8 @@ env:
   - TOOLCHAIN=default CONFIG=Debug
   - TOOLCHAIN=libcxx CONFIG=Debug
   - TOOLCHAIN=libcxx CONFIG=Release
-  - TOOLCHAIN=clang-libstdcxx CONFIG=Release
-  - TOOLCHAIN=clang-libstdcxx CONFIG=Debug
+#  - TOOLCHAIN=clang-libstdcxx CONFIG=Release
+#  - TOOLCHAIN=clang-libstdcxx CONFIG=Debug
   - TOOLCHAIN=xcode CONFIG=Debug
   - TOOLCHAIN=xcode CONFIG=Release
   - TOOLCHAIN=osx-10-9 CONFIG=Debug
