@@ -1,0 +1,133 @@
+# Windows (https://github.com/travis-ci-tester/toolchain-table)
+
+environment:
+  matrix:
+    ###
+    - TOOLCHAIN: "default"
+      CONFIG: Release
+
+    - TOOLCHAIN: "default"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "ninja-vs-12-2013-win64"
+      CONFIG: Release
+
+    - TOOLCHAIN: "ninja-vs-12-2013-win64"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "nmake-vs-12-2013-win64"
+      CONFIG: Release
+
+    - TOOLCHAIN: "nmake-vs-12-2013-win64"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "nmake-vs-12-2013"
+      CONFIG: Release
+
+    - TOOLCHAIN: "nmake-vs-12-2013"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "vs-10-2010"
+      CONFIG: Release
+
+    - TOOLCHAIN: "vs-10-2010"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "vs-11-2012"
+      CONFIG: Release
+
+    - TOOLCHAIN: "vs-11-2012"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "vs-12-2013-win64"
+      CONFIG: Release
+
+    - TOOLCHAIN: "vs-12-2013-win64"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "vs-12-2013-xp"
+      CONFIG: Release
+
+    - TOOLCHAIN: "vs-12-2013-xp"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "vs-12-2013"
+      CONFIG: Release
+
+    - TOOLCHAIN: "vs-12-2013"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "vs-14-2015"
+      CONFIG: Release
+
+    - TOOLCHAIN: "vs-14-2015"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "vs-9-2008"
+      CONFIG: Release
+
+    - TOOLCHAIN: "vs-9-2008"
+      CONFIG: Debug
+
+    ###
+    - TOOLCHAIN: "mingw"
+      CONFIG: Release
+
+    - TOOLCHAIN: "mingw"
+      CONFIG: Debug
+
+install:
+  # Python 3
+  - cmd: set PATH=C:\Python34-x64;C:\Python34-x64\Scripts;%PATH%
+
+  # Install Python package 'requests'
+  - cmd: pip install requests
+
+  # Install latest Polly toolchains and scripts
+  - cmd: appveyor DownloadFile https://github.com/ruslo/polly/archive/master.zip
+  - cmd: 7z x master.zip
+  - cmd: set POLLY_SOURCE_DIR=%cd%\polly-master
+
+  # Install dependencies (CMake, Ninja)
+  - cmd: python %POLLY_SOURCE_DIR%\bin\install-ci-dependencies.py
+
+  # Tune locations
+  - cmd: set PATH=%cd%\_ci\cmake\bin;%PATH%
+  - cmd: set PATH=%cd%\_ci\ninja;%PATH%
+
+  # Remove entry with sh.exe from PATH to fix error with MinGW toolchain
+  # (For MinGW make to work correctly sh.exe must NOT be in your path)
+  # * http://stackoverflow.com/a/3870338/2288008
+  - cmd: set PATH=%PATH:C:\Program Files\Git\usr\bin;=%
+
+  # Use MinGW from Qt tools because version is higher
+  # * http://www.appveyor.com/docs/installed-software#qt
+  - cmd: set MINGW_PATH=C:\Qt\Tools\mingw492_32\bin
+
+build_script:
+  - cmd: python %POLLY_SOURCE_DIR%\bin\build.py --toolchain "%TOOLCHAIN%" --config "%CONFIG%" --verbose --test
+
+artifacts:
+  - path: _builds\*\ogles_gpgpu-*.tar.gz
+    name: Releases
+
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: "U5MPrdwVvE0Xyt7KNsBHp3e03qaBZ5UTV1s7GpTYy4Jxsx6EkKsXuZzBtaDtcU12"
+  artifact: /ogles_gpgpu-.*\.tar.gz/
+  draft: false
+  prerelease: false
+  on:
+    appveyor_repo_tag: true
+    
