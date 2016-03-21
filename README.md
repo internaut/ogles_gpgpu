@@ -1,6 +1,7 @@
 # ogles_gpgpu - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 
-Travis: [![Build Status](https://travis-ci.org/headupinclouds/ogles_gpgpu.svg?branch=master)](https://travis-ci.org/headupinclouds/ogles_gpgpu)
+Travis: [![Build Status](https://travis-ci.org/headupinclouds/ogles_gpgpu.svg?branch=hunter)](https://travis-ci.org/headupinclouds/ogles_gpgpu)
+
 Appveyor: [![Build status](https://ci.appveyor.com/api/projects/status/kv8cix0rf288ddcj?svg=true)](https://ci.appveyor.com/project/headupinclouds/ogles-gpgpu)
 
 ## Features
