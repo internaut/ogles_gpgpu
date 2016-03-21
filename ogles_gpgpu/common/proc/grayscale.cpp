@@ -10,6 +10,8 @@
 #include "../common_includes.h"
 #include "grayscale.h"
 
+#include <memory.h>
+
 using namespace std;
 using namespace ogles_gpgpu;
 

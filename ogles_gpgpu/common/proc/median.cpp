@@ -1,4 +1,4 @@
-#import "median.h"
+#include "median.h"
 #include "../common_includes.h"
 
 /*

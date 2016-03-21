@@ -9,6 +9,8 @@
 
 #include "filterprocbase.h"
 
+#include <memory.h> // for memcpy on linux
+
 using namespace ogles_gpgpu;
 using namespace std;
 

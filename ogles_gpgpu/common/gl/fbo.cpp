@@ -9,6 +9,8 @@
 
 #include "fbo.h"
 
+#include "opengl/gl_includes.h"
+
 using namespace std;
 using namespace ogles_gpgpu;
 

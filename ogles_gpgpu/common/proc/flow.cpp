@@ -12,6 +12,8 @@
 #include "nms.h"
 #include "box_opt.h"
 
+#include <limits>
+
 BEGIN_OGLES_GPGPU
 
 FlowProc::FlowProc(float tau, float strength) : tau(tau), strength(strength) {}
@@ -203,12 +205,12 @@ ProcInterface * FlowPipeline::getOutputFilter() const { return &m_pImpl->flowPro
 int FlowPipeline::render(int position) {  getInputFilter()->process(position); return 0; }
 int FlowPipeline::init(int inW, int inH, unsigned int order, bool prepareForExternalInput)
 {
-    getInputFilter()->prepare(inW, inH, 0, INT_MAX, 0);
+    getInputFilter()->prepare(inW, inH, 0, std::numeric_limits<int>::max(), 0);
     return 0;
 }
 int FlowPipeline::reinit(int inW, int inH, bool prepareForExternalInput)
 {
-    getInputFilter()->prepare(inW, inH, 0, INT_MAX, 0);
+    getInputFilter()->prepare(inW, inH, 0, std::numeric_limits<int>::max(), 0);
     return 0;
 }
 
@@ -461,13 +463,13 @@ int Flow2Pipeline::render(int position)
 
 int Flow2Pipeline::init(int inW, int inH, unsigned int order, bool prepareForExternalInput)
 {
-    getInputFilter()->prepare(inW, inH, 0, INT_MAX, 0);
+    getInputFilter()->prepare(inW, inH, 0, std::numeric_limits<int>::max(), 0);
     return 0;
 }
 
 int Flow2Pipeline::reinit(int inW, int inH, bool prepareForExternalInput)
 {
-    getInputFilter()->prepare(inW, inH, 0, INT_MAX, 0);
+    getInputFilter()->prepare(inW, inH, 0, std::numeric_limits<int>::max(), 0);
     return 0;
 }
 

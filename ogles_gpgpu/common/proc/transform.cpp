@@ -10,6 +10,8 @@
 #include "../common_includes.h"
 #include "transform.h"
 
+#include <memory.h>
+
 using namespace std;
 using namespace ogles_gpgpu;
 
