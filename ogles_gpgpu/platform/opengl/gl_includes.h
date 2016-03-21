@@ -29,7 +29,7 @@
 #elif defined(__ANDROID__) || defined(ANDROID)
 #  include <GLES2/gl2.h>
 #  include <GLES2/gl2ext.h>
-#elif defined(__linux) || defined(__unix) || defined(__posix)
+#elif defined(__linux__) || defined(__unix__) || defined(__posix__)
 #  include <GL/gl.h>
 #  include <GL/glu.h>
 #else
