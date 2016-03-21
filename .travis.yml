@@ -33,8 +33,8 @@ addons:
       - g++-4.8
   
 env:
-  - TOOLCHAIN=default CONFIG=Release
-  - TOOLCHAIN=default CONFIG=Debug
+#  - TOOLCHAIN=default CONFIG=Release
+#  - TOOLCHAIN=default CONFIG=Debug
   - TOOLCHAIN=libcxx CONFIG=Debug
   - TOOLCHAIN=libcxx CONFIG=Release
 #  - TOOLCHAIN=clang-libstdcxx CONFIG=Release

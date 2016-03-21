@@ -5,8 +5,8 @@ cmake_minimum_required(VERSION 3.0)
 
 include("cmake/HunterGate.cmake")
 HunterGate(
-    URL "https://github.com/ruslo/hunter/archive/v0.12.33.tar.gz"
-    SHA1 "f64eda11326e12d84b6aa7f4aed80c09c182aa64"
+    URL "https://github.com/ruslo/hunter/archive/v0.14.3.tar.gz"
+    SHA1 "e05bc95f6d62b7c55188044e39e8be5afb1e8af4"
 )
 
 project(ogles_gpgpu VERSION 0.1.0) # Don't see version #?
