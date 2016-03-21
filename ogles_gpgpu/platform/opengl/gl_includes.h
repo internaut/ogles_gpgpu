@@ -32,6 +32,7 @@
 #elif defined(__linux__) || defined(__unix__) || defined(__posix__)
 #  include <GL/gl.h>
 #  include <GL/glu.h>
+#  include <GL/glext.h>
 #else
 #  error platform not supported.
 #endif
