@@ -47,6 +47,19 @@ public:
     
     void setWaitForSecondTexture(bool flag) { waitForSecondTexture = flag; }
     
+    
+    /**
+     * Has fist texture
+     */
+    
+    virtual bool getHasFirstTexture() const { return hasTex1; }
+    
+    /**
+     * Has second texture
+     */
+    
+    virtual bool getHasSecondTexture() const { return hasTex2; }
+    
 protected:
     
     virtual void filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target);
