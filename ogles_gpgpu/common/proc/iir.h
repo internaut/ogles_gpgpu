@@ -26,6 +26,10 @@ public:
     virtual ProcInterface* getInputFilter() const;
     virtual ProcInterface* getOutputFilter() const;
     
+    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
+    virtual int reinit(int inW, int inH, bool prepareForExternalInput = false);
+    
+    bool isFirst = true;
     std::unique_ptr<Impl> m_impl;
 };
 
