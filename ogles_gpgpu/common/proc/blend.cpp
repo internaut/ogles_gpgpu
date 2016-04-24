@@ -43,9 +43,6 @@ void BlendProc::setUniforms()
 int BlendProc::render(int position)
 {
     // Always render on position == 0
-    if(position == 0)
-    {        
-        FilterProcBase::render(position);
-    }
+    TwoInputProc::render(position);
     return position;
 }
