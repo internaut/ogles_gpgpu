@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -24,49 +24,56 @@ namespace ogles_gpgpu {
  */
 class GaussProcPass : public FilterProcBase {
 public:
+    
+    enum KernelSize
+    {
+        k5Tap,
+        k7Tap
+    };
+    
     /**
      * Construct as render pass <pass> (1 or 2).
      */
-    GaussProcPass(int pass) : FilterProcBase(),
-                              renderPass(pass),
-                              pxDx(0.0f),
-                              pxDy(0.0f)
-    {
-        assert(renderPass == 1 || renderPass == 2);
-    }
-    
+    GaussProcPass(int pass, KernelSize kernel=k5Tap, bool doR=false)
+    : FilterProcBase()
+    , renderPass(pass)
+    , kernel(kernel)
+    , doR(doR)
+    , texelWidth(0.0f)
+    , texelHeight(0.0f)
+    {  assert(renderPass == 1 || renderPass == 2); }
+
     /**
      * Return the processors name.
      */
-    virtual const char *getProcName() { return "GaussProcPass"; }
-    
-    /**
-     * Init the processor for input frames of size <inW>x<inH> which is at
-     * position <order> in the processing pipeline.
-     */
-    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
-    
-    /**
-     * Render the output.
-     */
-    virtual void render();
-    
-    /**
-     * Create a texture that is attached to the FBO and will contain the processing result.
-     * Set <genMipmap> to true to generate a mipmap (usually only works with POT textures).
-     * Overrides ProcBase's method.
-     */
-    virtual void createFBOTex(bool genMipmap);
+    virtual const char *getProcName() {
+        return "GaussProcPass";
+    }
 
+    virtual void filterShaderSetup(const char *vShaderSrc, const char *fShaderSrc, GLenum target);
+    virtual void setUniforms();
+    virtual void getUniforms();
+    virtual const char *getFragmentShaderSource();
+    virtual const char *getVertexShaderSource();
+    
 private:
     int renderPass; // render pass number. must be 1 or 2
     
-	GLint shParamUPxD;		// pixel delta values for texture lookup in the fragment shader. only used for adapt. thresholding
+    KernelSize kernel = k5Tap;
     
-	float pxDx;	// pixel delta value for texture access
-	float pxDy;	// pixel delta value for texture access
+    bool doR = false; // do r channel only
     
-    static const char *fshaderGaussSrc;  // fragment shader source for gaussian smoothing for both passes
+    GLint texelWidthUniform, texelHeightUniform;
+    float texelWidth, texelHeight;
+
+    
+    static const char *vshaderGauss7Src;
+    static const char *fshaderGauss7Src;  // fragment shader source for gaussian smoothing for both passes
+    static const char *fshaderGauss7SrcR; // shader for R channel
+    
+    static const char *vshaderGauss5Src;
+    static const char *fshaderGauss5Src;  // fragment shader source for gaussian smoothing for both passes
+    static const char *fshaderGauss5SrcR; // shader for R channel
 };
 
 }

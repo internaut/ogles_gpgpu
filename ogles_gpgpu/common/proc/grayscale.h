@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -18,7 +18,7 @@
 #include "base/filterprocbase.h"
 
 namespace ogles_gpgpu {
-    
+
 /**
  * Define grayscale conversion types
  */
@@ -39,50 +39,69 @@ public:
      * Constructor.
      */
     GrayscaleProc();
-    
+
     /**
      * Return the processors name.
      */
-    virtual const char *getProcName() { return "GrayscaleProc"; }
-    
+    virtual const char *getProcName() {
+        return "GrayscaleProc";
+    }
+
     /**
-     * Init the processor for input frames of size <inW>x<inH> which is at
-     * position <order> in the processing pipeline.
+     * Make this a noop/pass-through shader.
      */
-    virtual int init(int inW, int inH, unsigned int order, bool prepareForExternalInput = false);
-    
-    /**
-     * Render the output.
-     */
-    virtual void render();
+    void setIdentity();
     
     /**
      * Set weighted channel grayscale conversion vector directly to <v>.
      */
     void setGrayscaleConvVec(const GLfloat v[3]);
-    
+
     /**
      * Get weighted channel grayscale conversion vector.
      */
-    const GLfloat *getGrayscaleConvVec() const { return grayscaleConvVec; }
-    
+    const GLfloat *getGrayscaleConvVec() const {
+        return grayscaleConvVec;
+    }
+
     /**
      * Set weighted channel grayscale conversion vector by choosing a <type>.
      */
     void setGrayscaleConvType(GrayscaleInputConversionType type);
-    
+
     /**
      * Get grayscale conversion type.
      */
-    GrayscaleInputConversionType getGrayscaleConvType() const { return inputConvType; }
-    
+    GrayscaleInputConversionType getGrayscaleConvType() const {
+        return inputConvType;
+    }
+
 private:
+    
+    /**
+     * Get the fragment shader source.
+     */
+    virtual const char *getFragmentShaderSource() {
+        return inputConvType == GRAYSCALE_INPUT_CONVERSION_NONE ? fshaderNoopSrc : fshaderGrayscaleSrc;
+    }
+    
+    /**
+     * Set additional uniforms.
+     */
+    virtual void setUniforms();
+    
+    /**
+     * Get uniform indices.
+     */
+    virtual void getUniforms();
+    
+    static const char *fshaderNoopSrc;              // Noop pass through shader
     static const char *fshaderGrayscaleSrc;         // fragment shader source
     static const GLfloat grayscaleConvVecRGB[3];    // weighted channel grayscale conversion for RGB input (default)
     static const GLfloat grayscaleConvVecBGR[3];    // weighted channel grayscale conversion for BGR input
-    
+
     GLint shParamUInputConvVec; // shader uniform weighted channel grayscale conversion vector
-    
+
     GLfloat grayscaleConvVec[3];                // currently set weighted channel grayscale conversion vector
     GrayscaleInputConversionType inputConvType; // grayscale conversion type
 };

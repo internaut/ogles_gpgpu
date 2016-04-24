@@ -176,8 +176,8 @@ public class Sprite2d {
         Matrix.multiplyMM(mScratchMatrix, 0, projectionMatrix, 0, getModelViewMatrix(), 0);
 
         program.draw(mScratchMatrix, mColor, mDrawable.getVertexArray(), 0,
-                mDrawable.getVertexCount(), mDrawable.getCoordsPerVertex(),
-                mDrawable.getVertexStride());
+                     mDrawable.getVertexCount(), mDrawable.getCoordsPerVertex(),
+                     mDrawable.getVertexStride());
     }
 
     /**
@@ -188,16 +188,16 @@ public class Sprite2d {
         Matrix.multiplyMM(mScratchMatrix, 0, projectionMatrix, 0, getModelViewMatrix(), 0);
 
         program.draw(mScratchMatrix, mDrawable.getVertexArray(), 0,
-                mDrawable.getVertexCount(), mDrawable.getCoordsPerVertex(),
-                mDrawable.getVertexStride(), GlUtil.IDENTITY_MATRIX, mDrawable.getTexCoordArray(),
-                mTextureId, mDrawable.getTexCoordStride());
+                     mDrawable.getVertexCount(), mDrawable.getCoordsPerVertex(),
+                     mDrawable.getVertexStride(), GlUtil.IDENTITY_MATRIX, mDrawable.getTexCoordArray(),
+                     mTextureId, mDrawable.getTexCoordStride());
     }
 
     @Override
     public String toString() {
         return "[Sprite2d pos=" + mPosX + "," + mPosY +
-                " scale=" + mScaleX + "," + mScaleY + " angle=" + mAngle +
-                " color={" + mColor[0] + "," + mColor[1] + "," + mColor[2] +
-                "} drawable=" + mDrawable + "]";
+               " scale=" + mScaleX + "," + mScaleY + " angle=" + mAngle +
+               " color={" + mColor[0] + "," + mColor[1] + "," + mColor[2] +
+               "} drawable=" + mDrawable + "]";
     }
 }

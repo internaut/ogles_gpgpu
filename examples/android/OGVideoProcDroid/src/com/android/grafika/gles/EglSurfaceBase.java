@@ -178,7 +178,7 @@ public class EglSurfaceBase {
         ByteBuffer buf = ByteBuffer.allocateDirect(width * height * 4);
         buf.order(ByteOrder.LITTLE_ENDIAN);
         GLES20.glReadPixels(0, 0, width, height,
-                GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buf);
+                            GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buf);
         GlUtil.checkGlError("glReadPixels");
         buf.rewind();
 

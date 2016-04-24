@@ -69,14 +69,14 @@ public class GeneratedTexture {
     public static int createTestTexture(Image which) {
         ByteBuffer buf;
         switch (which) {
-            case COARSE:
-                buf = sCoarseImageData;
-                break;
-            case FINE:
-                buf = sFineImageData;
-                break;
-            default:
-                throw new RuntimeException("unknown image");
+        case COARSE:
+            buf = sCoarseImageData;
+            break;
+        case FINE:
+            buf = sFineImageData;
+            break;
+        default:
+            throw new RuntimeException("unknown image");
         }
         return GlUtil.createImageTexture(buf, TEX_SIZE, TEX_SIZE, FORMAT);
     }
@@ -146,16 +146,16 @@ public class GeneratedTexture {
 
         // top/left: single-pixel red/blue
         checkerPattern(buf, 0, 0, TEX_SIZE / 2, TEX_SIZE / 2,
-                OPAQUE|RED, OPAQUE|BLUE, 0x01);
+                       OPAQUE|RED, OPAQUE|BLUE, 0x01);
         // bottom/right: two-pixel red/green
         checkerPattern(buf, TEX_SIZE / 2, TEX_SIZE / 2, TEX_SIZE, TEX_SIZE,
-                OPAQUE|RED, OPAQUE|GREEN, 0x02);
+                       OPAQUE|RED, OPAQUE|GREEN, 0x02);
         // bottom/left: four-pixel blue/green
         checkerPattern(buf, 0, TEX_SIZE / 2, TEX_SIZE / 2, TEX_SIZE,
-                OPAQUE|BLUE, OPAQUE|GREEN, 0x04);
+                       OPAQUE|BLUE, OPAQUE|GREEN, 0x04);
         // top/right: eight-pixel black/white
         checkerPattern(buf, TEX_SIZE / 2, 0, TEX_SIZE, TEX_SIZE / 2,
-                OPAQUE|WHITE, OPAQUE|BLACK, 0x08);
+                       OPAQUE|WHITE, OPAQUE|BLACK, 0x08);
 
         ByteBuffer byteBuf = ByteBuffer.allocateDirect(buf.length);
         byteBuf.put(buf);
@@ -164,7 +164,7 @@ public class GeneratedTexture {
     }
 
     private static void checkerPattern(byte[] buf, int left, int top, int right, int bottom,
-            int color1, int color2, int bit) {
+                                       int color1, int color2, int bit) {
         for (int row = top; row < bottom; row++) {
             int rowOffset = row * TEX_SIZE * BYTES_PER_PIXEL;
             for (int col = left; col < right; col++) {

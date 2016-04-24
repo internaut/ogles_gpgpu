@@ -29,7 +29,7 @@ extern "C" {
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameW
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -37,7 +37,7 @@ JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameW
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameH
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -45,7 +45,7 @@ JNIEXPORT jint JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputFrameH
  * Signature: (ZZZ)V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init
-  (JNIEnv *, jobject, jboolean, jboolean, jboolean);
+(JNIEnv *, jobject, jboolean, jboolean, jboolean);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -53,7 +53,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_init
  * Signature: (IIZ)V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare
-  (JNIEnv *, jobject, jint, jint, jboolean);
+(JNIEnv *, jobject, jint, jint, jboolean);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -61,7 +61,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_prepare
  * Signature: (III)V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDisp
-  (JNIEnv *, jobject, jint, jint, jint);
+(JNIEnv *, jobject, jint, jint, jint);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -69,7 +69,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDisp
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDispShowMode
-  (JNIEnv *, jobject, jint);
+(JNIEnv *, jobject, jint);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -77,7 +77,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setRenderDispShowMode
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -85,7 +85,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_cleanup
  * Signature: ([I)V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels
-  (JNIEnv *, jobject, jintArray);
+(JNIEnv *, jobject, jintArray);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -93,7 +93,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputPixels
  * Signature: (I)V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputTexture
-  (JNIEnv *, jobject, jint);
+(JNIEnv *, jobject, jint);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -101,7 +101,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_setInputTexture
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_process
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -109,7 +109,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_process
  * Signature: ()V
  */
 JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_renderOutput
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -117,7 +117,7 @@ JNIEXPORT void JNICALL Java_ogles_1gpgpu_OGJNIWrapper_renderOutput
  * Signature: ()Ljava/nio/ByteBuffer;
  */
 JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 /*
  * Class:     ogles_gpgpu_OGJNIWrapper
@@ -125,7 +125,7 @@ JNIEXPORT jobject JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getOutputPixels
  * Signature: ()[D
  */
 JNIEXPORT jdoubleArray JNICALL Java_ogles_1gpgpu_OGJNIWrapper_getTimeMeasurements
-  (JNIEnv *, jobject);
+(JNIEnv *, jobject);
 
 #ifdef __cplusplus
 }

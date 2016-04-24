@@ -1,7 +1,7 @@
 //
-// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0 
+// ogles_gpgpu project - GPGPU for mobile devices and embedded systems using OpenGL ES 2.0
 //
-// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015 
+// Author: Markus Konrad <post@mkonrad.net>, Winter 2014/2015
 // http://www.mkonrad.net
 //
 // See LICENSE file in project repository root for the license.
@@ -26,10 +26,10 @@ vector<double> Tools::timeMeasurements;
 #endif
 
 void Tools::checkGLErr(const char *cls, const char *msg) {
-	GLenum err = glGetError();
-	if (err != GL_NO_ERROR) {
+    GLenum err = glGetError();
+    if (err != GL_NO_ERROR) {
         OG_LOGERR(cls, "%s - GL error '%d' occured", msg, err);
-	}
+    }
 }
 
 bool Tools::isPOT(float v) {
@@ -45,20 +45,20 @@ vector<string> Tools::split(const string &s, char delim) {
     vector<string> elems;
     stringstream strs(s);
     string item;
-    
+
     while (getline(strs, item, delim)) {
         elems.push_back(item);
     }
-    
+
     return elems;
 }
 
 void Tools::strReplaceAll(string& str, const string& from, const string& to) {
     if (from.empty())
         return;
-    
+
     size_t start_pos = 0;
-    
+
     while((start_pos = str.find(from, start_pos)) != string::npos) {
         str.replace(start_pos, from.length(), to);
         start_pos += to.length();
