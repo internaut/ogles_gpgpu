@@ -30,6 +30,7 @@ void ProcInterface::process(GLuint id, GLuint useTexUnit, GLenum target, int ind
     if(logger) logger(std::string(getProcName()) + " end");
         
     for(auto &subscriber : subscribers) {
+        subscriber.first->useTexture(getOutputTexId(), getTextureUnit(), GL_TEXTURE_2D, subscriber.second);
         subscriber.first->process(subscriber.second, logger);
     }
 }
