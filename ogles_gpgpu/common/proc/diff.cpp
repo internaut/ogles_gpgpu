@@ -16,8 +16,8 @@ const char *DiffProc::fshaderDiffSrc = OG_TO_STR
  {
      vec4 centerIntensity = texture2D(inputImageTexture, textureCoordinate);
      vec4 centerIntensity2 = texture2D(inputImageTexture2, textureCoordinate);
-     vec4 dt = (centerIntensity-centerIntensity2) * strength;
-     gl_FragColor = clamp(dt, 0.0, 1.0);
+     vec3 dt = (centerIntensity.rgb-centerIntensity2.rgb) * strength;
+     gl_FragColor = vec4(vec3(clamp(dt, 0.0, 1.0)), 1.0);
  });
 
 
@@ -40,13 +40,5 @@ void DiffProc::setUniforms()
 
 int DiffProc::render(int position)
 {
-    //return FilterProcBase::render(position);
-#if 0
-    switch(position)
-    {
-        case 0: hasTex1 = true; break;
-        case 1: hasTex2 = true; break;
-    }
-#endif
     return TwoInputProc::render(position);
 }
